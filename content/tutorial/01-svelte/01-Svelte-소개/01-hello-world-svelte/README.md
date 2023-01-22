@@ -16,25 +16,20 @@ Svelte는 HTML과 CSS의 부족한 생산성을 줄여주는 프레임워크로�
 
 ## Svelte란?
 
-Svelte는 
+Svelte는 다른 웹 프레임워크와 같이
 
-Svelte is a tool for building web applications. Like other user interface frameworks, it allows you to build your app _declaratively_ out of components that combine markup, styles and behaviours.
+Svelte는 웹 애플리케이션을 만들기 위한 도구입니다. 문법은 마치 HTML, CSS, Javascript를 합친 것과 같은 것처럼 느껴질 것입니다. 하지만 Svelte는 자신만의 문법으로 HTML, CSS, Javascript로 **컴파일**합니다. 그 결과를 웹 페이지에서 보여줄 것입니다.
 
-These components are _compiled_ into small, efficient JavaScript modules that eliminate overhead traditionally associated with UI frameworks.
+Svelte를 쓰는 방법은 다양한데, 보통은 [SvelteKit](https://kit.svelte.dev)을 사용합니다. SvelteKit은 클라이언트와 서버를 섞어서 여러분이 쉽게 웹 개발을 할 수 있도록 해줍니다. 
 
-You can build your entire app with Svelte (for example, using an application framework like [SvelteKit](https://kit.svelte.dev)), or you can add it incrementally to an existing codebase. You can also ship components as standalone packages that work anywhere.
 
-## How to use this tutorial
 
-> You'll need to have basic familiarity with HTML, CSS and JavaScript to understand Svelte.
+## 앞으로의 사용법
 
-This tutorial is split into four main parts:
+> 일단 여러분은 HTML, CSS, Javascript를 알고 있다고 가정하겠습니다.
 
-- [Welcome to Svelte](/tutorial/welcome-to-svelte) (you are here)
-- [Introduction to SvelteKit](/tutorial/introducing-sveltekit)
-- [Advanced Svelte](/tutorial/tweens)
-- [Advanced SvelteKit](/tutorial/optional-params)
+일단 앞으로 여기에서 말하는 것을 직접 풀어보세요. 만약 막힌다면??? `정답 확인` 버튼을 눌러보세요. 그러면 조금의 힌트를 알 수 있을 것입니다. 하지만 명심하세요!
 
-Each section will present an exercise designed to illustrate a feature. Later exercises build on the knowledge gained in earlier ones, so it's recommended that you go from start to finish. If necessary, you can navigate via the menu above.
+> 무분별한 정답 확인은 실력 향상에 도움이 되지 않습니다.
 
-If you get stuck, you can click the `solve` button to the left of the editor. (It's disabled on sections like this one that don't include an exercise.) Try not to rely on it too much; you will learn faster by figuring out where to put each suggested code block and manually typing it in to the editor.
+오른쪽에 쓸 때마다 바로바로 그 상황이 반영되는 에디터가 존재하지만 되도록 여러분이 직접 프로젝트를 만들어서 코드를 써보시기 바랍니다.

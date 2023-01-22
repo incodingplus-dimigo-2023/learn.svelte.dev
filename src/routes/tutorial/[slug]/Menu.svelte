@@ -32,8 +32,7 @@
 		}, 210);
 	}
 
-	$: regex = new RegExp(`\\b${search.length >= 2 ? search : ''}`, 'i');
-
+	$: regex = new RegExp(`${search.length >= 2 ? search : ''}`, 'i');
 	$: filtered = index
 		.map((part, i) => {
 			const chapters = part.chapters

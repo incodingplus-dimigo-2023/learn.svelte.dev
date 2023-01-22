@@ -40,7 +40,6 @@ export function get_index() {
 		};
 
 		const chapters = [];
-
 		for (const chapter of fs.readdirSync(`content/tutorial/${part}`)) {
 			if (!/^\d{2}-/.test(chapter)) continue;
 
@@ -52,6 +51,7 @@ export function get_index() {
 			const exercises = [];
 
 			for (const exercise of fs.readdirSync(`content/tutorial/${part}/${chapter}`)) {
+				// console.log(exercise)
 				if (!/^\d{2}-/.test(exercise)) continue;
 
 				const dir = `content/tutorial/${part}/${chapter}/${exercise}`;
@@ -131,7 +131,6 @@ export function get_exercise(slug) {
 					chain.length = 0;
 					chain.push(`${exercise.dir}/app-a`);
 				}
-
 				if (exercise.slug === slug) {
 					const a = {
 						...walk('content/tutorial/common', {
