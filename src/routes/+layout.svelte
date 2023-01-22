@@ -1,5 +1,7 @@
 <script>
 	import '@sveltejs/site-kit/styles/index.css';
+	import '../incoding.css';
+	import '../nonav.css';
 	import '../app.css';
 	import { page, navigating } from '$app/stores';
 	import Icon from '@sveltejs/site-kit/components/Icon.svelte';
@@ -20,7 +22,7 @@
 
 <Nav {page} logo="/svelte-logo.svg">
 	<svelte:fragment slot="nav-center">
-		<strong class="large">Work in progress. Here be dragons!</strong>
+		<!-- <strong class="large">Work in progress. Here be dragons!</strong> -->
 		<!-- <NavItem href="/tutorial">Tutorial</NavItem>
 		<NavItem href="/docs">Docs</NavItem>
 		<NavItem href="/examples">Examples</NavItem>
@@ -30,17 +32,17 @@
 	</svelte:fragment>
 
 	<svelte:fragment slot="nav-right">
-		<NavItem external="https://kit.svelte.dev">SvelteKit</NavItem>
+		<!-- <NavItem external="https://kit.svelte.dev">SvelteKit</NavItem> -->
 
-		<NavItem external="https://svelte.dev/chat" title="Discord Chat">
+		<NavItem href="" external="https://svelte.dev/chat" title="Discord Chat">
 			<span class="small">Discord</span>
 			<span class="large"><Icon name="message-square" /></span>
 		</NavItem>
 
-		<NavItem external="https://github.com/sveltejs/svelte" title="GitHub Repo">
+		<!-- <NavItem href="" external="https://github.com/sveltejs/svelte" title="GitHub Repo">
 			<span class="small">GitHub</span>
 			<span class="large"><Icon name="github" /></span>
-		</NavItem>
+		</NavItem> -->
 	</svelte:fragment>
 </Nav>
 

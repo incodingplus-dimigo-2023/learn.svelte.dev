@@ -72,17 +72,6 @@
 	{/if}
 </div>
 
-<footer>
-	<a
-		target="_blank"
-		rel="noreferrer"
-		class="edit"
-		href="https://github.com/sveltejs/learn.svelte.dev/tree/main/{exercise.dir}"
-	>
-		Edit this page
-	</a>
-</footer>
-
 {#if show_modal}
 	<Modal on:close={() => (show_modal = false)}>
 		<div class="modal-contents">

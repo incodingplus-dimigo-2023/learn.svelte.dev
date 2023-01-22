@@ -1,12 +1,22 @@
 ---
-title: Welcome to Svelte
+title: Hello World Svelte
 ---
 
-Welcome to the Svelte tutorial! This will teach you everything you need to know to easily build web applications of all sizes, with high performance and a small footprint.
+안녕하세요, 인코딩 플러스 여러분. 여러분은 이제부터 **Svelte**라는 **프론트엔드 웹프레임워크**를 배울 것입니다.
 
-You can also consult the [API docs](https://svelte.dev/docs) and the [examples](https://svelte.dev/examples), or — if you're impatient to start hacking on your machine locally — create a project with `npm init svelte`.
+Svelte는 HTML과 CSS의 부족한 생산성을 줄여주는 프레임워크로써, 여러분이 큰 프로젝트를 만들 때 아주 유용할 것입니다.
 
-## What is Svelte?
+- [나무위키에서의 설명](https://namu.wiki/w/Svelte)
+- [API docs](https://svelte.dev/docs)
+- [examples](https://svelte.dev/examples)
+
+간단한 Svelte 프로젝트를 만드려면 `npm init svelte` 또는 `npm create svelte@latest`라고 터미널에 입력하면 됩니다.
+
+
+
+## Svelte란?
+
+Svelte는 
 
 Svelte is a tool for building web applications. Like other user interface frameworks, it allows you to build your app _declaratively_ out of components that combine markup, styles and behaviours.
 
