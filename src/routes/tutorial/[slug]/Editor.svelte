@@ -132,7 +132,7 @@
 		monaco.editor.setTheme(dark_mode ? 'svelte-dark' : 'svelte');
 
 		const editor = monaco.editor.create(container, {
-			fontFamily: 'Nanum Gothic Coding',
+			fontFamily: 'D2Coding',
 			fontSize: 13,
 			padding: {
 				top: 16,
@@ -142,7 +142,8 @@
 				enabled: false
 			}
 		});
-
+		editor.onDidContentSizeChange(e => monaco.editor.remeasureFonts());
+		
 		let notify = true;
 
 		/**
