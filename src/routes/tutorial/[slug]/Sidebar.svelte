@@ -75,13 +75,12 @@
 {#if show_modal}
 	<Modal on:close={() => (show_modal = false)}>
 		<div class="modal-contents">
-			<h2>Copy and paste is currently disabled!</h2>
+			<h2>복붙 금지!!!</h2>
 
 			<p>
-				We recommend typing the code into the editor to complete the exercise, as this results in
-				better retention and understanding.
+				여러분 코딩은 손가락에서 이루어지는 것입니다. 되도록이면 복붙없이 여러분의 손가락으로 연습해주세요!
 			</p>
-			<label>
+			<!-- <label>
 				<input
 					type="checkbox"
 					on:change={(e) => {
@@ -89,7 +88,7 @@
 					}}
 				/>
 				enable copy-and-paste for the duration of this session
-			</label>
+			</label> -->
 
 			<button on:click={() => (show_modal = false)}>OK</button>
 		</div>

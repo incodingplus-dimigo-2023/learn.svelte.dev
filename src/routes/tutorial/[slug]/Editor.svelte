@@ -132,7 +132,7 @@
 		monaco.editor.setTheme(dark_mode ? 'svelte-dark' : 'svelte');
 
 		const editor = monaco.editor.create(container, {
-			fontFamily: 'Roboto Mono',
+			fontFamily: 'Nanum Gothic Coding',
 			fontSize: 13,
 			padding: {
 				top: 16,

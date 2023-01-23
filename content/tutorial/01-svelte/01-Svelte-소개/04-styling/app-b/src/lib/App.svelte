@@ -1,9 +1,10 @@
-<p>This is a paragraph.</p>
+<p>모든 사람은 인종, 피부색, 성, 언어, 종교, 정치적 또는 기타의 견해, 민족적 또는 사회적 출신, 재산, 출생 또는 기타의 신분과 같은 어떠한 종류의 차별이 없이, 이 선언에 규정된 모든 권리와 자유를 향유할 자격이 있다.</p>
 
 <style>
+	@import url('https://fonts.googleapis.com/css2?family=Gugi&display=swap');
 	p {
 		color: purple;
-		font-family: 'Comic Sans MS', cursive;
+		font-family: 'Gugi', cursive;
 		font-size: 2em;
 	}
 </style>

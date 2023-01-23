@@ -381,7 +381,7 @@
 								{#if completed && Object.keys(data.exercise.b).length > 0}
 									리셋
 								{:else}
-									장답 확인 <Icon name="arrow-right" />
+									정답 확인 <Icon name="arrow-right" />
 								{/if}
 							</button>
 						</section>
