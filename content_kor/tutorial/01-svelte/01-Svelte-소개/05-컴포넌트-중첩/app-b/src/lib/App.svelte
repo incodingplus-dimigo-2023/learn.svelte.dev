@@ -2,7 +2,7 @@
 	import Nested from './Nested.svelte';
 </script>
 
-<p>p태그입니다.</p>
+<p>다람쥐 헌 쳇바퀴에 타고파</p>
 <Nested />
 
 <style>

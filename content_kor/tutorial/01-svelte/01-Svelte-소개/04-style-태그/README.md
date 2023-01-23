@@ -16,6 +16,8 @@ HTML에서 하던 것과 같이 `<style>` 태그를 사용하면 CSS를 태그�
 </style>
 ```
 
-이러한 CSS에서 적용한 스타일은 *컴포넌트* 단위입니다. 예를 들어 `App.svelte`에서 `p`를 적용했어도, 다른 컴포넌트 예를 들어 `Bpp.svelte` 같은 컴포넌트에서는 `p`가 적용되지 않습니다.
+이러한 CSS에서 적용한 스타일은 *컴포넌트* 단위입니다. 이 컴포넌트 단위란 매우 중요한 것이므로 다음장에서 제대로 다뤄보겠습니다.
 
-조금 예쁜 폰트를 사용하려면 `monospace` 부분을 `'Gugi'`로 바꿔주십시오.
+조금 예쁜 폰트를 사용하려면 `monospace` 부분을 `'Gugi'`로 바꿔주십시오. 이 폰트는 구글 웹 폰트에서 가져온 것이므로 만약 쓰고싶다면 아래의 코드를 `<style>` 안에 써주세요.
+
+> @import url('https://fonts.googleapis.com/css2?family=Gugi&display=swap');
