@@ -1,6 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { transform } from './markdown.js';
+import dotenv from 'dotenv'
+
+dotenv.config();
+
+const con = process.env.CONTENT;
 
 const text_files = new Set([
 	'.svelte',
@@ -31,30 +36,30 @@ export function get_index() {
 	let last_part_meta = null;
 	let last_chapter_meta = null;
 
-	for (const part of fs.readdirSync('content/tutorial')) {
+	for (const part of fs.readdirSync(`${con}/tutorial`)) {
 		if (!/^\d{2}-/.test(part)) continue;
 
 		const part_meta = {
-			...json(`content/tutorial/${part}/meta.json`),
+			...json(`${con}/tutorial/${part}/meta.json`),
 			slug: part
 		};
 
 		const chapters = [];
-		for (const chapter of fs.readdirSync(`content/tutorial/${part}`)) {
+		for (const chapter of fs.readdirSync(`${con}/tutorial/${part}`)) {
 			if (!/^\d{2}-/.test(chapter)) continue;
 
 			const chapter_meta = {
-				...json(`content/tutorial/${part}/${chapter}/meta.json`),
+				...json(`${con}/tutorial/${part}/${chapter}/meta.json`),
 				slug: chapter
 			};
 
 			const exercises = [];
 
-			for (const exercise of fs.readdirSync(`content/tutorial/${part}/${chapter}`)) {
+			for (const exercise of fs.readdirSync(`${con}/tutorial/${part}/${chapter}`)) {
 				// console.log(exercise)
 				if (!/^\d{2}-/.test(exercise)) continue;
 
-				const dir = `content/tutorial/${part}/${chapter}/${exercise}`;
+				const dir = `${con}/tutorial/${part}/${chapter}/${exercise}`;
 				if (!fs.statSync(dir).isDirectory()) continue;
 
 				const text = fs.readFileSync(`${dir}/README.md`, 'utf-8');
@@ -133,10 +138,10 @@ export function get_exercise(slug) {
 				}
 				if (exercise.slug === slug) {
 					const a = {
-						...walk('content/tutorial/common', {
+						...walk(`${con}/tutorial/common`, {
 							exclude: ['node_modules', 'static/tutorial', 'static/svelte-logo-mask.svg']
 						}),
-						...walk(`content/tutorial/${part.slug}/common`)
+						...walk(`${con}/tutorial/${part.slug}/common`)
 					};
 
 					for (const dir of chain) {

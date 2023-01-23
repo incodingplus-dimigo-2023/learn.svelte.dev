@@ -12,7 +12,7 @@ try{
 
 }
 
-fs.writeFileSync(envRoot, 'PUBLIC_USE_FILESYSTEM=true', {encoding:'utf-8'});
+fs.writeFileSync(envRoot, 'PUBLIC_USE_FILESYSTEM=true\nCONTENT=content_kor\nFIRST=hello-world-svelte', {encoding:'utf-8'});
 
 spawnSync('npm', ['i'], {
     shell:true
