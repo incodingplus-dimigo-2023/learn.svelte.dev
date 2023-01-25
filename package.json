@@ -2,9 +2,12 @@
 	"name": "learn.svelte.dev",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "vite dev",
+		"dev":"vite dev",
+		"dev:kor": "vite dev --mode kor",
 		"build": "node scripts/create-common-bundle && vite build && node scripts/create-middleware",
+		"build:kor": "node scripts/create-common-bundle && vite build --mode kor && node scripts/create-middleware",
 		"preview": "vite preview",
+		"preview:kor": "vite preview --mode kor",
 		"check": "svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./jsconfig.json --watch",
 		"lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. .",

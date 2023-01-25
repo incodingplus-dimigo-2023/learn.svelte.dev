@@ -1,11 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { transform } from './markdown.js';
-import dotenv from 'dotenv'
 
-dotenv.config();
-
-const con = process.env.CONTENT;
+const con = import.meta.env.VITE_CONTENT;
 
 const text_files = new Set([
 	'.svelte',

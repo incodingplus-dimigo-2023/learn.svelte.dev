@@ -1,8 +1,5 @@
 import { redirect } from '@sveltejs/kit';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 export function load() {
-	throw redirect(307, `/tutorial/${process.env.FIRST ?? 'welcome-to-svelte'}`);
+	throw redirect(307, `/tutorial/${import.meta.env.VITE_FIRST ?? 'welcome-to-svelte'}`);
 }
