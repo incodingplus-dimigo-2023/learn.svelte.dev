@@ -2,7 +2,7 @@
 	"name": "learn.svelte.dev",
 	"version": "0.0.1",
 	"scripts": {
-		"dev":"vite dev",
+		"dev": "vite dev",
 		"dev:kor": "vite dev --mode kor",
 		"build": "node scripts/create-common-bundle && vite build && node scripts/create-middleware",
 		"build:kor": "node scripts/create-common-bundle && vite build --mode kor && node scripts/create-middleware",
@@ -40,6 +40,7 @@
 		"@webcontainer/api": "^0.0.9",
 		"adm-zip": "^0.5.10",
 		"base64-js": "^1.5.1",
+		"jszip": "^3.10.1",
 		"marked": "^4.2.12",
 		"monaco-editor": "^0.34.1",
 		"port-authority": "^2.0.1",

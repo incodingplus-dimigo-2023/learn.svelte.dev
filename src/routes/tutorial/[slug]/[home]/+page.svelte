@@ -1,26 +1,47 @@
 <script>
-	import Output from './Output.svelte';
+	import Output from '../Output.svelte';
 	import { browser } from '$app/environment';
 	import { afterNavigate } from '$app/navigation';
-	import ContextMenu from './filetree/ContextMenu.svelte';
-	import Filetree from './filetree/Filetree.svelte';
+	import ContextMenu from '../filetree/ContextMenu.svelte';
+	import Filetree from '../filetree/Filetree.svelte';
 	import SplitPane from '$lib/components/SplitPane.svelte';
-	import Icon from '@sveltejs/site-kit/components/Icon.svelte';
 	import { writable } from 'svelte/store';
-	import Editor from './Editor.svelte';
-	import ImageViewer from './ImageViewer.svelte';
-	import ScreenToggle from './ScreenToggle.svelte';
-	import Sidebar from './Sidebar.svelte';
-	import { state, selected, completed } from './state.js';
+	import Editor from '../Editor.svelte';
+	import ImageViewer from '../ImageViewer.svelte';
+	import ScreenToggle from '../ScreenToggle.svelte';
+	import Sidebar from '../Sidebar.svelte';
+	import JSZip from 'jszip'
+	import { state, selected, stubs } from '../state.js';
 
 	/** @type {import('./$types').PageData} */
 	export let data;
-
 	let width = browser ? window.innerWidth : 1000;
 	let selected_view = 0;
 
 	$: mobile = writable(false);
 	$: $mobile = width < 768;
+
+	const downloadFile = async () => {
+		if(browser){
+			let zip = new JSZip();
+			for(let i of $stubs){
+				if(i.type === 'file'){
+					if(i.text){
+						zip.file(i.name, i.contents);
+					} else {
+						zip.file(i.name, i.contents, {base64:true});
+					}
+				}
+			}
+			let file = await zip.generateAsync({type:'blob'});
+			const url = URL.createObjectURL(file);
+			const a = document.createElement('a');
+			a.download = `${data.exercise.title}.zip`;
+			a.href = url;
+			a.click();
+			URL.revokeObjectURL(url);
+		}
+	};
 
 	afterNavigate(() => {
 		state.switch_exercise(data.exercise);
@@ -55,6 +76,7 @@
 	>
 		<section slot="a" class="content">
 			<Sidebar
+                isHome={true}
 				index={data.index}
 				exercise={data.exercise}
 				on:select={(e) => {
@@ -75,19 +97,7 @@
 						<section class="navigator" slot="a">
 							<Filetree readonly={mobile} />
 
-							<button
-								class:completed={$completed}
-								disabled={Object.keys(data.exercise.b).length === 0}
-								on:click={() => {
-									state.toggle_completion();
-								}}
-							>
-								{#if $completed && Object.keys(data.exercise.b).length > 0}
-									리셋
-								{:else}
-									정답 확인 <Icon name="arrow-right" />
-								{/if}
-							</button>
+							<button on:click={downloadFile}>파일 다운로드</button>
 						</section>
 
 						<section class="editor-container" slot="b">
@@ -134,25 +144,13 @@
 
 	.navigator button {
 		position: relative;
-		background: var(--sk-theme-2);
+		background: var(--sk-theme-1);
 		padding: 0.5rem;
 		width: 100%;
 		height: 4rem;
 		border-right: 1px solid var(--sk-back-4);
 		color: white;
 		opacity: 1;
-	}
-
-	.navigator button:disabled {
-		opacity: 0.5;
-	}
-
-	.navigator button:not(:disabled) {
-		background: var(--sk-theme-1);
-	}
-
-	.navigator button.completed {
-		background: var(--sk-theme-2);
 	}
 
 	.preview {

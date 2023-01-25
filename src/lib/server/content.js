@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { transform } from './markdown.js';
 
-const con = import.meta.env.VITE_CONTENT;
+export const con = import.meta.env.VITE_CONTENT;
 
 const text_files = new Set([
 	'.svelte',
@@ -20,7 +20,7 @@ const text_files = new Set([
 const excluded = new Set(['.DS_Store', '.gitkeep', '.svelte-kit', 'package-lock.json']);
 
 /** @param {string} file */
-function json(file) {
+export function json(file) {
 	return JSON.parse(fs.readFileSync(file, 'utf-8'));
 }
 
@@ -53,7 +53,6 @@ export function get_index() {
 			const exercises = [];
 
 			for (const exercise of fs.readdirSync(`${con}/tutorial/${part}/${chapter}`)) {
-				// console.log(exercise)
 				if (!/^\d{2}-/.test(exercise)) continue;
 
 				const dir = `${con}/tutorial/${part}/${chapter}/${exercise}`;
@@ -199,7 +198,7 @@ export function get_exercise(slug) {
  * @param {string} markdown
  * @param {string} dir
  */
-function extract_frontmatter(markdown, dir) {
+export function extract_frontmatter(markdown, dir) {
 	const match = /---\n([^]+?)\n---\n([^]+)/.exec(markdown);
 	if (!match) {
 		throw new Error(`bad markdown for ${dir}`);

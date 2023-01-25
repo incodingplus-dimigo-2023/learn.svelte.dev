@@ -10,6 +10,8 @@
 	/** @type {import('$lib/types').Exercise} */
 	export let exercise;
 
+	export let isHome = false;
+
 	const dispatch = createEventDispatcher();
 
 	const namespace = 'learn.svelte.dev';
@@ -27,14 +29,15 @@
 		sidebar.scrollTop = 0;
 	});
 </script>
-
-<Menu {index} current={exercise} />
+{#if !isHome}
+	<Menu {index} current={exercise} />
+{/if}
 
 <div
 	bind:this={sidebar}
 	class="text"
 	on:copy={(e) => {
-		if (sessionStorage[copy_enabled]) return;
+		if (sessionStorage[copy_enabled] || isHome) return;
 
 		/** @type {HTMLElement | null} */
 		let node = /** @type {HTMLElement} */ (e.target);
@@ -67,12 +70,14 @@
 		{@html exercise.html}
 	</div>
 
-	{#if exercise.next}
-		<p><a href="/tutorial/{exercise.next.slug}">Next: {exercise.next.title}</a></p>
+	{#if exercise.next && isHome}
+		<p><a href="/tutorial/{exercise.next.slug}">수업자료: {exercise.next.title}</a></p>
+	{:else if exercise.next}
+		<p><a href="/tutorial/{exercise.next.slug}">다음: {exercise.next.title}</a></p>
 	{/if}
 </div>
 
-{#if show_modal}
+{#if show_modal && !isHome}
 	<Modal on:close={() => (show_modal = false)}>
 		<div class="modal-contents">
 			<h2>복붙 금지!!!</h2>
