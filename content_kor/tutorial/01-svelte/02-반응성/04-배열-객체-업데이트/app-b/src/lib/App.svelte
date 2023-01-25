@@ -1,7 +1,7 @@
 <script>
 	let numbers = [1, 2, 3, 4];
 
-	function addNumber() {
+	const addNumber = () => {
 		numbers = [...numbers, numbers.length + 1];
 	}
 
@@ -11,5 +11,5 @@
 <p>{numbers.join(' + ')} = {sum}</p>
 
 <button on:click={addNumber}>
-	Add a number
+	숫자 추가하기
 </button>
