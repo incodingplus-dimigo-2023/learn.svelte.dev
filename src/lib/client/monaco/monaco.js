@@ -21,7 +21,7 @@ if (browser) {
 		 * @param {string} _moduleId
 		 * @param {string} label
 		 */
-		getWorker: function (_moduleId, label) {
+		getWorker(_moduleId, label) {
 			switch (label) {
 				case 'json':
 					return new jsonWorker();
