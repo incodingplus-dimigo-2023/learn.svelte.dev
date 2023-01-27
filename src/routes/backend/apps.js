@@ -131,11 +131,12 @@ export function update({ id, files }) {
  */
 export function destroy({ id }) {
 	const dir = `.apps/${id}`;
-
-	fs.rmSync(dir, { recursive: true, force: true });
-
+	if(!apps.has(id)) return;
+	apps.get(id)?.process.once('exit', () => {
+		fs.rmSync(dir, { recursive: true, force: true });
+		apps.delete(id);
+	});
 	apps.get(id)?.process.kill();
-	apps.delete(id);
 }
 
 /**

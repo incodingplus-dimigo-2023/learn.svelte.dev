@@ -14,7 +14,7 @@ export async function create(stubs, cb) {
 
 	const { id, port } = await res.json();
 
-	const ws = new WebSocket('ws://localhost:4567');
+	const ws = new WebSocket(`ws://localhost:4567?app_id=${id}`);
 
 	ws.addEventListener('message', (event) => {
 		const payload = JSON.parse(event.data);
