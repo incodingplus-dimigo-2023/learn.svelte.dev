@@ -12,7 +12,7 @@
 
 <div class="container">
 	{#if $page.status === 404}
-		<h1>Not found!</h1>
+		<h1>{$page.error?.message}</h1>
 	{:else if online}
 		<h1>Yikes!</h1>
 

@@ -23,7 +23,7 @@ export async function create(stubs, cb) {
 		}
 	});
 
-	cb(100, 'Ready');
+	cb(1, 'Ready');
 
 	return {
 		base: `http://localhost:${port}`,

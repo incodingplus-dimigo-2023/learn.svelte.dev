@@ -9,7 +9,9 @@ export default {
 
 	logLevel: 'info',
 
-	plugins: [sveltekit()],
+	plugins: [
+		sveltekit(),
+	],
 
 	server: {
 		fs: {
