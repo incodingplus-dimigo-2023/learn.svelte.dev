@@ -9,7 +9,8 @@ import { broadcast, ready } from './ws';
  * @typedef {{
  *   process: import('child_process').ChildProcess,
  *   filenames: string[]
- * }} App */
+ * }} App
+ */
 
 fs.rmSync('.apps', { recursive: true, force: true });
 fs.mkdirSync('.apps', { recursive: true });
