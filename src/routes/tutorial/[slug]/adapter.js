@@ -15,7 +15,7 @@ export function create_adapter(initial_stubs, callback) {
 	let adapter_base = '';
 
 	async function init() {
-		const module = await import('$lib/client/adapters/filesystem/index.js');
+		const module = await import('$lib/client/adapters/webcontainer/index.js');
 		adapter_promise = module.create(initial_stubs, callback);
 		adapter_base = (await adapter_promise).base;
 	}
