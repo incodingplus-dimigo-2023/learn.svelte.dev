@@ -72,8 +72,15 @@
 
 	{#if exercise.next && isHome}
 		<p><a href="/tutorial/{exercise.next.slug}">수업자료: {exercise.next.title}</a></p>
-	{:else if exercise.next}
-		<p><a href="/tutorial/{exercise.next.slug}">다음: {exercise.next.title}</a></p>
+	{:else}
+		{#if exercise.home?.length}
+			{#each exercise.home as h,i}
+			<p><a href="/tutorial/{exercise.slug}/{h}">{i + 1}번째 숙제 : {h}</a></p>
+			{/each}
+		{/if}
+		{#if exercise.next}
+			<p><a href="/tutorial/{exercise.next.slug}">다음: {exercise.next.title}</a></p>
+		{/if}
 	{/if}
 </div>
 

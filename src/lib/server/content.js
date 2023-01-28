@@ -145,7 +145,16 @@ export function get_exercise(slug) {
 					}
 
 					const b = walk(`${exercise.dir}/app-b`);
+					/**@type{string[]} */
+					let home = [];
+					try{
+						let dirArr = fs.readdirSync(`${exercise.dir}/home`);
+						for(let str of dirArr){
+							home.push(str);
+						}
+					} catch(err){
 
+					}
 					const scope = chapter.meta.scope ?? part.meta.scope;
 					const filenames = new Set(
 						Object.keys(a)
@@ -166,6 +175,7 @@ export function get_exercise(slug) {
 							title: chapter.meta.title
 						},
 						scope,
+						home,
 						focus: exercise.focus ?? chapter.meta.focus ?? part.meta.focus,
 						title: exercise.title,
 						path: exercise.path,

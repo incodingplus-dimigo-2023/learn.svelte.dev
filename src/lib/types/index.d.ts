@@ -56,6 +56,7 @@ export interface Exercise {
 	next: { slug: string; title: string } | null;
 	html: string;
 	dir: string;
+	home?:string[];
 	editing_constraints: {
 		create: string[];
 		remove: string[];
