@@ -78,6 +78,9 @@
 				<p><a href="/tutorial/{exercise.slug}~{h}">{i + 1}번째 숙제 : {h}</a></p>
 			{/each}
 		{/if}
+		{#if exercise.prev}
+			<p><a href="/tutorial/{exercise.prev.slug}">이전: {exercise.prev.title}</a></p>
+		{/if}
 		{#if exercise.next}
 			<p><a href="/tutorial/{exercise.next.slug}">다음: {exercise.next.title}</a></p>
 		{/if}

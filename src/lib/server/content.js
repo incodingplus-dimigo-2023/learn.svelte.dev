@@ -84,7 +84,7 @@ export function get_index() {
 						focus,
 						markdown,
 						dir,
-						prev: last_exercise ? { slug: last_exercise.slug } : null,
+						prev: last_exercise ? { slug: last_exercise.slug, title:last_exercise.title } : null,
 						meta,
 						next: null
 					})
@@ -145,7 +145,7 @@ export function get_exercise(slug) {
 					}
 
 					const b = walk(`${exercise.dir}/app-b`);
-					/**@type{string[]} */
+					/**@type {string[]} */
 					let home = [];
 					try{
 						let dirArr = fs.readdirSync(`${exercise.dir}/home`);
