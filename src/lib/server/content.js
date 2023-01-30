@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { transform } from './markdown.js';
 
-export const con = import.meta.env.VITE_CONTENT;
+export const con = import.meta.env.VITE_CONTENT ?? process.env.VITE_CONTENT;
 
 const text_files = new Set([
 	'.svelte',
