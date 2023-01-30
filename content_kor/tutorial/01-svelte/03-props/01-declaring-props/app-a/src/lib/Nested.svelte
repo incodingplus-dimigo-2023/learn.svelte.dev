@@ -2,4 +2,4 @@
 	let answer;
 </script>
 
-<p>The answer is {answer}</p>
+<p>정답은 "{answer}" 입니다.</p>
