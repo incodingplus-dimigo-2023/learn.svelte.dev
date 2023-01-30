@@ -75,7 +75,7 @@
 	{:else}
 		{#if exercise.home?.length}
 			{#each exercise.home as h,i}
-			<p><a href="/tutorial/{exercise.slug}/{h}">{i + 1}번째 숙제 : {h}</a></p>
+				<p><a href="/tutorial/{exercise.slug}?home={h}">{i + 1}번째 숙제 : {h}</a></p>
 			{/each}
 		{/if}
 		{#if exercise.next}
