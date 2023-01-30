@@ -1,5 +1,5 @@
 {
-	"title": "Logic",
+	"title": "논리 블럭",
 	"scope": {
 		"prefix": "/src/lib/",
 		"depth": 2,

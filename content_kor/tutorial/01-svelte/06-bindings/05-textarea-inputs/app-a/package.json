@@ -1,8 +1,0 @@
-{
-	"name": "~TODO~",
-	"version": "0.0.1",
-	"dependencies": {
-		"marked": "^4.0.16"
-	},
-	"type": "module"
-}

@@ -1,12 +1,12 @@
 <script>
-	import PackageInfo from './PackageInfo.svelte';
+	import ChampionInfo from './ChampionInfo.svelte';
 
 	const pkg = {
-		name: 'svelte',
-		version: 3,
-		speed: 'blazing',
-		website: 'https://svelte.dev'
+		name: 'jax',
+		lane: 'top',
+		region: 'kr',
+		tier:'diamond_plus'
 	};
 </script>
 
-<PackageInfo {...pkg} />
+<ChampionInfo {...pkg} />

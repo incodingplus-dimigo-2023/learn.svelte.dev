@@ -8,12 +8,12 @@
 
 {#if user.loggedIn}
 	<button on:click={toggle}>
-		Log out
+		로그 아웃
 	</button>
 {/if}
 
 {#if !user.loggedIn}
 	<button on:click={toggle}>
-		Log in
+		로그인
 	</button>
 {/if}
