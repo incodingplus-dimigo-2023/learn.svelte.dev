@@ -1,19 +1,27 @@
 ---
-title: Else blocks
+title: else 블럭
 ---
 
-Since the two conditions — `if user.loggedIn` and `if !user.loggedIn` — are mutually exclusive, we can simplify this component slightly by using an `else` block:
+`if`가 있다면 `else`도 있어야겠죠? `else`의 경우 단독으로 쓰일 수는 없기 때문에 `if` 블럭과 함께 쓰입니다.
+
+중간에 쓰이는 것이므로 이 블럭만 `{:else}` 이렇게 시작합니다.
 
 ```svelte
 {#if user.loggedIn}
 	<button on:click={toggle}>
-		Log out
+		로그 아웃
 	</button>
 +++{:else}+++
 	<button on:click={toggle}>
-		Log in
+		로그인
 	</button>
 {/if}
 ```
 
-> A `#` character always indicates a _block opening_ tag. A `/` character always indicates a _block closing_ tag. A `:` character, as in `{:else}`, indicates a _block continuation_ tag. Don't worry — you've already learned almost all the syntax Svelte adds to HTML.
+> 정리해보면 다음과 같습니다.
+>
+> `#` : 논리 블럭 시작
+>
+> `/` : 논리 블럭 끝
+>
+> `:` : 논리 블럭 중간

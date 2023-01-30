@@ -78,12 +78,14 @@
 				<p><a href="/tutorial/{exercise.slug}~{h}">{i + 1}번째 숙제 : {h}</a></p>
 			{/each}
 		{/if}
-		{#if exercise.prev}
-			<p><a href="/tutorial/{exercise.prev.slug}">이전: {exercise.prev.title}</a></p>
-		{/if}
-		{#if exercise.next}
-			<p><a href="/tutorial/{exercise.next.slug}">다음: {exercise.next.title}</a></p>
-		{/if}
+		<p class="np-control {exercise.prev ? 'prev' : ''} {exercise.next ? 'next' : ''}">
+			{#if exercise.prev}
+				<a href="/tutorial/{exercise.prev.slug}">이전: {exercise.prev.title}</a>
+			{/if}
+			{#if exercise.next}
+				<a href="/tutorial/{exercise.next.slug}">다음: {exercise.next.title}</a>
+			{/if}
+		</p>
 	{/if}
 </div>
 
@@ -155,6 +157,19 @@
 		padding: 0 0 0 1.4em;
 		background: url($lib/icons/file-edit.svg) no-repeat 0 calc(50% - 0.1em);
 		background-size: 1em 1em;
+	}
+
+	.np-control{
+		display: flex;
+	}
+	.np-control.prev{
+		justify-content: flex-start;
+	}
+	.np-control.next{
+		justify-content: flex-end;
+	}
+	.np-control.prev.next{
+		justify-content: space-between;
 	}
 
 	.modal-contents h2 {
