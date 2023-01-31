@@ -1,31 +1,27 @@
 <script>
-	let cats = [
+	let osts = [
 		{
-			id: 'J---aiyznGQ',
-			name: 'Keyboard Cat'
+			id: 'BOcleeaCL6E',
+			name: 'Baba Is You'
 		},
 		{
-			id: 'z_AbfPXTKms',
-			name: 'Maru'
+			id: '6zYPfs-MCcU',
+			name: 'The Legend of Zelda: Breath of the Wild'
 		},
 		{
-			id: 'OUtn3pvWmpg',
-			name: 'Henri The Existential Cat'
+			id: 'EhgDibw7vB4',
+			name: 'Super Smash Bros. Ultimate'
 		}
 	];
 </script>
 
-<h1>The Famous Cats of YouTube</h1>
+<h1>게임 OST 모음</h1>
 
 <ul>
-	<!-- open each block -->
+	<!-- each 블럭 시작 -->
 	<li>
-		<a
-			target="_blank"
-			href="https://www.youtube.com/watch?v={cat.id}"
-		>
-			{cat.name}
-		</a>
+		{osts[0].name}<br>
+		<audio src="/{osts[0].id}.mp3" controls></audio>
 	</li>
-	<!-- close each block -->
+	<!-- each 블럭 끝 -->
 </ul>

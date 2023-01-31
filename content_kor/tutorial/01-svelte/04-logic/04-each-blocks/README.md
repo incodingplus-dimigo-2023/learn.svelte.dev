@@ -1,29 +1,44 @@
 ---
-title: Each blocks
+title: each 블럭
 ---
 
-If you need to loop over lists of data, use an `each` block:
+만약 DOM에 반복문을 쓰고 싶다면 `each` 블럭을 사용하면 됩니다.
 
 ```svelte
 <ul>
-	{#each cats as cat}
-		<li><a target="_blank" href="https://www.youtube.com/watch?v={cat.id}">
-			{cat.name}
-		</a></li>
+	{#each osts as ost}
+		<li>
+			{ost.name}<br>
+			<audio src="/{ost.id}.mp3" controls></audio>
+		</li>
 	{/each}
 </ul>
 ```
 
-> The expression (`cats`, in this case) can be any array or array-like object (i.e. it has a `length` property). You can loop over generic iterables with `each [...iterable]`.
+> Array-like인 객체(`osts`)는 `length` 속성이 있는 객체입니다. 이러한 객체들은 `each [...iterable]`로 반복 가능합니다.
 
-You can get the current _index_ as a second argument, like so:
+여기서 순서를 얻을 수도 있습니다.
 
 ```svelte
-{#each cats as cat, i}
-	<li><a target="_blank" href="https://www.youtube.com/watch?v={cat.id}">
-		{i + 1}: {cat.name}
-	</a></li>
-{/each}
+<ul>
+	{#each osts as ost,i}
+		<li>
+			{i + 1}. {ost.name}<br>
+			<audio src="/{ost.id}.mp3" controls></audio>
+		</li>
+	{/each}
+</ul>
 ```
 
-If you prefer, you can use destructuring — `each cats as { id, name }` — and replace `cat.id` and `cat.name` with `id` and `name`.
+만약 조금 더 보기 편하게 한다면 구조 분해 할당(`each osts as { id, name }`)으로 할당 가능합니다.
+
+```svelte
+<ul>
+	{#each osts as { id, name }, i}
+		<li>
+			{i + 1}. {name}<br>
+			<audio src="/{id}.mp3" controls></audio>
+		</li>
+	{/each}
+</ul>
+```

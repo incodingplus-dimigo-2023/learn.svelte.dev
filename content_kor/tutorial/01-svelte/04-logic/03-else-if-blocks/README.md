@@ -1,15 +1,15 @@
 ---
-title: Else-if blocks
+title: else if 블럭
 ---
 
-Multiple conditions can be 'chained' together with `else if`:
+`if` 블럭은 `else if` 도 중간에 쓰일 수 있습니다.
 
 ```svelte
-{#if x > 10}
-	<p>{x} is greater than 10</p>
-{:+++else if+++ 5 > x}
-	<p>{x} is less than 5</p>
+{#if x > 0}
+	<p>{x}는 양수입니다.</p>
+{:+++else if+++ x < 0}
+	<p>{x}는 음수입니다.</p>
 {:else}
-	<p>{x} is between 5 and 10</p>
+	<p>{x}는 정확하게 0 입니다.</p>
 {/if}
 ```
