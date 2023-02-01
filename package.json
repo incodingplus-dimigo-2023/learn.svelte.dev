@@ -4,8 +4,8 @@
 	"scripts": {
 		"dev": "vite dev",
 		"dev:kor": "vite dev --mode kor",
-		"build": "node scripts/create-common-bundle && vite build && node scripts/create-middleware",
-		"build:kor": "node scripts/create-common-bundle && vite build --mode kor && node scripts/create-middleware",
+		"build:kor": "node scripts/create-common-bundle && vite build --mode kor",
+		"build": "node scripts/create-common-bundle && vite build",
 		"preview": "vite preview",
 		"preview:kor": "vite preview --mode kor --host 0.0.0.0",
 		"check": "svelte-check --tsconfig ./jsconfig.json",
