@@ -30,7 +30,7 @@
 		"svelte-preprocess": "^5.0.1",
 		"tiny-glob": "^0.2.9",
 		"typescript": "~4.9.5",
-		"vite": "^4.0.4"
+		"vite": "^4.1.0"
 	},
 	"type": "module",
 	"dependencies": {
@@ -48,8 +48,8 @@
 		"ws": "^8.12.0"
 	},
 	"browser": {
-		"node:fs":false,
-		"node:path":false,
+		"node:fs": false,
+		"node:path": false,
 		"fs": false,
 		"path": false,
 		"os": false,
@@ -64,9 +64,9 @@
 		"zlib": false,
 		"buffer": false,
 		"url": false,
-		"pg-native":false,
-		"dns":false,
-		"assert":false,
-		"util":false
+		"pg-native": false,
+		"dns": false,
+		"assert": false,
+		"util": false
 	}
 }
