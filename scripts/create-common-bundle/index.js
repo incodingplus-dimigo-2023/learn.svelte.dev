@@ -5,7 +5,7 @@ import glob from 'tiny-glob/sync.js';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 
-const cwd = 'content/tutorial/common';
+const cwd = 'content_kor/tutorial/common';
 
 if (!fs.existsSync(`${cwd}/node_modules`)) {
 	execSync('npm ci', { cwd });

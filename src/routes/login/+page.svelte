@@ -1,26 +1,29 @@
 <script>
+	import { browser } from "$app/environment";
     import { myAlert } from "$lib/utils";
     let id = '';
     let pass = '';
     /** @type {Promise<void>}*/
     let flag = new Promise(res => res());
     const send = async () => {
-        try{
-            const res = await fetch('/login',{
-                method:'POST',
-                body:JSON.stringify({
-                    id, pass
-                })
-            });
-             /** @type {{status:boolean, reason:string}} */
-            const json = (await res.json())
-            if(!json.status){
-                myAlert(`Login Failed : ${json.reason}`);
-            } else {
-                location.href = json.reason;
+        if(browser){
+            try{
+                const res = await fetch('/login',{
+                    method:'POST',
+                    body:JSON.stringify({
+                        id, pass, url:location.search
+                    })
+                });
+                 /** @type {{status:boolean, reason:string}} */
+                const json = (await res.json())
+                if(!json.status){
+                    myAlert(`Login Failed : ${json.reason}`);
+                } else {
+                    location.href = json.reason;
+                }
+            } catch(err){
+                myAlert(String(err));
             }
-        } catch(err){
-            myAlert(String(err));
         }
     }
 </script>

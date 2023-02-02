@@ -7,6 +7,7 @@ const config = {
 	kit: {
 		adapter: adapter({ edge: true })
 	},
+	preprocess:preprocess(),
 
 	vitePlugin: {
 		experimental: {

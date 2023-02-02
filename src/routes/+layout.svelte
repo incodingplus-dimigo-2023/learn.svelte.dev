@@ -10,6 +10,25 @@
 	import NavItem from '@sveltejs/site-kit/components/NavItem.svelte';
 	import SkipLink from '@sveltejs/site-kit/components/SkipLink.svelte';
 	import PreloadingIndicator from '@sveltejs/site-kit/components/PreloadingIndicator.svelte';
+	import { browser } from '$app/environment';
+	let flag = false;
+	const ask = async () => {
+		if(browser){
+			const res = await fetch('/login', {
+				method:'PATCH',
+				body:location.href
+			})
+			if(res.status === 302){
+				/**
+				 * @type {{status:boolean; reason:string}}
+				 */
+				const json = await res.json();
+				location.href = json.reason;
+			}
+			flag = true;
+		}
+	};
+	ask();
 </script>
 
 <Icons />
@@ -45,8 +64,7 @@
 		</NavItem> -->
 	</svelte:fragment>
 </Nav>
-
-<main id="main"><slot /></main>
+<main id="main" style="display: {flag ? 'block' : 'none'};"><slot /></main>
 
 <style>
 	:global(body) {
