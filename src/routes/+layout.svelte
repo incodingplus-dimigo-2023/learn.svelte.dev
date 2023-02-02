@@ -24,6 +24,7 @@
 				 */
 				const json = await res.json();
 				location.href = json.reason;
+				return;
 			}
 			flag = true;
 		}
