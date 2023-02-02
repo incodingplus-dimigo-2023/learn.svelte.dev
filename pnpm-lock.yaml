@@ -1439,13 +1439,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       xtend: 4.0.2
-<<<<<<< HEAD
-=======
-    dev: false
-
-  /postgres/3.3.3:
-    resolution: {integrity: sha512-FGLZOpZSXePRIQu6LJpJUDikzuhplWI80uyyfmKBiljpfO+Z4nuClwpq3/dsRnitxVDsgFN5duJ7eUTaC0meQQ==}
->>>>>>> origin/homework
     dev: false
 
   /prettier-plugin-svelte/2.9.0_kdmmghgdi3ngrsq6otxkjilbry:
@@ -1711,13 +1704,8 @@ packages:
       picocolors: 1.0.0
       sade: 1.8.1
       svelte: 3.55.1
-<<<<<<< HEAD
-      svelte-preprocess: 5.0.1_m4aj4dqtatji7kwwkl3npsrqgu
-      typescript: 4.9.4
-=======
       svelte-preprocess: 5.0.1_cjyprvzu4kavkaguwtgkgx5cp4
       typescript: 4.9.5
->>>>>>> origin/homework
     transitivePeerDependencies:
       - '@babel/core'
       - coffeescript
@@ -1739,11 +1727,7 @@ packages:
       svelte: 3.55.1
     dev: true
 
-<<<<<<< HEAD
-  /svelte-preprocess/5.0.1_m4aj4dqtatji7kwwkl3npsrqgu:
-=======
   /svelte-preprocess/5.0.1_cjyprvzu4kavkaguwtgkgx5cp4:
->>>>>>> origin/homework
     resolution: {integrity: sha512-0HXyhCoc9rsW4zGOgtInylC6qj259E1hpFnJMJWTf+aIfeqh4O/QHT31KT2hvPEqQfdjmqBR/kO2JDkkciBLrQ==}
     engines: {node: '>= 14.10.0'}
     requiresBuild: true
@@ -1876,11 +1860,7 @@ packages:
       esbuild: 0.16.17
       postcss: 8.4.21
       resolve: 1.22.1
-<<<<<<< HEAD
-      rollup: 3.12.0
-=======
       rollup: 3.12.1
->>>>>>> origin/homework
       sass: 1.58.0
     optionalDependencies:
       fsevents: 2.3.2
