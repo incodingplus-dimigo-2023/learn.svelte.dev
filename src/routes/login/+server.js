@@ -2,8 +2,9 @@ import { checkUser, getHash } from '$lib/db';
 
 /** @type {import('./$types').RequestHandler} */
 export const POST = async ({request, cookies, url}) => {
-    /** @type {{id:string, pass:string}} */
+    /** @type {{id:string, pass:string, url:string}} */
     const json = await request.json();
+    const search = new URLSearchParams(json.url);
     const res = await checkUser(json.id, json.pass);
     if(!res.status){
         return new Response(JSON.stringify(res), {
@@ -17,7 +18,7 @@ export const POST = async ({request, cookies, url}) => {
     cookies.set('user_id', res.reason, {
         maxAge:3600 * 3, path:'/', secure:url.protocol === 'https:'
     });
-    res.reason = url.searchParams.get('url') ?? '/';
+    res.reason = search.get('url') ?? '/';
     return new Response(JSON.stringify(res));
 }
 
