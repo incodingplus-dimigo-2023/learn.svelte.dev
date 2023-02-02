@@ -20,7 +20,7 @@ export function get_homework(slug, home) {
 		for (const chapter of part.chapters) {
 			for (const exercise of chapter.exercises) {
 				if (exercise.slug === slug) {
-                    const dir = `${exercise.dir}/home/${home}`
+                    const dir = `${exercise.dir}/home/${home}/app-a`
                     chain.push(dir);
 					const a = {
 						...walk(`${con}/tutorial/common`, {

@@ -2,3 +2,8 @@
 export function get_depth(name) {
 	return name.split('/').length - 1;
 }
+
+/** @param {string} str */
+export const myAlert = (str) => {
+	alert(str);
+};
