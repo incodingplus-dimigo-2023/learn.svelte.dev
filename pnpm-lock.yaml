@@ -20,6 +20,7 @@ specifiers:
   marked: ^4.2.12
   monaco-editor: ^0.34.1
   port-authority: ^2.0.1
+  postgres: ^3.3.3
   prettier: ^2.8.3
   prettier-plugin-svelte: ^2.9.0
   prism-svelte: ^0.5.0
@@ -40,6 +41,7 @@ dependencies:
   marked: 4.2.12
   monaco-editor: 0.34.1
   port-authority: 2.0.1
+  postgres: 3.3.3
   prism-svelte: 0.5.0
   prismjs: 1.29.0
   ws: 8.12.0
@@ -1345,6 +1347,10 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
     dev: true
+
+  /postgres/3.3.3:
+    resolution: {integrity: sha512-FGLZOpZSXePRIQu6LJpJUDikzuhplWI80uyyfmKBiljpfO+Z4nuClwpq3/dsRnitxVDsgFN5duJ7eUTaC0meQQ==}
+    dev: false
 
   /prettier-plugin-svelte/2.9.0_kdmmghgdi3ngrsq6otxkjilbry:
     resolution: {integrity: sha512-3doBi5NO4IVgaNPtwewvrgPpqAcvNv0NwJNflr76PIGgi9nf1oguQV1Hpdm9TI2ALIQVn/9iIwLpBO5UcD2Jiw==}
