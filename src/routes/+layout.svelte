@@ -14,7 +14,7 @@
 	let flag = false;
 	const ask = async () => {
 		if(browser){
-			const res = await fetch('/login', {
+			const res = await fetch('/login/api', {
 				method:'PATCH',
 				body:location.href
 			})

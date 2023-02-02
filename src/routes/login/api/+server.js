@@ -28,8 +28,8 @@ export const PATCH = async ({cookies, request }) => {
     let id = cookies.get('user_id');
     let url = new URL(await request.text());
     if(url.pathname === '/login'){
-        cookies.delete('hash');
-        cookies.delete('user_id');
+        cookies.delete('hash', { path:'/' });
+        cookies.delete('user_id', { path:'/' });
         return new Response(JSON.stringify({
             status:true,
             reason:''
@@ -41,8 +41,8 @@ export const PATCH = async ({cookies, request }) => {
     if(hash && id){
         const data = await getHash(id);
         if(!data || data !== hash){
-            cookies.delete('hash');
-            cookies.delete('user_id');
+            cookies.delete('hash', { path:'/'});
+            cookies.delete('user_id', { path:'/'});
             return new Response(JSON.stringify({
                 status:false,
                 reason:redirectUrl
@@ -63,8 +63,8 @@ export const PATCH = async ({cookies, request }) => {
             status:200
         });
     } else {
-        cookies.delete('hash');
-        cookies.delete('user_id');
+        cookies.delete('hash', { path:'/'});
+        cookies.delete('user_id', { path:'/'});
         return new Response(JSON.stringify({
             status:false,
             reason:redirectUrl

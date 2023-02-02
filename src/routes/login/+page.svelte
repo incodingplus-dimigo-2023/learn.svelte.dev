@@ -8,7 +8,7 @@
     const send = async () => {
         if(browser){
             try{
-                const res = await fetch('/login',{
+                const res = await fetch('/login/api',{
                     method:'POST',
                     body:JSON.stringify({
                         id, pass, url:location.search
