@@ -1,31 +1,27 @@
 <script>
-	let cats = [
+	let osts = [
 		{
-			id: 'J---aiyznGQ',
-			name: 'Keyboard Cat'
+			id: 'BOcleeaCL6E',
+			name: 'Baba Is You'
 		},
 		{
-			id: 'z_AbfPXTKms',
-			name: 'Maru'
+			id: '6zYPfs-MCcU',
+			name: 'The Legend of Zelda: Breath of the Wild'
 		},
 		{
-			id: 'OUtn3pvWmpg',
-			name: 'Henri The Existential Cat'
+			id: 'EhgDibw7vB4',
+			name: 'Super Smash Bros. Ultimate'
 		}
 	];
 </script>
 
-<h1>The Famous Cats of YouTube</h1>
+<h1>게임 OST 모음</h1>
 
 <ul>
-	{#each cats as { id, name }, i}
+	{#each osts as { id, name }, i}
 		<li>
-			<a
-				target="_blank"
-				href="https://www.youtube.com/watch?v={id}"
-			>
-				{i + 1}: {name}
-			</a>
+			{i + 1}. {name}<br>
+			<audio src="/{id}.mp3" controls></audio>
 		</li>
 	{/each}
 </ul>

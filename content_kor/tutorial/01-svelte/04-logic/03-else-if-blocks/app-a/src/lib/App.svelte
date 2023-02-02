@@ -1,13 +1,16 @@
 <script>
-	let x = 7;
+	let x = 5;
 </script>
 
-{#if x > 10}
-	<p>{x} is greater than 10</p>
+<button on:click={() => x++}>증가</button>
+<button on:click={() => x--}>감소</button>
+
+{#if x > 0}
+	<p>{x}는 양수입니다.</p>
 {:else}
-	{#if 5 > x}
-		<p>{x} is less than 5</p>
+	{#if x < 0}
+		<p>{x}는 음수입니다.</p>
 	{:else}
-		<p>{x} is between 5 and 10</p>
+		<p>{x}는 정확하게 0 입니다.</p>
 	{/if}
 {/if}
