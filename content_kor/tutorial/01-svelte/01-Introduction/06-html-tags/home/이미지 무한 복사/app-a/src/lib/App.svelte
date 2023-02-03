@@ -1,10 +1,12 @@
 <script>
-	let html = "<img src='/img.gif' width='100'>";
+	let html = `<img src='/img.gif' style="width:10%;height:10%;">`;
 	let str = '';
 	let count = 0;
-	let setT = 0;
+	let setT = 0
 </script>
-{@html str}
+<div>
+	{@html str}
+</div>
 <style>
 	:global(main){
 		padding:0 !important;
@@ -14,5 +16,6 @@
 		height:100vh;
 		display: flex;
 		flex-wrap: wrap;
+		align-content: flex-start;
 	}
 </style>
