@@ -11,24 +11,29 @@
 	import SkipLink from '@sveltejs/site-kit/components/SkipLink.svelte';
 	import PreloadingIndicator from '@sveltejs/site-kit/components/PreloadingIndicator.svelte';
 	import { browser } from '$app/environment';
-	
+	let flag = true;
 	const ask = async () => {
 		if(browser){
-			const res = await fetch('/login/api', {
-				method:'PATCH',
-				body:location.href
-			})
-			if(res.status === 307){
-				/**
-				 * @type {{status:boolean; reason:string}}
-				 */
-				const json = await res.json();
-				location.href = json.reason;
-				await new Promise(() => {});
+			try{
+				const res = await fetch('/login/api', {
+					method:'PATCH',
+					body:location.href
+				})
+				if(res.status === 307){
+					/**
+					 * @type {{status:boolean; reason:string}}
+					 */
+					const json = await res.json();
+					location.href = json.reason;
+				} else {
+					flag = false;
+				}
+			} catch(err){
+				location.href = '/login';
 			}
 		}
 	};
-	let flag = ask();
+	ask();
 </script>
 
 <Icons />
@@ -64,13 +69,11 @@
 		</NavItem> -->
 	</svelte:fragment>
 </Nav>
-<main id="main">
-	{#await flag then _}
-		<slot />
-	{/await}
+<main id="main" class:flag>
+	<slot />
 </main>
 
-<style>
+<style lang="scss">
 	:global(body) {
 		margin: 0;
 		width: 100%;
@@ -87,6 +90,9 @@
 		height: calc(100vh - var(--nav-h));
 		position: relative;
 		top: var(--nav-h);
+		&.flag{
+			display: none;
+		}
 	}
 
 	.large {
