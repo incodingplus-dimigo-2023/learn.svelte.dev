@@ -242,6 +242,8 @@
 	on:message={(e) => {
 		if (preserve_editor_focus && e.data.type === 'iframe_took_focus') {
 			instance?.editor.focus();
+		} else if(e.data.type === 'focus_on_editor'){
+			instance?.editor.focus();
 		}
 	}}
 />
