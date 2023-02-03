@@ -20,8 +20,8 @@ export function get_homework(slug, home) {
 		for (const chapter of part.chapters) {
 			for (const exercise of chapter.exercises) {
 				if (exercise.slug === slug) {
-                    const dir = `${exercise.dir}/home/${home}/app-a`
-                    chain.push(dir);
+                    const dir = `${exercise.dir}/home/${home}`
+                    chain.push(`${dir}/app-a`);
 					const a = {
 						...walk(`${con}/tutorial/common`, {
 							exclude: ['node_modules', 'static/tutorial', 'static/svelte-logo-mask.svg']
@@ -32,6 +32,8 @@ export function get_homework(slug, home) {
 					for (const dir of chain) {
 						Object.assign(a, walk(dir));
 					}
+
+					const b = walk(`${dir}/app-b`);
 
 					const scope = chapter.meta.scope ?? part.meta.scope;
 					const filenames = new Set(
@@ -83,7 +85,7 @@ export function get_homework(slug, home) {
 									: `<code>${text}</code>`
 						}),
 						a,
-                        b:{}
+                        b
 					};
 				}
 			}

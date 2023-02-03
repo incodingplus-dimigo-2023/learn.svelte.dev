@@ -1,5 +1,5 @@
 <script>
-    
+    let str = 'hello world';
 </script>
 
 <ol>
