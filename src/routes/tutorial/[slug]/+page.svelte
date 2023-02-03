@@ -6,6 +6,7 @@
 	import ContextMenu from './filetree/ContextMenu.svelte';
 	import Filetree from './filetree/Filetree.svelte';
 	import SplitPane from '$lib/components/SplitPane.svelte';
+	import { isTeacher } from '$lib/utils';
 	import Icon from '@sveltejs/site-kit/components/Icon.svelte';
 	import { writable } from 'svelte/store';
 	import Editor from './Editor.svelte';
@@ -23,7 +24,6 @@
 
 	$: mobile = writable(false);
 	$: $mobile = width < 768;
-
 	const downloadFile = async () => {
 		if(browser && data.isHome){
 			let zip = new JSZip();
@@ -102,22 +102,30 @@
 					<SplitPane type="horizontal" min="80px" max="300px" pos="200px">
 						<section class="navigator" slot="a">
 							<Filetree readonly={mobile} />
-							{#if data.isHome}
-								<button on:click={downloadFile}>파일 다운로드</button>
-							{:else}
-								<button
-									class:completed={$completed}
-									disabled={Object.keys(data.exercise.b).length === 0}
-									on:click={() => {
+							<button
+								class:completed={$completed}
+								disabled={Object.keys(data.exercise.b).length === 0}
+								on:click={() => {
+									if(data.isHome && $isTeacher || !data.isHome)
 										state.toggle_completion();
-									}}
-								>
-									{#if $completed && Object.keys(data.exercise.b).length > 0}
-										리셋
+									else
+										state.toggle_home();
+								}}
+							>
+								{#if $completed && Object.keys(data.exercise.b).length > 0}
+									리셋
+								{:else}
+									{#if data.isHome && $isTeacher}
+										숙제 정답 확인 <Icon name="arrow-right" />
+									{:else if data.isHome && !$isTeacher}
+										숙제 결과 보기 <Icon name="arrow-right" />
 									{:else}
 										정답 확인 <Icon name="arrow-right" />
 									{/if}
-								</button>
+								{/if}
+							</button>
+							{#if data.isHome}
+								<button class="download" on:click={downloadFile}>파일 다운로드</button>
 							{/if}
 						</section>
 
@@ -184,6 +192,10 @@
 
 	.navigator button.completed {
 		background: var(--sk-theme-2);
+	}
+
+	.navigator button.download{
+		background: var(--sk-theme-3);
 	}
 
 	.preview {

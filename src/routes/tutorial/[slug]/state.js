@@ -6,6 +6,7 @@ import { derived, writable } from 'svelte/store';
  *  stubs: import("$lib/types").Stub[];
  *  last_updated?: import("$lib/types").FileStub;
  *  selected: string | null;
+ * 	home:boolean
  *  exercise: {
  *    initial: import("$lib/types").Stub[];
  *    solution: Record<string, import("$lib/types").Stub>;
@@ -22,6 +23,7 @@ const { subscribe, set, update } = writable({
 	status: 'initial',
 	stubs: [],
 	selected: null,
+	home:false,
 	exercise: {
 		initial: [],
 		solution: {},
@@ -31,7 +33,7 @@ const { subscribe, set, update } = writable({
 		},
 		scope: { depth: 0, name: '', prefix: '' }
 	}
-});
+})
 
 export const state = {
 	subscribe,
@@ -100,6 +102,7 @@ export const state = {
 		set({
 			status: 'switch',
 			stubs: Object.values(exercise.a),
+			home : false,
 			exercise: {
 				initial: Object.values(exercise.a),
 				solution,
@@ -116,6 +119,15 @@ export const state = {
 			...state,
 			status: 'set',
 			stubs: is_completed(state) ? state.exercise.initial : Object.values(state.exercise.solution),
+			last_updated: undefined
+		}));
+	},
+
+	toggle_home:() => {
+		update((state) => ({
+			...state,
+			status: 'set',
+			home: !state.home,
 			last_updated: undefined
 		}));
 	},
@@ -169,7 +181,7 @@ function is_completed($state) {
 		stub_names.has(name)
 	);
 
-	return all_stubs_correct && stubs_complete;
+	return all_stubs_correct && stubs_complete || $state.home;
 }
 
 /** @param {string} code */

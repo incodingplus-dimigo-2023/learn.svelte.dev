@@ -54,10 +54,9 @@
                     bind:value={teacherPass}
                     maxlength="64"
                     minlength="64"
-                    pattern="[a-zA-Z0-9\-\_]+"
                     required
                     on:input={() => tInput.setCustomValidity("")}
-                    on:invalid={() => tInput.setCustomValidity("선생님 코드 64자리 코드를 입력해주세요.")}
+                    on:invalid={(e) => {console.log(e); tInput.setCustomValidity("선생님 코드 64자리 코드를 입력해주세요.")}}
                 >
             {:else}
                 <input

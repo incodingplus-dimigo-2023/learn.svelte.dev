@@ -1,9 +1,9 @@
 <script>
-	let html = `<img src='/img.gif'>`;
+	let html = `<img src='/img.gif' style="width:10%;height:10%;">`;
 	let str = '';
 	let count = 0;
 	let setT = setInterval(() => {
-		if(count < 25){
+		if(count < 100){
 			str += html;
 			count++;
 		} else {
@@ -14,16 +14,14 @@
 <div>
 	{@html str}
 </div>
-<style global>
-	body{
-		overflow: hidden;
+<style>
+	:global(main){
+		padding:0 !important;
 	}
 	div{
+		width:100vw;
+		height:100vh;
 		display: flex;
 		flex-wrap: wrap;
-	}
-	div > img{
-		width:10%;
-		height: 10%;
 	}
 </style>

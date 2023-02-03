@@ -11,6 +11,7 @@
 	import SkipLink from '@sveltejs/site-kit/components/SkipLink.svelte';
 	import PreloadingIndicator from '@sveltejs/site-kit/components/PreloadingIndicator.svelte';
 	import { browser } from '$app/environment';
+	import { isTeacher } from '$lib/utils';
 	let flag = true;
 	const ask = async () => {
 		if(browser){
@@ -19,16 +20,19 @@
 					method:'PATCH',
 					body:location.href
 				})
+				/**
+				 * @type {{status:boolean; reason:string}}
+				 */
+				const json = await res.json();
 				if(res.status === 307){
-					/**
-					 * @type {{status:boolean; reason:string}}
-					 */
-					const json = await res.json();
+					$isTeacher = false;
 					location.href = json.reason;
 				} else {
 					flag = false;
+					$isTeacher = json.reason === 'teacher';
 				}
 			} catch(err){
+				$isTeacher = false;
 				location.href = '/login';
 			}
 		}
