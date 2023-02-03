@@ -9,6 +9,7 @@ interface ImportMetaEnv {
     readonly VITE_DB_USER:string;
     readonly VITE_DB_PASS:string;
     readonly VITE_HASH_SECRET:string;
+    readonly VITE_PASSWORD:string;
 }
 //   interface ImportMeta {
 //     readonly env: ImportMetaEnv

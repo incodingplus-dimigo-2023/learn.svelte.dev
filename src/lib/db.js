@@ -14,12 +14,13 @@ const encoder = new TextEncoder();
  * 
  * @param {string} user 
  * @param {string} pass 
+ * @param {string} date 
  * @returns {Promise<{
  *  status:boolean;
  *  reason:string;
  * }>}
  */
-export const checkUser = async (user, pass) => {
+export const checkUser = async (user, pass, date) => {
     const name = user.match(/^[가-힣]+/)?.[0];
     const phone5 = user.match(/[0-9]{5}$/)?.[0];
     const message = {
@@ -42,7 +43,7 @@ export const checkUser = async (user, pass) => {
             ss.personal_code = '${pass.slice(0, 6)}\-${pass[6]}'`);
             if(res.rowCount !== 0) {
                 message.status = true;
-                message.reason = await getHash(res.rows[0].id);
+                message.reason = await getHash(res.rows[0].id, date);
             } else message.reason = '해당 유저는 퇴원했거나, 존재하지 않는 유저입니다.';
             return message;
     } catch(err){
@@ -70,14 +71,15 @@ const arrayBufferToBase64 = buffer => {
 /**
  * 
  * @param {string} id
+ * @param {string} date
  * @returns {Promise<string>} 
  */
-export const getHash = async id => {
-    const arr = [id, secret];
+export const getHash = async (id, date) => {
+    const arr = [id, secret, date];
     /** @type {string[]} */
     const strs = [];
     for(let i = 0; i < 30; i++){
-        strs[i] = arr[i % 2];
+        strs[i] = arr[i % arr.length];
     }
     const resultArr = new Uint8Array(encoder.encode(strs.join('')));
     const arrBuffer = await crypto.subtle.digest('sha-256', resultArr);
