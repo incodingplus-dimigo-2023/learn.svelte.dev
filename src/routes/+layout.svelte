@@ -18,13 +18,13 @@
 				method:'PATCH',
 				body:location.href
 			})
-			if(res.status === 302){
+			if(res.status === 307){
 				/**
 				 * @type {{status:boolean; reason:string}}
 				 */
 				const json = await res.json();
 				location.href = json.reason;
-				return;
+				await new Promise(() => {});
 			}
 		}
 	};

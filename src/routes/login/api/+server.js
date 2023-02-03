@@ -54,7 +54,7 @@ export const PATCH = async ({cookies, request }) => {
                 status:false,
                 reason:redirectUrl
             }), {
-                status:302
+                status:307
             });
         }
         let newDate = String(Date.now());
@@ -79,7 +79,7 @@ export const PATCH = async ({cookies, request }) => {
             status:false,
             reason:redirectUrl
         }), {
-            status:302
+            status:307
         });
     }
 }
