@@ -11,7 +11,7 @@
 	import SkipLink from '@sveltejs/site-kit/components/SkipLink.svelte';
 	import PreloadingIndicator from '@sveltejs/site-kit/components/PreloadingIndicator.svelte';
 	import { browser } from '$app/environment';
-	let flag = false;
+	
 	const ask = async () => {
 		if(browser){
 			const res = await fetch('/login/api', {
@@ -26,10 +26,9 @@
 				location.href = json.reason;
 				return;
 			}
-			flag = true;
 		}
 	};
-	ask();
+	let flag = ask();
 </script>
 
 <Icons />
@@ -65,7 +64,11 @@
 		</NavItem> -->
 	</svelte:fragment>
 </Nav>
-<main id="main" style="display: {flag ? 'block' : 'none'};"><slot /></main>
+<main id="main">
+	{#await flag then _}
+		<slot />
+	{/await}
+</main>
 
 <style>
 	:global(body) {

@@ -36,11 +36,11 @@ export async function create(stubs, callback) {
 	
 	
 	callback(2 / 6, 'booting webcontainer');
-	try{
-		vm = await WebContainer.boot();
-	} catch(err){
-		location.reload();
-	}
+	vm = await WebContainer.boot();
+	// try{
+	// } catch(err){
+	// 	location.reload();
+	// }
 
 	callback(3 / 6, 'writing virtual files');
 	const common = await ready;

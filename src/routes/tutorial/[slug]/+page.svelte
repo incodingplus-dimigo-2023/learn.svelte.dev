@@ -1,6 +1,7 @@
 <script>
 	import Output from './Output.svelte';
 	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
 	import ContextMenu from './filetree/ContextMenu.svelte';
 	import Filetree from './filetree/Filetree.svelte';
@@ -45,6 +46,9 @@
 		}
 	};
 
+	onMount(() => {
+		state.switch_exercise(data.exercise);
+	});
 	afterNavigate(() => {
 		state.switch_exercise(data.exercise);
 	});
