@@ -5,29 +5,37 @@
     let id = '';
     let pass = '';
     let teacherPass = '';
+
+    /** @type {HTMLInputElement}*/
+    let tInput;
+    /** @type {HTMLInputElement}*/
+    let iInput;
+    /** @type {HTMLInputElement}*/
+    let pInput;
     let isTeacher = false;
     /** @type {Promise<void>}*/
     let flag = new Promise(res => res());
     const send = async () => {
-        if(browser){
-            try{
-                const obj = {
-                    id, pass:isTeacher ? teacherPass : pass, url:location.search
-                }
-                const res = await fetch('/login/api',{
-                    method:'POST',
-                    body:JSON.stringify(obj)
-                });
-                 /** @type {{status:boolean, reason:string}} */
-                const json = (await res.json())
-                if(!json.status){
-                    myAlert(`Login Failed : ${json.reason}`);
-                } else {
-                    location.href = json.reason;
-                }
-            } catch(err){
-                myAlert(String(err));
+        if(!browser)return;
+        if(isTeacher && !tInput.validity.valid) return;
+        if(!isTeacher && (!iInput.validity.valid || !pInput.validity.valid)) return;
+        try{
+            const obj = {
+                id, pass:isTeacher ? teacherPass : pass, url:location.search
             }
+            const res = await fetch('/login/api',{
+                method:'POST',
+                body:JSON.stringify(obj)
+            });
+            /** @type {{status:boolean, reason:string}} */
+            const json = (await res.json())
+            if(!json.status){
+                myAlert(`Login Failed : ${json.reason}`);
+            } else {
+                location.href = json.reason;
+            }
+        } catch(err){
+            myAlert(String(err));
         }
     }
 </script>
@@ -39,10 +47,44 @@
         <div class="title">IncodingPlus<br>Svelte 배우기</div>
         <form on:submit|preventDefault class="input-container">
             {#if isTeacher}
-                <input transition:slide placeholder="선생님 코드를 입력해주세요." type="password" bind:value={teacherPass} maxlength="64" minlength="64" pattern="[a-zA-Z0-9\-\_]+" required>
+                <input
+                    transition:slide placeholder="선생님 코드를 입력해주세요."
+                    bind:this={tInput}
+                    type="password"
+                    bind:value={teacherPass}
+                    maxlength="64"
+                    minlength="64"
+                    pattern="[a-zA-Z0-9\-\_]+"
+                    required
+                    on:input={() => tInput.setCustomValidity("")}
+                    on:invalid={() => tInput.setCustomValidity("선생님 코드 64자리 코드를 입력해주세요.")}
+                >
             {:else}
-                <input transition:slide placeholder="아이디를 입력해주세요." type="text" bind:value={id} required maxlength="10" pattern="^[가-힣]+[0-9]{'{5}'}$">
-                <input transition:slide placeholder="비밀번호를 입력해주세요." type="password" bind:value={pass} maxlength="7" minlength="7" pattern="^[0-9]{'{7}'}$" required>
+                <input
+                    transition:slide
+                    placeholder="아이디를 입력해주세요."
+                    bind:this={iInput}
+                    type="text"
+                    bind:value={id}
+                    required
+                    maxlength="10"
+                    pattern="^[가-힣]+[0-9]{'{5}'}$"
+                    on:input={() => iInput.setCustomValidity("")}
+                    on:invalid={() => iInput.setCustomValidity("이름 + 전화번호 뒤 5자리를 입력해주세요.")}
+                >
+                <input
+                    transition:slide
+                    placeholder="비밀번호를 입력해주세요."
+                    bind:this={pInput}
+                    type="password"
+                    bind:value={pass}
+                    maxlength="7"
+                    minlength="7"
+                    pattern="^[0-9]{'{7}'}$"
+                    required
+                    on:input={() => pInput.setCustomValidity("")}
+                    on:invalid={() => pInput.setCustomValidity("주민번호 앞 7자리를 입력해주세요.")}
+                >
             {/if}
             <label class="el-switch">
                 <div>선생님 모드 :</div>
