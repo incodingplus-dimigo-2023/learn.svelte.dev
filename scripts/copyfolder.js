@@ -15,7 +15,7 @@ glob(`${root}/**/home/*/app-a/`, (e, arr) => {
         recursive:true,
     });
     for(let i of arr){
-        const curDest = path.resolve(dest, 'src', i.replace(root, '.'), '..');
+        const curDest = path.resolve(dest, 'src', i.replace(root, '.'));
         const resArr = curDest.split(path.sep);
         let index = resArr.lastIndexOf('home');
         if(index === -1) continue;

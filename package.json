@@ -10,7 +10,7 @@
 		"check:watch": "svelte-check --tsconfig ./jsconfig.json --watch",
 		"lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. .",
 		"format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. .",
-		"home":"node scripts/copyFolder.js"
+		"home": "node scripts/copyFolder.js"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.30.0",
@@ -26,6 +26,7 @@
 		"dotenv": "^16.0.3",
 		"esbuild": "^0.17.5",
 		"glob": "^8.1.0",
+		"octokit": "^2.0.14",
 		"prettier": "^2.8.3",
 		"prettier-plugin-svelte": "^2.9.0",
 		"sass": "^1.58.0",
