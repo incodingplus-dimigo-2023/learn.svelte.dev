@@ -10,17 +10,12 @@ if(!fs.existsSync(dest)){
 const rel = path.relative(path.resolve('./'), path.resolve(__dirname, '../content_kor/tutorial'));
 const root = `./${rel.replaceAll(path.sep, path.posix.sep)}`;
 glob(`${root}/**/home/*/app-a/`, (e, arr) => {
-    const dir = fs.readdirSync(dest, {withFileTypes:true});
-    for(let i of dir){
-        if(i.name.startsWith('.')) continue;
-        if(!i.isDirectory()) continue;
-        fs.rmSync(path.resolve(dest, i.name), {
-            force:true,
-            recursive:true,
-        });
-    }
+    fs.rmSync(path.resolve(dest, 'src'), {
+        force:true,
+        recursive:true,
+    });
     for(let i of arr){
-        const curDest = path.resolve(dest, i.replace(root, '.'), '..');
+        const curDest = path.resolve(dest, 'src', i.replace(root, '.'), '..');
         const resArr = curDest.split(path.sep);
         let index = resArr.lastIndexOf('home');
         if(index === -1) continue;
