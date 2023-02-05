@@ -1,8 +1,7 @@
-import { load } from '@webcontainer/api';
+import { WebContainer} from '@webcontainer/api';
 import base64 from 'base64-js';
 import { get_depth } from '../../../utils.js';
 import { ready } from '../common/index.js';
-
 /** @type {import('@webcontainer/api').WebContainer} Web container singleton */
 let vm;
 
@@ -30,21 +29,18 @@ export async function create(stubs, callback) {
 
 	/** @type {boolean} Track whether there was an error from vite dev server */
 	let vite_error = false;
-
-	callback(1 / 6, 'loading webcontainer');
-	const WebContainer = await load();
 	
 	
-	callback(2 / 6, 'booting webcontainer');
+	callback(1 / 5, 'booting webcontainer');
 	vm = await WebContainer.boot();
 	// try{
 	// } catch(err){
 	// 	location.reload();
 	// }
 
-	callback(3 / 6, 'writing virtual files');
+	callback(2 / 5, 'writing virtual files');
 	const common = await ready;
-	await vm.loadFiles({
+	await vm.mount({
 		'common.zip': {
 			file: { contents: new Uint8Array(common.zipped) }
 		},
@@ -52,26 +48,28 @@ export async function create(stubs, callback) {
 			file: { contents: common.unzip }
 		},
 		...convert_stubs_to_tree(stubs)
-	});
+	})
 
-	callback(4 / 6, 'unzipping files');
-	const unzip = await vm.run(
-		{
-			command: 'node',
-			args: ['unzip.cjs']
-		},
-		{
-			stderr: (data) => console.error(`[unzip] ${data}`)
-		}
-	);
-	const code = await unzip.onExit;
+	callback(3 / 5, 'unzipping files');
+	/** @type {import('@webcontainer/api').WebContainerProcess} */
+	let unzip;
+	try{
+		unzip = await vm.spawn(
+			"node",
+			["unzip.cjs"],
+		);
+	} catch(data){
+		console.error(`[unzip] ${data}`);
+		throw new Error('Failed to initialize WebContainer');
+	}
+	const code = await unzip.exit;
 	if (code !== 0) {
 		throw new Error('Failed to initialize WebContainer');
 	}
 
-	await vm.run({ command: 'chmod', args: ['a+x', 'node_modules/vite/bin/vite.js'] });
+	await vm.spawn('chmod', ['a+x', 'node_modules/vite/bin/vite.js']);
 
-	callback(5 / 6, 'starting dev server');
+	callback(4 / 5, 'starting dev server');
 	const base = await new Promise(async (fulfil, reject) => {
 		const error_unsub = vm.on('error', (error) => {
 			error_unsub();
@@ -87,26 +85,18 @@ export async function create(stubs, callback) {
 		await run_dev();
 
 		async function run_dev() {
-			const process = await vm.run(
-				{ command: 'turbo', args: ['run', 'dev'] },
-				{
-					stdout: (data) => {
-						console.log(`[dev] ${data}`);
-					},
-					stderr: (data) => {
-						vite_error = true;
-						console.error(`[dev] ${data}`);
-					}
+			try{
+				const process = await vm.spawn('turbo', ['run', 'dev'])
+				process.output
+				const code = await process.exit;
+				if(code !== 0){
+					setTimeout(run_dev, 2000);
 				}
-			);
+			} catch(err){
+				vite_error = true;
+				console.error(`[dev] ${err}`);
+			}
 			// keep restarting dev server (can crash in case of illegal +files for example)
-			process.onExit.then((code) => {
-				if (code !== 0) {
-					setTimeout(() => {
-						run_dev();
-					}, 2000);
-				}
-			});
 		}
 	});
 
@@ -180,7 +170,7 @@ export async function create(stubs, callback) {
 				await vm.fs.rm(file, { force: true, recursive: true });
 			}
 
-			await vm.loadFiles(convert_stubs_to_tree(to_write));
+			await vm.mount(convert_stubs_to_tree(to_write));
 			await promise;
 			await new Promise((f) => setTimeout(f, 200)); // wait for chokidar
 
@@ -218,7 +208,7 @@ export async function create(stubs, callback) {
 				tree[basename] = to_file(stub);
 			}
 
-			await vm.loadFiles(root);
+			await vm.mount(root);
 
 			stubs_to_map(stubs, current_stubs);
 

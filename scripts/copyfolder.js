@@ -13,14 +13,14 @@ const rel = path.relative(path.resolve('./'), path.resolve(__dirname, '../conten
 const root = `./${rel.replaceAll(path.sep, path.posix.sep)}`;
 const proGlob = promisify(glob);
 const appA = await proGlob(`${root}/**/home/*/app-a/`);
-// const common = await proGlob(`${root}/**/common/`);
+const common = await proGlob(`${root}/**/common/`);
 
-fs.rmSync(path.resolve(dest, 'src'), {
+fs.rmSync(path.resolve(dest, 'content'), {
     force:true,
     recursive:true,
 });
 for(let i of appA){
-    const curDest = path.resolve(dest, 'src', i.replace(root, '.'));
+    const curDest = path.resolve(dest, 'content/tutorial', i.replace(root, '.'));
     const resArr = curDest.split(path.sep);
     let index = resArr.lastIndexOf('home');
     if(index === -1) continue;
@@ -35,10 +35,10 @@ for(let i of appA){
     });
 }
 
-// for(let i of common){
-//     const curDest = path.resolve(dest, 'content', i.replace(root, '.'));
-//     fs.cpSync(i, curDest, {
-//         force:true,
-//         recursive:true,
-//     });
-// }
+for(let i of common){
+    const curDest = path.resolve(dest, 'content/tutorial', i.replace(root, '.'));
+    fs.cpSync(i, curDest, {
+        force:true,
+        recursive:true,
+    });
+}
