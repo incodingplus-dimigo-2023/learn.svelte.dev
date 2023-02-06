@@ -14,4 +14,9 @@ export function myAlert(str){
 }
 
 
+export const repoInfo = {
+	owner:'incodingplus-dimigo-2023',
+	repo:'learn.svelte.student'
+};
+
 export const isTeacher = writable(false);

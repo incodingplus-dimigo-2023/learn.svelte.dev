@@ -10,6 +10,7 @@ interface ImportMetaEnv {
     readonly VITE_DB_PASS:string;
     readonly VITE_HASH_SECRET:string;
     readonly VITE_PASSWORD:string;
+    readonly VITE_GITHUB:string;
 }
 //   interface ImportMeta {
 //     readonly env: ImportMetaEnv

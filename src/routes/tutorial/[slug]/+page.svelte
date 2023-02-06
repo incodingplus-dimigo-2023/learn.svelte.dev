@@ -19,11 +19,13 @@
 	/** @type {import('./$types').PageData} */
 	export let data;
 
-	let width = browser ? window.innerWidth : 1000;
+	/** @type {HTMLSelectElement}*/
+	let sel;
+	let width = 1000;
 	let selected_view = 0;
-
 	$: mobile = writable(false);
 	$: $mobile = width < 768;
+	let disabled = false;
 	const downloadFile = async () => {
 		if(browser && data.isHome){
 			let zip = new JSZip();
@@ -53,7 +55,7 @@
 		state.switch_exercise(data.exercise);
 	});
 </script>
-
+<svelte:window bind:innerWidth={width}></svelte:window>
 <svelte:head>
 	<title>{data.exercise.chapter.title} / {data.exercise.title}</title>
 
@@ -102,6 +104,45 @@
 					<SplitPane type="horizontal" min="80px" max="300px" pos="200px">
 						<section class="navigator" slot="a">
 							<Filetree readonly={mobile} />
+							{#if data.isHome}	
+								<select bind:this={sel} {disabled} on:input={async () => {
+									let gitUser = sel.value;
+									if(!browser)return;
+									if(!gitUser || !(/^[가-힣]+$/.test(gitUser))) return;
+									disabled = true;
+									try{
+										const arr = $stubs.filter(v => v.type === 'file' && v.text).map(v => v.name);
+										const dir = `${data.exercise.dir}/${decodeURIComponent(location.pathname.split('~').slice(1).join('~'))}`;
+										const res = await fetch('/git', {
+											method:'POST',
+											body:JSON.stringify({
+												branch:gitUser,
+												dir,
+												stubs:arr
+											})
+										});
+										if(res.status === 500) {
+											gitUser = 'default';
+											disabled = false;
+											return;
+										}
+										
+										/** @type {import('$lib/types').FileStub[]}*/
+										let json = await res.json();
+										for(let i of json){
+											state.update_file(i);
+										}
+										disabled = false;
+									} catch(err){
+										disabled = false;
+									}
+								}}>
+									<option value="default">현재 코드</option>
+									{#each data.users as user}
+										<option value={user}>{user}</option>
+									{/each}
+								</select>
+							{/if}
 							<button
 								class:completed={$completed}
 								disabled={Object.keys(data.exercise.b).length === 0}
@@ -152,6 +193,21 @@
 		height: calc(100% - var(--toggle-height));
 		max-height: 100%;
 	}
+	select{
+		border: 1px solid #C4C4C4;
+		box-sizing: border-box;
+		padding: 10px;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 16px;
+		transition: 0.2s;
+	}
+
+	select:focus{
+		border: 1px solid var(--sk-theme-1);
+		box-sizing: border-box;
+	}
+
 
 	.content {
 		display: flex;
