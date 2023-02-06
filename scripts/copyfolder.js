@@ -14,6 +14,7 @@ const root = `./${rel.replaceAll(path.sep, path.posix.sep)}`;
 const proGlob = promisify(glob);
 const appA = await proGlob(`${root}/**/home/*/app-a/`);
 const common = await proGlob(`${root}/**/common/`);
+const meta = await proGlob(`${root}/**/meta.json`);
 
 fs.rmSync(path.resolve(dest, 'content'), {
     force:true,
@@ -35,8 +36,9 @@ for(let i of appA){
     });
 }
 
-for(let i of common){
+for(let i of [...common, ...meta]){
     const curDest = path.resolve(dest, 'content/tutorial', i.replace(root, '.'));
+    if(!fs.existsSync(path.dirname(curDest))) continue;
     fs.cpSync(i, curDest, {
         force:true,
         recursive:true,
