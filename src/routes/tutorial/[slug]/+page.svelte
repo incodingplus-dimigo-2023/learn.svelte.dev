@@ -104,7 +104,7 @@
 					<SplitPane type="horizontal" min="80px" max="300px" pos="200px">
 						<section class="navigator" slot="a">
 							<Filetree readonly={mobile} />
-							{#if data.isHome}	
+							{#if data.isHome && $isTeacher}	
 								<select bind:this={sel} {disabled} on:input={async () => {
 									let gitUser = sel.value;
 									if(!browser)return;
