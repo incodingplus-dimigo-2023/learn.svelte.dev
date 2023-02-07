@@ -5,7 +5,7 @@ import preprocess from 'svelte-preprocess';
 const config = {
 	preprocess:preprocess(),
 	kit: {
-		adapter: adapter({ edge: false })
+		adapter: adapter({runtime:'nodejs18.x'})
 	},
 	preprocess:preprocess(),
 
