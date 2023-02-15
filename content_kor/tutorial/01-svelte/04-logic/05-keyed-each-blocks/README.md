@@ -1,6 +1,8 @@
 ---
-title: Keyed each blocks
+title: key가 있는 each 블럭
 ---
+
+
 
 By default, when you modify the value of an `each` block, it will add and remove items at the _end_ of the block, and update any values that have changed. That might not be what you want.
 
