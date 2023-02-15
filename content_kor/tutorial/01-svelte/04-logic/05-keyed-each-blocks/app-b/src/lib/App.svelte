@@ -2,11 +2,11 @@
 	import Thing from './Thing.svelte';
 
 	let things = [
-		{ id: 1, name: 'apple' },
-		{ id: 2, name: 'banana' },
-		{ id: 3, name: 'carrot' },
-		{ id: 4, name: 'doughnut' },
-		{ id: 5, name: 'egg' }
+		{ id: 1, name: '사과' },
+		{ id: 2, name: '바나나' },
+		{ id: 3, name: '당근' },
+		{ id: 4, name: '도넛' },
+		{ id: 5, name: '달걀' }
 	];
 
 	function handleClick() {
@@ -15,7 +15,7 @@
 </script>
 
 <button on:click={handleClick}>
-	Remove first thing
+	첫번째 값 지우기
 </button>
 
 {#each things as thing (thing.id)}
