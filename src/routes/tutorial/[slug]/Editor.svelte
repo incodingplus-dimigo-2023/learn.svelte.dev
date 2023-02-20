@@ -136,7 +136,6 @@
 				enabled: false
 			}
 		});
-		editor.onDidContentSizeChange(e => monaco.editor.remeasureFonts());
 		
 		let notify = true;
 
