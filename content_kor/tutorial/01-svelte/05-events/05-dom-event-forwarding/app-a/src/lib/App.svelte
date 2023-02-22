@@ -1,8 +1,8 @@
 <script>
 	import CustomButton from './CustomButton.svelte';
 
-	function handleClick() {
-		alert('Button Clicked');
+	const handleClick = () => {
+		alert('버튼 클릭됨');
 	}
 </script>
 

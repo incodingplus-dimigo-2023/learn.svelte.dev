@@ -1,13 +1,15 @@
 ---
-title: DOM event forwarding
+title: DOM 이벤트 포워딩
 ---
 
-Event forwarding works for DOM events too.
+이벤트 포워딩은 DOM 이벤트도 가능합니다.
 
-We want to get notified of clicks on our `<CustomButton>` — to do that, we just need to forward `click` events on the `<button>` element in `CustomButton.svelte`:
+`<CustomButton>` 이라는 컴포넌트를 만들고, `click` 이벤트를 포워딩하려면 다음과 같이 작성하면 됩니다.
+
+
 
 ```svelte
 <button on:click>
-	Click me
+	클릭해 주세요~
 </button>
 ```

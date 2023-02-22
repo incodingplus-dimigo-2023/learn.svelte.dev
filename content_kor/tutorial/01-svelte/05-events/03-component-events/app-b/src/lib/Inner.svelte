@@ -1,15 +1,23 @@
 <script>
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher } from "svelte";
 
 	const dispatch = createEventDispatcher();
 
-	function sayHello() {
+	const sayHello = () => {
 		dispatch('message', {
-			text: 'Hello!'
+			text: '안뇽~'
+		});
+	}
+	const genRandom = () => {
+		dispatch('random', {
+			number: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
 		});
 	}
 </script>
 
 <button on:click={sayHello}>
-	Click to say hello
+	안뇽~
+</button>
+<button on:click={genRandom}>
+	랜덤~
 </button>

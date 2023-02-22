@@ -1,16 +1,19 @@
 ---
-title: Component events
+title: 컴포넌트 이벤트
 ---
 
-Components can also dispatch events. To do so, they must create an event dispatcher. Update `Inner.svelte`:
+컴포넌트에서도 이벤트를 등록할 수 있습니다. 이때는 `createEventDispatcher`라는 것을 사용합니다.
 
+
+
+**Inner.svelte**
 ```svelte
 <script>
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
-	function sayHello() {
+	const sayHello = () => {
 		dispatch('message', {
 			text: 'Hello!'
 		});
@@ -18,10 +21,8 @@ Components can also dispatch events. To do so, they must create an event dispatc
 </script>
 ```
 
-> `createEventDispatcher` must be called when the component is first instantiated — you can't do it later inside e.g. a `setTimeout` callback. This links `dispatch` to the component instance.
+> `createEventDispatcher`는 컴포넌트가 처음 만들어질 때만 호출 가능합니다. 예를 들어 `setTimeout` 안에서 `createEventDispatcher`를 사용하는 것은 불가능합니다.
 
-Notice that the `App` component is listening to the messages dispatched by `Inner` component thanks to the `on:message` directive. This directive is an attribute prefixed with `on:` followed by the event name that we are dispatching (in this case, `message`).
+`Inner.svelte`를 `import`한 `App.svelte`는 `on:message`로 _dispatch_ 한 메시지를 받습니다. `on:message`라는 이벤트가 있는 것이 아니라 _dispatch_ 를 할 때 `'message'`로 설정했기 때문에 그렇게 받는 것입니다.
 
-Without this attribute, messages would still be dispatched, but the App would not react to it. You can try removing the `on:message` attribute and pressing the button again.
-
-> You can also try changing the event name to something else. For instance, change `dispatch('message')` to `dispatch('myevent')` in `Inner.svelte` and change the attribute name from `on:message` to `on:myevent` in the `App.svelte` component.
+> 당연하게도 이벤트의 이름은 바꿀 수 있습니다. 만약 `dispatch('message')`를 `dispatch('myevent')`로 호출한다면 `Inner.svelte`를 `import`해서 `on:message`를 쓰는 대신에 `on:myevent`를 써야합니다.

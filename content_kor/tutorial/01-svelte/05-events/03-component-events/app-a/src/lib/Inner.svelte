@@ -1,9 +1,13 @@
 <script>
-	// setup code goes here
+	import { createEventDispatcher } from "svelte";
 
-	function sayHello() {}
+	const sayHello = () => {}
+	const genRandom = () => {}
 </script>
 
 <button on:click={sayHello}>
-	Click to say hello
+	안뇽~
+</button>
+<button on:click={genRandom}>
+	랜덤~
 </button>

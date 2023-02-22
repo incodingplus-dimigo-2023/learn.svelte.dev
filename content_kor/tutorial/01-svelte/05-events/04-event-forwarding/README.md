@@ -1,12 +1,14 @@
 ---
-title: Event forwarding
+title: 이벤트 포워딩
 ---
 
-Unlike DOM events, component events don't _bubble_. If you want to listen to an event on some deeply nested component, the intermediate components must _forward_ the event.
+컴포넌트 이벤트는 DOM 이벤트와 다르게 _버블링_ 이 되지 않습니다. 만약 _버블링_ 과 같이 이벤트가 부모 컴포넌트로 전달되게 하고 싶다면 _포워딩_ 이라는 것을 해야합니다.
 
-In this case, we have the same `App.svelte` and `Inner.svelte` as in the [previous chapter](/tutorial/component-events), but there's now an `Outer.svelte` component that contains `<Inner/>`.
+이 경우 `App.svelte`와 `Inner.svelte` 는 [이전 단원](/tutorial/component-events)과 같습니다 (`App.svelte`에 `Outer.svelte`가 있는 것을 제외하면). 하지만 여기에 `Outer.svelte` 컴포넌트를 추가해 거기에 `<Inner/>`를 넣었습니다.
 
-One way we could solve the problem is adding `createEventDispatcher` to `Outer.svelte`, listening for the `message` event, and creating a handler for it:
+`Inner.svelte`의 이벤트를 `Outer.svelte`를 통해 `App.svelte`로 전달하는 방법은 `Outer.svelte`에도 `createEventDispatcher`를 추가하는 것입니다. 그리고 거기서 `message` 이벤트와 `random` 이벤트를 그대로 보내는 것입니다.
+
+
 
 ```svelte
 <script>
@@ -15,20 +17,25 @@ One way we could solve the problem is adding `createEventDispatcher` to `Outer.s
 
 	const dispatch = createEventDispatcher();
 
-	function forward(event) {
-		dispatch('message', event.detail);
+	/* event.type에는 'message', 'random'과 같은 이벤트 이름이 있습니다 */
+	const forward = (event) => {
+		dispatch(event.type, event.detail);
 	}
 </script>
 
-<Inner on:message={forward}/>
+<Inner on:message={forward} on:random={forward}/>
 ```
 
-But that's a lot of code to write, so Svelte gives us an equivalent shorthand — an `on:message` event directive without a value means 'forward all `message` events'.
+
+
+하지만 이렇게 코드를 작성하면 너무 복잡합니다. 따라서 위와 같은 코드를 줄여서 다음과 같이 쓸 수 있습니다.
+
+
 
 ```svelte
 <script>
 	import Inner from './Inner.svelte';
 </script>
 
-<Inner on:message/>
+<Inner +++on:message on:random+++/>
 ```

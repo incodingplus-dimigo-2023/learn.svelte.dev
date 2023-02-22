@@ -1,4 +1,4 @@
-<button>Click me</button>
+<button>클릭해 주세요~</button>
 
 <style>
 	button {
