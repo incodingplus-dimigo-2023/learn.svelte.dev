@@ -3,9 +3,6 @@
  */
 export const clearAllCookies = (cookies) => {
     cookies.delete('hash', { path:'/' });
-    cookies.delete('user_id', { path:'/' });
-    cookies.delete('token', { path:'/' });
-    cookies.delete('teacher', { path:'/' });
 };
 
 /**
@@ -14,11 +11,19 @@ export const clearAllCookies = (cookies) => {
  */
 export const getAllCookies = (cookies) => {
     let hash = cookies.get('hash');
-    let id = cookies.get('user_id');
-    let date = cookies.get('token');
-    let teacher = cookies.get('teacher');
-    console.log(hash, id, date, teacher)
-    return { hash, id, date, teacher };
+    try{
+        let obj = JSON.parse(hash ?? '{}');
+        return obj;
+    } catch(err){
+        clearAllCookies(cookies);
+        return {
+            hash:'',
+            date:'',
+            id:'',
+            teacher:'',
+        };
+    }
+
 };
 
 /**
@@ -26,23 +31,8 @@ export const getAllCookies = (cookies) => {
  * @param {{hash:string;id:string;date:string;teacher:string}} obj
  */
 export const setAllCookies = (cookies, obj, secure = true) => {
-    let { hash, id, date, teacher } = obj;
-    console.log(obj, secure);
-    cookies.set('hash', hash, {
+    cookies.set('hash', JSON.stringify(obj), {
         maxAge:3600 * 3, path:'/', secure, httpOnly:true
     });
-    cookies.set('user_id', id, {
-        maxAge:3600 * 3, path:'/', secure, httpOnly:true
-    });
-    cookies.set('token', date, {
-        maxAge:3600 * 3, path:'/', secure, httpOnly:true
-    });
-    if(teacher){
-        cookies.set('teacher', teacher, {
-            maxAge:3600 * 3, path:'/', secure, httpOnly:true
-        });
-    } else {
-        cookies.delete('teacher', {path:'/'});
-    }
-    return { hash, id, date };
+    return obj;
 };
