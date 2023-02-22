@@ -73,5 +73,6 @@
 		"dns": false,
 		"assert": false,
 		"util": false
-	}
+	},
+	"packageManager": "pnpm@7.27.0"
 }

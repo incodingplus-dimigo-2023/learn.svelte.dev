@@ -7,8 +7,6 @@ const config = {
 	kit: {
 		adapter: adapter({runtime:'nodejs18.x'})
 	},
-	preprocess:preprocess(),
-
 	vitePlugin: {
 		experimental: {
 			inspector: {
