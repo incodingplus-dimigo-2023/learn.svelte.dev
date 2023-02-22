@@ -17,6 +17,7 @@ export const getAllCookies = (cookies) => {
     let id = cookies.get('user_id');
     let date = cookies.get('token');
     let teacher = cookies.get('teacher');
+    console.log(hash, id, date, teacher)
     return { hash, id, date, teacher };
 };
 
@@ -26,7 +27,7 @@ export const getAllCookies = (cookies) => {
  */
 export const setAllCookies = (cookies, obj, secure = true) => {
     let { hash, id, date, teacher } = obj;
-    console.log(obj);
+    console.log(obj, secure);
     cookies.set('hash', hash, {
         maxAge:3600 * 3, path:'/', secure, httpOnly:true
     });
