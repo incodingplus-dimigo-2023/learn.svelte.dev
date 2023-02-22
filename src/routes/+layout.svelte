@@ -24,6 +24,7 @@
 				 * @type {{status:boolean; reason:string}}
 				 */
 				const json = await res.json();
+				alert(JSON.stringify(json));
 				if(res.status === 307){
 					$isTeacher = false;
 					location.href = json.reason;
