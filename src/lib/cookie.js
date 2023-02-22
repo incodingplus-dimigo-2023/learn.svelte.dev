@@ -26,6 +26,7 @@ export const getAllCookies = (cookies) => {
  */
 export const setAllCookies = (cookies, obj, secure = true) => {
     let { hash, id, date, teacher } = obj;
+    console.log(obj);
     cookies.set('hash', hash, {
         maxAge:3600 * 3, path:'/', secure, httpOnly:true
     });

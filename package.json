@@ -20,6 +20,7 @@
 		"@sveltejs/site-kit": "^3.2.2",
 		"@types/diff": "^5.0.2",
 		"@types/marked": "^4.0.8",
+		"@types/pg": "^8.6.6",
 		"@types/prismjs": "^1.26.0",
 		"@types/ws": "^8.5.4",
 		"diff": "^5.1.0",
