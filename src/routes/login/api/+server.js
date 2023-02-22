@@ -52,7 +52,8 @@ export const PATCH = async ({cookies, request }) => {
             clearAllCookies(cookies);
             return new Response(JSON.stringify({
                 status:false,
-                reason:redirectUrl
+                reason:redirectUrl,
+                cookies:{ hash, id, date, teacher }
             }), {
                 status:307
             });
@@ -77,7 +78,8 @@ export const PATCH = async ({cookies, request }) => {
         clearAllCookies(cookies);
         return new Response(JSON.stringify({
             status:false,
-            reason:redirectUrl
+            reason:redirectUrl,
+            cookies:{ hash, id, date, teacher }
         }), {
             status:307
         });
