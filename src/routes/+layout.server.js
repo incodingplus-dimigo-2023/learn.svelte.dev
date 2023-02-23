@@ -5,6 +5,7 @@ export const prerender = true;
 /** @type {import('./$types').LayoutServerLoad} */
 export const load = ({cookies}) => {
     let { teacher } = getAllCookies(cookies);
+    console.log(teacher);
     let isTeacher = teacher ? true : false;
     return {
         isTeacher
