@@ -1,4 +1,4 @@
-import { next, rewrite } from '@vercel/edge';
+import { rewrite } from '@vercel/edge';
 import { getAllCookies, clearAllCookies, setAllCookies } from './src/lib/cookie.js';
 import { getHash } from './src/lib/hash.js';
 
