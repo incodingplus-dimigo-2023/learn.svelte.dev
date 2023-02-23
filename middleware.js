@@ -130,6 +130,7 @@ export default async function middleware(_request) {
 	const cookies = new MiddleCookie(_request, response);
 	const login = await check(_request, cookies);
 	if(!login.check){
+		console.log(login, new URL(login.rewrite, _request.url));
 		return rewrite(new URL(login.rewrite, _request.url));
 	}
 	response.headers.set('cross-origin-opener-policy', 'same-origin');

@@ -1,19 +1,5 @@
 /**
  * 
- * @param {ArrayBuffer} buffer 
- * @returns {string}
- */
-const arrayBufferToBase64 = buffer => {
-    let binary = '';
-    let bytes = new Uint8Array( buffer );
-    let len = bytes.byteLength;
-    for (let i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[ i ] );
-    }
-    return Buffer.from( binary ).toString('base64url');
-};
-/**
- * 
  * @param {string} id
  * @param {string} date
  * @param {string} secret
@@ -29,5 +15,7 @@ export const getHash = async (id, date, secret) => {
     }
     const resultArr = new Uint8Array(encoder.encode(strs.join('')));
     const arrBuffer = await crypto.subtle.digest('sha-256', resultArr);
-    return arrayBufferToBase64(arrBuffer);
+    const hashArray = Array.from(new Uint8Array(arrBuffer));                     // convert buffer to byte array
+    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+    return hashHex;
 };
