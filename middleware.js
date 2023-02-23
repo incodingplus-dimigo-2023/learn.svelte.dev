@@ -2,8 +2,8 @@ import { next, rewrite } from '@vercel/edge';
 import { getAllCookies, clearAllCookies, setAllCookies } from './src/lib/cookie.js';
 import { getHash } from './src/lib/hash.js';
 
-const secret = import.meta.env.VITE_HASH_SECRET ?? process.env.VITE_HASH_SECRET;
-const TEACHER = import.meta.env.VITE_PASSWORD ?? process.env.VITE_PASSWORD;
+const secret = process.env.VITE_HASH_SECRET;
+const TEACHER = process.env.VITE_PASSWORD;
 
 class MiddleCookie{
 	/** @type {Headers} */
