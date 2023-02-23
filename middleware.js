@@ -1,5 +1,7 @@
 import { next, rewrite } from '@vercel/edge';
-
+export const config = {
+	matcher:['/tutorial', '/tutorial/:slug']
+}
 /**
  * 
  * @param {Request} _request 
