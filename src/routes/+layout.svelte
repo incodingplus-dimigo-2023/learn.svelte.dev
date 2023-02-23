@@ -10,8 +10,12 @@
 	import NavItem from '@sveltejs/site-kit/components/NavItem.svelte';
 	import SkipLink from '@sveltejs/site-kit/components/SkipLink.svelte';
 	import PreloadingIndicator from '@sveltejs/site-kit/components/PreloadingIndicator.svelte';
-	import { browser } from '$app/environment';
 	import { isTeacher } from '$lib/utils';
+
+	/** @type {import('./$types').LayoutData}*/
+	export let data;
+ 
+	$isTeacher = data.isTeacher;
 </script>
 
 <Icons />
