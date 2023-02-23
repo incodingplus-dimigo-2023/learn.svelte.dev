@@ -4,7 +4,6 @@ import { getHash } from './src/lib/hash.js';
 
 const secret = process.env.VITE_HASH_SECRET;
 const TEACHER = process.env.VITE_PASSWORD;
-
 class MiddleCookie{
 	/** @type {Headers} */
 	headers;
