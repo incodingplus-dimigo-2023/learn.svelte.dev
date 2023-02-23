@@ -1,12 +1,12 @@
 /**
- * @param {import("@sveltejs/kit").Cookies} cookies
+ * @param {import("@sveltejs/kit").Cookies|import('$lib/types').iMiddleCookie} cookies
  */
 export const clearAllCookies = (cookies) => {
     cookies.delete('hash', { path:'/' });
 };
 
 /**
- * @param {import("@sveltejs/kit").Cookies} cookies
+ * @param {import("@sveltejs/kit").Cookies|import('$lib/types').iMiddleCookie} cookies
  * @returns {{hash:string|undefined;id:string|undefined;date:string|undefined;teacher:string|undefined}}
  */
 export const getAllCookies = (cookies) => {
@@ -27,7 +27,7 @@ export const getAllCookies = (cookies) => {
 };
 
 /**
- * @param {import("@sveltejs/kit").Cookies} cookies
+ * @param {import("@sveltejs/kit").Cookies|import('$lib/types').iMiddleCookie} cookies
  * @param {{hash:string;id:string;date:string;teacher:string}} obj
  */
 export const setAllCookies = (cookies, obj, secure = true) => {

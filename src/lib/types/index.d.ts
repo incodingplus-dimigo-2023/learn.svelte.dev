@@ -100,3 +100,12 @@ export interface EditingConstraints {
 	create: string[];
 	remove: string[];
 }
+
+
+export interface iMiddleCookie{
+	headers:Headers;
+	cookie:Map<string,string>;
+	get(key:string):string|undefined;
+	set(key:string, value:string, options?:import('cookie').CookieSerializeOptions):void;
+	delete(key:string, options?:import('cookie').CookieSerializeOptions):void;
+}

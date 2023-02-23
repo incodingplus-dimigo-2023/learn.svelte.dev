@@ -12,32 +12,6 @@
 	import PreloadingIndicator from '@sveltejs/site-kit/components/PreloadingIndicator.svelte';
 	import { browser } from '$app/environment';
 	import { isTeacher } from '$lib/utils';
-	let flag = true;
-	const ask = async () => {
-		if(browser){
-			try{
-				const res = await fetch('/login/api', {
-					method:'PATCH',
-					body:location.href
-				})
-				/**
-				 * @type {{status:boolean; reason:string}}
-				 */
-				const json = await res.json();
-				if(res.status === 307){
-					$isTeacher = false;
-					location.href = json.reason;
-				} else {
-					flag = false;
-					$isTeacher = json.reason === 'teacher';
-				}
-			} catch(err){
-				$isTeacher = false;
-				location.href = '/login';
-			}
-		}
-	};
-	ask();
 </script>
 
 <Icons />
@@ -73,7 +47,7 @@
 		</NavItem> -->
 	</svelte:fragment>
 </Nav>
-<main id="main" class:flag>
+<main id="main">
 	<slot />
 </main>
 
@@ -94,9 +68,6 @@
 		height: calc(100vh - var(--nav-h));
 		position: relative;
 		top: var(--nav-h);
-		&.flag{
-			display: none;
-		}
 	}
 
 	.large {
@@ -110,17 +81,6 @@
 
 		.large {
 			display: inline;
-		}
-
-		strong.large {
-			height: 100%;
-			display: flex;
-			align-items: center;
-			color: var(--sk-text-2);
-			text-transform: uppercase;
-			font-size: 1.2rem;
-			opacity: 1;
-			white-space: nowrap;
 		}
 	}
 </style>
