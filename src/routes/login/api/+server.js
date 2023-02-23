@@ -1,9 +1,18 @@
 import { checkUser } from '$lib/db';
 import { getHash } from '$lib/hash';
-import { setAllCookies } from '$lib/cookie';
+import { getAllCookies, setAllCookies } from '$lib/cookie';
 
 const TEACHER = import.meta.env.VITE_PASSWORD ?? process.env.VITE_PASSWORD;
 const secret = import.meta.env.VITE_HASH_SECRET ?? process.env.VITE_HASH_SECRET;
+
+/** @type {import('./$types').RequestHandler} */
+export const GET = ({cookies}) => {
+    let { teacher } = getAllCookies(cookies);
+    let isTeacher = teacher ? true : false;
+    return new Response(JSON.stringify({
+        isTeacher
+    }));
+}
 
 /** @type {import('./$types').RequestHandler} */
 export const POST = async ({request, cookies, url}) => {

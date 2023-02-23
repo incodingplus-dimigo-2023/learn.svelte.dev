@@ -11,11 +11,16 @@
 	import SkipLink from '@sveltejs/site-kit/components/SkipLink.svelte';
 	import PreloadingIndicator from '@sveltejs/site-kit/components/PreloadingIndicator.svelte';
 	import { isTeacher } from '$lib/utils';
+	import { browser } from '$app/environment';
 
-	/** @type {import('./$types').LayoutData}*/
-	export let data;
- 
-	$isTeacher = data.isTeacher;
+	const ask = async () => {
+		if(!browser) return;
+		const res = await fetch('/login/api');
+		/** @type {{isTeacher:boolean}}*/
+		const json = await res.json();
+		$isTeacher = json.isTeacher;
+	}
+	ask();
 </script>
 
 <Icons />
