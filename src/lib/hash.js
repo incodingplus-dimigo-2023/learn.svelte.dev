@@ -1,5 +1,3 @@
-const secret = import.meta.env.VITE_HASH_SECRET ?? process.env.VITE_HASH_SECRET;
-const encoder = new TextEncoder();
 /**
  * 
  * @param {ArrayBuffer} buffer 
@@ -18,9 +16,11 @@ const arrayBufferToBase64 = buffer => {
  * 
  * @param {string} id
  * @param {string} date
+ * @param {string} secret
  * @returns {Promise<string>} 
  */
-export const getHash = async (id, date) => {
+export const getHash = async (id, date, secret) => {
+    const encoder = new TextEncoder();
     const arr = [id, secret, date];
     /** @type {string[]} */
     const strs = [];

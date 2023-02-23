@@ -3,6 +3,7 @@ import { getHash } from '$lib/hash';
 import { setAllCookies } from '$lib/cookie';
 
 const TEACHER = import.meta.env.VITE_PASSWORD ?? process.env.VITE_PASSWORD;
+const secret = import.meta.env.VITE_HASH_SECRET ?? process.env.VITE_HASH_SECRET;
 
 /** @type {import('./$types').RequestHandler} */
 export const POST = async ({request, cookies, url}) => {
@@ -13,8 +14,8 @@ export const POST = async ({request, cookies, url}) => {
     let hashRaw = '';
     let teacher = '';
     if(json.pass === TEACHER){
-        hashRaw = await getHash(json.pass, date);
-        teacher = await getHash(TEACHER, date);
+        hashRaw = await getHash(json.pass, date, secret);
+        teacher = await getHash(TEACHER, date, secret);
     } else {
         const res = await checkUser(json.id, json.pass, date);
         if(!res.status ){
@@ -24,7 +25,7 @@ export const POST = async ({request, cookies, url}) => {
         }
         hashRaw = res.reason;
     }
-    let hash = await getHash(hashRaw, date);
+    let hash = await getHash(hashRaw, date, secret);
     setAllCookies(cookies, { hash, date, id:hashRaw, teacher}, url.protocol === 'https:');
     return new Response(JSON.stringify({
         status:true,

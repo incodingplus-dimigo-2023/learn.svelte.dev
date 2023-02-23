@@ -2,6 +2,7 @@ import { next, rewrite } from '@vercel/edge';
 import { getAllCookies, clearAllCookies, setAllCookies } from './src/lib/cookie.js';
 import { getHash } from './src/lib/hash.js';
 
+const secret = import.meta.env.VITE_HASH_SECRET ?? process.env.VITE_HASH_SECRET;
 const TEACHER = import.meta.env.VITE_PASSWORD ?? process.env.VITE_PASSWORD;
 
 class MiddleCookie{
@@ -86,7 +87,7 @@ const check = async (request, cookies) => {
     let url = new URL(request.url);
     let redirectUrl = `/login?url=${url.pathname}`;
     if(hash && id && date){
-        const data = await getHash(id, date);
+        const data = await getHash(id, date, secret);
         let reason = 'student';
         if(!data || data !== hash){
             clearAllCookies(cookies);
@@ -97,14 +98,14 @@ const check = async (request, cookies) => {
 			};
         }
         let newDate = String(Date.now());
-        if(teacher && teacher === await getHash(TEACHER, date)){
-            teacher = await getHash(TEACHER, newDate);
+        if(teacher && teacher === await getHash(TEACHER, date, secret)){
+            teacher = await getHash(TEACHER, newDate, secret);
             reason = 'teacher';
         } else {
             teacher = '';
         }
         id = hash;
-        hash = await getHash(id, newDate);
+        hash = await getHash(id, newDate, secret);
         setAllCookies(cookies, { hash, date:newDate, id, ...(teacher ? {teacher} : {})}, url.protocol === 'https:');
         return {
 			check:true,
