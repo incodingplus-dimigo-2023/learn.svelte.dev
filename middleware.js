@@ -1,4 +1,3 @@
-import { rewrite } from '@vercel/edge';
 import { getAllCookies, clearAllCookies, setAllCookies } from './src/lib/cookie.js';
 import { getHash } from './src/lib/hash.js';
 
@@ -7,7 +6,7 @@ const TEACHER = process.env.VITE_PASSWORD;
 class MiddleCookie{
 	/** @type {Headers} */
 	headers;
-	/**@type {Map<string,string>} */
+	/** @type {Map<string,string>} */
 	cookie = new Map();
 	/**
 	 * 
@@ -72,14 +71,14 @@ export const config = {
  * 
  * @param {Request} request 
  * @param {MiddleCookie} cookies 
- * @returns {{
+ * @returns {Promise<{
  * 	check:true;
  * 	teacher:boolean;
  * }| {
  * 	check:false;
  * 	teacher:boolean;
  * 	rewrite:string;
- * }}
+ * }>}
  */
 const check = async (request, cookies) => {
 	let { hash, id, date, teacher } = getAllCookies(cookies);
@@ -131,7 +130,7 @@ export default async function middleware(_request) {
 	const login = await check(_request, cookies);
 	if(!login.check){
 		console.log(login, new URL(login.rewrite, _request.url));
-		return rewrite(new URL(login.rewrite, _request.url));
+		return Response.redirect(new URL(login.rewrite, _request.url));
 	}
 	response.headers.set('cross-origin-opener-policy', 'same-origin');
 	response.headers.set('cross-origin-embedder-policy', 'require-corp');
