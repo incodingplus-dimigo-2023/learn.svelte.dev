@@ -1,9 +1,11 @@
+import { getAllCookies } from '$lib/cookie';
+
 export const prerender = true;
 
 /** @type {import('./$types').LayoutServerLoad} */
-export const load = ({request}) => {
-    console.log(request.headers.get('teacher'), typeof request.headers.get('teacher'));
-	let isTeacher = request.headers.get('teacher') === 'true' ? true : false;
+export const load = ({cookies}) => {
+    let { teacher } = getAllCookies(cookies);
+    let isTeacher = teacher ? true : false;
     return {
         isTeacher
     };

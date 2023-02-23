@@ -104,7 +104,7 @@ const check = async (request, cookies) => {
         }
         id = hash;
         hash = await getHash(id, newDate, secret);
-        setAllCookies(cookies, { hash, date:newDate, id, ...(teacher ? {teacher} : {})}, url.protocol === 'https:');
+        setAllCookies(cookies, { hash, date:newDate, id, teacher }, url.protocol === 'https:');
         return {
 			check:true,
 			teacher: Boolean(teacher)
