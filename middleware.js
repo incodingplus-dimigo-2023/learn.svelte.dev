@@ -1,6 +1,6 @@
 import { next, rewrite } from '@vercel/edge';
 import { getAllCookies, clearAllCookies, setAllCookies } from './src/lib/cookie.js';
-import { getHash } from './src/lib/db.js';
+import { getHash } from './src/lib/hash.js';
 
 const TEACHER = import.meta.env.VITE_PASSWORD ?? process.env.VITE_PASSWORD;
 

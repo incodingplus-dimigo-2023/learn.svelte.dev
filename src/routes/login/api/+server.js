@@ -1,5 +1,6 @@
-import { checkUser, getHash } from '$lib/db';
-import { clearAllCookies, getAllCookies, setAllCookies } from '$lib/cookie';
+import { checkUser } from '$lib/db';
+import { getHash } from '$lib/hash';
+import { setAllCookies } from '$lib/cookie';
 
 const TEACHER = import.meta.env.VITE_PASSWORD ?? process.env.VITE_PASSWORD;
 
