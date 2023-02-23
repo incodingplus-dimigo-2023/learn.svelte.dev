@@ -41,6 +41,7 @@
 	"type": "module",
 	"dependencies": {
 		"@fontsource/roboto-mono": "^4.5.10",
+		"@vercel/edge": "^0.2.7",
 		"@webcontainer/api": "1.0.2",
 		"adm-zip": "^0.5.10",
 		"base64-js": "^1.5.1",

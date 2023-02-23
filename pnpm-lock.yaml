@@ -12,6 +12,7 @@ specifiers:
   '@types/pg': ^8.6.6
   '@types/prismjs': ^1.26.0
   '@types/ws': ^8.5.4
+  '@vercel/edge': ^0.2.7
   '@webcontainer/api': 1.0.2
   adm-zip: ^0.5.10
   base64-js: ^1.5.1
@@ -40,6 +41,7 @@ specifiers:
 
 dependencies:
   '@fontsource/roboto-mono': 4.5.10
+  '@vercel/edge': 0.2.7
   '@webcontainer/api': 1.0.2
   adm-zip: 0.5.10
   base64-js: 1.5.1
@@ -946,6 +948,10 @@ packages:
     dependencies:
       '@types/node': 18.14.0
     dev: true
+
+  /@vercel/edge/0.2.7:
+    resolution: {integrity: sha512-pyHPopdvBXcgU8cabwtGCBxmNeU4YDqRTZFqJJYN5UTcTqaI7jc1HtaCPaf4nbapDtLOcqGQWAil6Hz2OMMeiw==}
+    dev: false
 
   /@vercel/nft/0.22.6:
     resolution: {integrity: sha512-gTsFnnT4mGxodr4AUlW3/urY+8JKKB452LwF3m477RFUJTAaDmcz2JqFuInzvdybYIeyIv1sSONEJxsxnbQ5JQ==}
