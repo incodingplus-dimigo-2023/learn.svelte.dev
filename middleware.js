@@ -7,7 +7,7 @@ export const config = {
  * @param {Request} _request 
  */
 export default function middleware(_request) {
-	console.log(_request.url);
+	console.log(_request.headers.get('cookie'));
 	const response = new Response();
 	response.headers.set('cross-origin-opener-policy', 'same-origin');
 	response.headers.set('cross-origin-embedder-policy', 'require-corp');

@@ -3,7 +3,6 @@ lockfileVersion: 5.4
 specifiers:
   '@fontsource/roboto-mono': ^4.5.10
   '@playwright/test': ^1.31.0
-  '@sveltejs/adapter-auto': 2.0.0
   '@sveltejs/adapter-vercel': 2.1.0
   '@sveltejs/kit': ^1.8.3
   '@sveltejs/site-kit': ^3.2.2
@@ -56,7 +55,6 @@ dependencies:
 
 devDependencies:
   '@playwright/test': 1.31.0
-  '@sveltejs/adapter-auto': 2.0.0_@sveltejs+kit@1.8.3
   '@sveltejs/adapter-vercel': 2.1.0_@sveltejs+kit@1.8.3
   '@sveltejs/kit': 1.8.3_svelte@3.55.1+vite@4.1.4
   '@sveltejs/site-kit': 3.2.2
@@ -814,15 +812,6 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /@sveltejs/adapter-auto/2.0.0_@sveltejs+kit@1.8.3:
-    resolution: {integrity: sha512-b+gkHFZgD771kgV3aO4avHFd7y1zhmMYy9i6xOK7m/rwmwaRO8gnF5zBc0Rgca80B2PMU1bKNxyBTHA14OzUAQ==}
-    peerDependencies:
-      '@sveltejs/kit': ^1.0.0
-    dependencies:
-      '@sveltejs/kit': 1.8.3_svelte@3.55.1+vite@4.1.4
-      import-meta-resolve: 2.2.1
-    dev: true
-
   /@sveltejs/adapter-vercel/2.1.0_@sveltejs+kit@1.8.3:
     resolution: {integrity: sha512-cK0R40ALUNDQG9OhaDBYtU55eob6CD1BXCcVSoC1N+GOq/N6FQaMkWXFVGLl98Ja0EZwoZeFAwf2m0Pnc3uq2Q==}
     peerDependencies:
@@ -1439,10 +1428,6 @@ packages:
     dependencies:
       parent-module: 1.0.1
       resolve-from: 4.0.0
-    dev: true
-
-  /import-meta-resolve/2.2.1:
-    resolution: {integrity: sha512-C6lLL7EJPY44kBvA80gq4uMsVFw5x3oSKfuMl1cuZ2RkI5+UJqQXgn+6hlUew0y4ig7Ypt4CObAAIzU53Nfpuw==}
     dev: true
 
   /indent-string/4.0.0:
