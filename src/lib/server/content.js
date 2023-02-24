@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import glob from 'tiny-glob/sync.js';
 import { transform } from './markdown.js';
 
 export const con = import.meta.env.VITE_CONTENT ?? process.env.VITE_CONTENT;
@@ -24,93 +25,45 @@ export function json(file) {
 	return JSON.parse(fs.readFileSync(file, 'utf-8'));
 }
 
+/** @param {string} dir */
+function is_valid(dir) {
+	return /^\d{2}-/.test(dir);
+}
+
+/**
+ * @returns {import('$lib/types').PartStub[]}
+ */
 export function get_index() {
-	const parts = [];
+	const parts = fs.readdirSync(`${con}/tutorial`).filter(is_valid);
 
-	/** @type {import('$lib/types').ExerciseRaw | null} */
-	let last_exercise = null;
+	return parts.map((part) => {
+		const chapters = fs.readdirSync(`${con}/tutorial/${part}`).filter(is_valid);
 
-	let last_part_meta = null;
-	let last_chapter_meta = null;
-
-	for (const part of fs.readdirSync(`${con}/tutorial`)) {
-		if (!/^\d{2}-/.test(part)) continue;
-
-		const part_meta = {
-			...json(`${con}/tutorial/${part}/meta.json`),
-			slug: part
-		};
-
-		const chapters = [];
-		for (const chapter of fs.readdirSync(`${con}/tutorial/${part}`)) {
-			if (!/^\d{2}-/.test(chapter)) continue;
-
-			const chapter_meta = {
-				...json(`${con}/tutorial/${part}/${chapter}/meta.json`),
-				slug: chapter
-			};
-
-			const exercises = [];
-
-			for (const exercise of fs.readdirSync(`${con}/tutorial/${part}/${chapter}`)) {
-				if (!/^\d{2}-/.test(exercise)) continue;
-
-				const dir = `${con}/tutorial/${part}/${chapter}/${exercise}`;
-				if (!fs.statSync(dir).isDirectory()) continue;
-
-				const text = fs.readFileSync(`${dir}/README.md`, 'utf-8');
-				const { frontmatter, markdown } = extract_frontmatter(text, dir);
-				const { title, path = '/', focus } = frontmatter;
-				const slug = exercise.slice(3);
-				const meta = fs.existsSync(`${dir}/meta.json`) ? json(`${dir}/meta.json`) : {};
-
-				if (last_exercise) {
-					last_exercise.next = {
-						slug,
-						title:
-							last_part_meta !== part_meta
-								? part_meta.title
-								: last_chapter_meta !== chapter_meta
-								? chapter_meta.title
-								: title
-					};
-				}
-
-				exercises.push(
-					(last_exercise = {
-						slug: exercise.slice(3),
-						title,
-						path,
-						focus,
-						markdown,
-						dir,
-						prev: last_exercise ? { slug: last_exercise.slug, title:last_exercise.title } : null,
-						meta,
-						next: null
-					})
-				);
-
-				last_chapter_meta = chapter_meta;
-				last_part_meta = part_meta;
-			}
-
-			chapters.push({
-				meta: {
-					...part_meta,
-					...chapter_meta
-				},
-				exercises
-			});
-		}
-
-		parts.push({
+		return {
 			slug: part,
-			meta: part_meta,
-			chapters
-		});
-	}
+			title: json(`${con}/tutorial/${part}/meta.json`).title,
+			chapters: chapters.map((chapter) => {
+				const exercises = fs.readdirSync(`${con}/tutorial/${part}/${chapter}`).filter(is_valid);
 
-	return parts;
+				return {
+					slug: chapter,
+					title: json(`${con}/tutorial/${part}/${chapter}/meta.json`).title,
+					exercises: exercises.map((exercise) => {
+						const dir = `${con}/tutorial/${part}/${chapter}/${exercise}`;
+
+						const text = fs.readFileSync(`${dir}/README.md`, 'utf-8');
+						const { frontmatter } = extract_frontmatter(text, dir);
+						const { title } = frontmatter;
+
+						return {
+							slug: exercise.slice(3),
+							title
+						};
+					})
+				};
+			})
+		};
+	});
 }
 
 /**
@@ -118,89 +71,140 @@ export function get_index() {
  * @returns {import('$lib/types').Exercise | undefined}
  */
 export function get_exercise(slug) {
-	const index = get_index();
+	const exercises = glob('[0-9][0-9]-*/[0-9][0-9]-*/[0-9][0-9]-*/README.md', {
+		cwd: `${con}/tutorial`
+	});
 
-	for (let i = 0; i < index.length; i += 1) {
-		const part = index[i];
+	/** @type {string[]} */
+	const chain = [];
+	for (let i = 0; i < exercises.length; i += 1) {
+		const file = exercises[i];
+		const [part_dir, chapter_dir, exercise_dir] = file.split('/');
+		const exercise_slug = exercise_dir.slice(3);
 
-		/** @type {string[]} */
-		const chain = [];
+		const dir = `${con}/tutorial/${part_dir}/${chapter_dir}/${exercise_dir}`;
 
-		for (const chapter of part.chapters) {
-			for (const exercise of chapter.exercises) {
-				if (fs.existsSync(`${exercise.dir}/app-a`)) {
-					chain.length = 0;
-					chain.push(`${exercise.dir}/app-a`);
-				}
-				if (exercise.slug === slug) {
-					const a = {
-						...walk(`${con}/tutorial/common`, {
-							exclude: ['node_modules', 'static/tutorial', 'static/svelte-logo-mask.svg']
-						}),
-						...walk(`${con}/tutorial/${part.slug}/common`)
-					};
-
-					for (const dir of chain) {
-						Object.assign(a, walk(dir));
-					}
-
-					const b = walk(`${exercise.dir}/app-b`);
-					/**@type {string[]} */
-					let home = [];
-					try{
-						let dirArr = fs.readdirSync(`${exercise.dir}/home`);
-						for(let str of dirArr){
-							home.push(str);
-						}
-					} catch(err){
-
-					}
-					const scope = chapter.meta.scope ?? part.meta.scope;
-					const filenames = new Set(
-						Object.keys(a)
-							.filter(
-								(filename) => filename.startsWith(scope.prefix) && a[filename].type === 'file'
-							)
-							.map((filename) => filename.slice(scope.prefix.length))
-					);
-
-					return {
-						part: {
-							slug: part.meta.slug,
-							title: part.meta.title,
-							index: i
-						},
-						chapter: {
-							slug: chapter.meta.slug,
-							title: chapter.meta.title
-						},
-						scope,
-						home,
-						focus: exercise.focus ?? chapter.meta.focus ?? part.meta.focus,
-						title: exercise.title,
-						path: exercise.path,
-						slug: exercise.slug,
-						prev: exercise.prev,
-						next: exercise.next,
-						dir: exercise.dir,
-						editing_constraints: {
-							create: exercise.meta.editing_constraints?.create ?? [],
-							remove: exercise.meta.editing_constraints?.remove ?? []
-						},
-						html: transform(exercise.markdown, {
-							codespan: (text) =>
-								filenames.size > 1 && filenames.has(text)
-									? `<code data-file="${scope.prefix + text}">${text}</code>`
-									: `<code>${text}</code>`
-						}),
-						a,
-						b
-					};
-				}
-
-				chain.push(`${exercise.dir}/app-b`);
-			}
+		if (fs.existsSync(`${dir}/app-a`)) {
+			chain.length = 0;
+			chain.push(`${dir}/app-a`);
 		}
+		if (exercise_slug === slug) {
+			const a = {
+				...walk(`${con}/tutorial/common`, {
+					exclude: ['node_modules', 'static/tutorial', 'static/svelte-logo-mask.svg']
+				}),
+				...walk(`${con}/tutorial/${part_dir}/common`)
+			};
+
+			for (const dir of chain) {
+				Object.assign(a, walk(dir));
+			}
+
+			const b = walk(`${dir}/app-b`);
+
+			const part_meta = json(`${con}/tutorial/${part_dir}/meta.json`);
+			const chapter_meta = json(`${con}/tutorial/${part_dir}/${chapter_dir}/meta.json`);
+
+			const exercise_meta_file = `${con}/tutorial/${part_dir}/${chapter_dir}/${exercise_dir}/meta.json`;
+			/**@type {string[]} */
+			let home = [];
+			try{
+				let dirArr = fs.readdirSync(`${dir}/home`);
+				for(let str of dirArr){
+					home.push(str);
+				}
+			} catch(err){
+
+			}
+			const exercise_meta = fs.existsSync(exercise_meta_file) ? json(exercise_meta_file) : {};
+
+			const scope = chapter_meta.scope ?? part_meta.scope;
+			const filenames = new Set(
+				Object.keys(a)
+					.filter((filename) => filename.startsWith(scope.prefix) && a[filename].type === 'file')
+					.map((filename) => filename.slice(scope.prefix.length))
+			);
+
+			const text = fs.readFileSync(`${dir}/README.md`, 'utf-8');
+			const { frontmatter, markdown } = extract_frontmatter(text, dir);
+			const { title, path = '/', focus } = frontmatter;
+			/** @type {{slug: string;title: string} | null} */
+			let prev = null;
+			if(exercises[i - 1]){
+				const text = fs.readFileSync(`${con}/tutorial/${exercises[i - 1]}`, 'utf-8');
+				
+				const { frontmatter } = extract_frontmatter(text, `${con}/tutorial/${exercises[i - 1]}`.split('/').slice(0, -1).join('/'));
+				const { title } = frontmatter;
+				const prev_slug = exercises[i - 1].split('/')[2].slice(3);
+				prev = prev_slug
+					? {
+							slug: prev_slug,
+							title
+					  }
+					: null;
+			}
+
+			let next = null;
+
+			const next_exercise = exercises[i + 1];
+
+			if (next_exercise) {
+				/** @type {string} */
+				let title;
+
+				const dirs = next_exercise.split('/');
+				if (dirs[0] !== part_dir) {
+					console.log({ dirs, part_dir, next_exercise });
+					title = json(`${con}/tutorial/${dirs[0]}/meta.json`).title;
+				} else if (dirs[1] !== chapter_dir) {
+					title = json(`${con}/tutorial/${dirs[0]}/${dirs[1]}/meta.json`).title;
+				} else {
+					title = extract_frontmatter(
+						fs.readFileSync(`${con}/tutorial/${next_exercise}`, 'utf-8'),
+						next_exercise
+					).frontmatter.title;
+				}
+
+				next = {
+					slug: next_exercise.split('/')[2].slice(3),
+					title
+				};
+			}
+
+			return {
+				part: {
+					slug: part_dir,
+					title: `Part ${part_dir.slice(1, 2)}`
+				},
+				chapter: {
+					slug: chapter_dir,
+					title: chapter_meta.title
+				},
+				home,
+				scope,
+				focus: focus ?? chapter_meta.focus ?? part_meta.focus,
+				title,
+				path,
+				slug: exercise_slug,
+				prev,
+				next,
+				dir,
+				editing_constraints: {
+					create: exercise_meta.editing_constraints?.create ?? [],
+					remove: exercise_meta.editing_constraints?.remove ?? []
+				},
+				html: transform(markdown, {
+					codespan: (text) =>
+						filenames.size > 1 && filenames.has(text)
+							? `<code data-file="${scope.prefix + text}">${text}</code>`
+							: `<code>${text}</code>`
+				}),
+				a,
+				b
+			};
+		}
+
+		chain.push(`${dir}/app-b`);
 	}
 }
 

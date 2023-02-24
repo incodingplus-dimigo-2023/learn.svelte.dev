@@ -6,6 +6,7 @@
 	import Icon from '@sveltejs/site-kit/components/Icon.svelte';
 	import { browser } from '$app/environment';
 	import { afterNavigate } from '$app/navigation';
+	import { tick } from 'svelte';
 
 	/** @type {import('$lib/types').PartStub[]}*/
 	export let index;
@@ -13,42 +14,32 @@
 	/** @type {import('$lib/types').Exercise} */
 	export let current;
 
+	const duration = browser && matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200;
+
 	let is_open = false;
 	let search = '';
 
-	let expanded_part = '';
-	let expanded_chapter = '';
-	let duration = 0;
+	/** @type {HTMLInputElement} */
+	let search_input;
 
-	// The following statements ensure that the select animation is not run during opening the menu
-	$: if (is_open || !is_open) {
-		expanded_part = current.part.slug;
-		expanded_chapter = current.chapter.slug;
-	}
-	$: if (is_open) {
-		duration = 0;
-		setTimeout(() => {
-			duration = browser && matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200;
-		}, 210);
-	}
+	$: expanded_part = current.part.slug;
+	$: expanded_chapter = current.chapter.slug;
 
 	$: regex = new RegExp(`${search.length >= 2 ? search : ''}`, 'i');
 	$: filtered = index
-		.map((part, i) => {
-			const chapters = part.chapters
-				.map((chapter, i) => ({
-					...chapter,
-					label: String.fromCharCode(97 + i),
-					first: chapter.exercises[0].slug,
-					exercises: chapter.exercises.filter((exercise) => regex.test(exercise.title))
-				}))
-				.filter((chapter) => chapter.exercises.length > 0 || regex.test(chapter.title));
-
+		.map((part) => {
 			return {
-				...part,
-				label: i + 1,
-				first: part.chapters[0].exercises[0].slug,
-				chapters
+				slug: part.slug,
+				title: part.title,
+				chapters: part.chapters
+					.map((chapter) => ({
+						slug: chapter.slug,
+						title: chapter.title,
+						exercises: regex.test(chapter.title)
+							? chapter.exercises
+							: chapter.exercises.filter((exercise) => regex.test(exercise.title))
+					}))
+					.filter((chapter) => chapter.exercises.length > 0)
 			};
 		})
 		.filter((part) => part.chapters.length > 0 || regex.test(part.title));
@@ -93,6 +84,7 @@
 			<input
 				type="search"
 				placeholder="Search"
+				bind:this={search_input}
 				bind:value={search}
 				aria-hidden={!is_open ? 'true' : null}
 				tabindex={!is_open ? -1 : null}
@@ -101,7 +93,7 @@
 
 		<div class="exercises">
 			<ul>
-				{#each filtered as part (part.slug)}
+				{#each filtered as part, i (part.slug)}
 					<li
 						class="part"
 						class:expanded={part.slug === expanded_part}
@@ -116,7 +108,7 @@
 								}
 							}}
 						>
-							Part {part.label}: {part.title}
+							Part {i + 1}: {part.title}
 						</button>
 
 						{#if search.length >= 2 || part.slug === expanded_part}
@@ -171,8 +163,14 @@
 
 	<!-- we don't want this to be keyboard-navigable, because the menu button to the left does that job better -->
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<h1 on:click={() => (is_open = true)}>
-		Part {current.part.index + 1} <span class="separator">/</span>
+	<h1
+		on:click={async () => {
+			is_open = true;
+			await tick();
+			search_input.focus();
+		}}
+	>
+		{current.part.title} <span class="separator">/</span>
 		{current.chapter.title} <span class="separator">/</span>
 		<strong>{current.title}</strong>
 	</h1>

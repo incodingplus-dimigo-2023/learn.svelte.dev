@@ -40,7 +40,6 @@ export interface Exercise {
 	part: {
 		slug: string;
 		title: string;
-		index: number;
 	};
 	chapter: {
 		slug: string;
@@ -52,8 +51,8 @@ export interface Exercise {
 	/** the initial path to navigate to */
 	path: string;
 	slug: string;
-	prev: { slug: string; title: string } | null;
-	next: { slug: string; title: string } | null;
+	prev: { slug: string; title?: string } | null;
+	next: { slug: string; title?: string } | null;
 	html: string;
 	dir: string;
 	home?:string[];
@@ -65,23 +64,9 @@ export interface Exercise {
 	b: Record<string, Stub>;
 }
 
-export interface ExerciseRaw {
-	title: string;
-	path: string;
-	focus: string;
-	slug: string;
-	prev: { slug: string; title: string } | null;
-	next: { slug: string; title: string } | null;
-	meta: any;
-	markdown: string;
-	dir: string;
-}
-
 export interface ExerciseStub {
 	title: string;
 	slug: string;
-	prev: { slug: string; title: string } | null;
-	next: { slug: string; title: string } | null;
 }
 
 export interface ChapterStub {
