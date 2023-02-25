@@ -6,7 +6,6 @@ export const POST = async ({request}) => {
     const octokit = new Octokit({
 		auth:import.meta.env.VITE_GITHUB ?? process.env.VITE_GITHUB
 	});
-
     /** @type {import('$lib/types').FileStub[]} */
     const result = [];
     try{
@@ -17,6 +16,7 @@ export const POST = async ({request}) => {
         const ttt = [];
         const txtArr = [];
         for(let i of datas.stubs){
+            console.log(`https://raw.githubusercontent.com/incodingplus-dimigo-2023/learn.svelte.student/${datas.branch}/${datas.dir.replace('content_kor', 'content')}/app-b${i}`)
             try{
                 // 1안
                 // const data = await octokit.rest.repos.getContent({
@@ -57,6 +57,7 @@ export const POST = async ({request}) => {
                 txtArr.push(i);
                 await new Promise(res => nextTick(res));
             } catch(err){
+                console.log(err);
             }
         }
 

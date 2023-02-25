@@ -112,12 +112,11 @@
 									disabled = true;
 									try{
 										const arr = $stubs.filter(v => v.type === 'file' && v.text).map(v => v.name);
-										const dir = `${data.exercise.dir}/${decodeURIComponent(location.pathname.split('~').slice(1).join('~'))}`;
 										const res = await fetch('/git', {
 											method:'POST',
 											body:JSON.stringify({
 												branch:gitUser,
-												dir,
+												dir:data.exercise.dir.replace('/home/', '/'),
 												stubs:arr
 											})
 										});
@@ -130,10 +129,12 @@
 										/** @type {import('$lib/types').FileStub[]}*/
 										let json = await res.json();
 										for(let i of json){
+											console.log(i);
 											state.update_file(i);
 										}
 										disabled = false;
 									} catch(err){
+										alert(err);
 										disabled = false;
 									}
 								}}>
