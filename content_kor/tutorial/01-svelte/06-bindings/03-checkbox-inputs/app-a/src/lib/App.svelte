@@ -3,20 +3,17 @@
 </script>
 
 <label>
-	<input type="checkbox" checked={yes} />
-	Yes! Send me regular email spam
+	<input type="checkbox" checked={yes} /> 동의합니다.
 </label>
 
 {#if yes}
 	<p>
-		Thank you. We will bombard your inbox and sell
-		your personal details.
+		동의 완료!
 	</p>
 {:else}
 	<p>
-		You must opt in to continue. If you're not
-		paying, you're the product.
+		회원 가입을 하려면 먼저 동의를 하셔야합니다.
 	</p>
 {/if}
 
-<button disabled={!yes}>Subscribe</button>
+<button disabled={!yes}>회원가입</button>

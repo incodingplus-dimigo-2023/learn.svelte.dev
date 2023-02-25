@@ -1,32 +1,40 @@
 ---
-title: Group inputs
+title: Input 태그 (라디오 버튼)
 ---
 
-If you have multiple inputs relating to the same value, you can use `bind:group` along with the `value` attribute. Radio inputs in the same group are mutually exclusive; checkbox inputs in the same group form an array of selected values.
+만약 라디오 버튼을 `bind` 하고 싶으면 `bind:group`을 사용해야 합니다. `bind:group`에는 `value` 값이 바인딩됩니다.
 
-Add `bind:group` to each input:
+
 
 ```svelte
 <input type=radio bind:group={scoops} name="scoops" value={1}>
 ```
 
-In this case, we could make the code simpler by moving the checkbox inputs into an `each` block. First, add a `menu` variable to the `<script>` block...
 
-```js
-let menu = ['Cookies and cream', 'Mint choc chip', 'Raspberry ripple'];
-```
 
-...then replace the second section:
+이 경우 배열과 함께 `each` 블럭을 사용하면 됩니다.
+
+
 
 ```svelte
-<h2>Flavours</h2>
+<script>
+	let menu = [
+		'엄마는 외계인',
+		'슈팅스타', 
+		'쿠키 앤 크림'
+	];
+	let picks = []
+</script>
+<h2>아이스크림</h2>
 
-{#each menu as flavour}
+{#each menu as ice}
 	<label>
-		<input type=checkbox bind:group={flavours} name="flavours" value={flavour}>
-		{flavour}
+		<input type=checkbox bind:group={picks} name="picks" value={ice}>
+		{ice}
 	</label>
 {/each}
 ```
 
-It's now easy to expand our ice cream menu in new and exciting directions.
+
+
+위의 코드에서는 `checkbox` 중에서 체크한 `value` 값들이 `picks` 배열에 추가되고, 체크 해제한 `value` 값들은 배열에서 삭제됩니다.

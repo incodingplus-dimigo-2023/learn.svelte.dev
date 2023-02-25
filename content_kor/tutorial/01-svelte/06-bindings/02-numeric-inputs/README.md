@@ -1,10 +1,12 @@
 ---
-title: Numeric inputs
+title: Input 태그 (숫자)
 ---
 
-In the DOM, everything is a string. That's unhelpful when you're dealing with numeric inputs — `type="number"` and `type="range"` — as it means you have to remember to coerce `input.value` before using it.
+DOM에서는 모든 속성의 값은 `string` 타입입니다. 하지만 이러한 경우 `type="number"`나 `type="range"`면 연산자를 쓰는 과정이나 비교하는 과정에서 조금 문제가 생길 수 있습니다.
 
-With `bind:value`, Svelte takes care of it for you:
+하지만 `bind:value`를 쓴다면 숫자 변수를 쓰는 것 또한 가능합니다.
+
+
 
 ```svelte
 <input type=number bind:value={a} min=0 max=10>
