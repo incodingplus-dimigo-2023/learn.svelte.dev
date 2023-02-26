@@ -1,7 +1,7 @@
 <script>
-	let name = 'world';
+	let name = '플러스';
 </script>
 
 <input value={name} />
 
-<h1>Hello {name}!</h1>
+<h1>인코딩 {name}!</h1>

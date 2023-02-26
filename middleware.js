@@ -63,10 +63,6 @@ class MiddleCookie{
 	}
 }
 
-export const config = {
-	matcher:['/tutorial', '/tutorial/:slug']
-}
-
 /**
  * 
  * @param {Request} request 
@@ -126,16 +122,17 @@ const check = async (request, cookies) => {
  */
 export default async function middleware(_request) {
 	const response = new Response();
-	const cookies = new MiddleCookie(_request, response);
-	const login = await check(_request, cookies);
-	if(!login.check){
-		console.log(login, new URL(login.rewrite, _request.url));
-		return Response.redirect(new URL(login.rewrite, _request.url));
+	if(_request.url.startsWith('/tutorial')){
+		const cookies = new MiddleCookie(_request, response);
+		const login = await check(_request, cookies);
+		if(!login.check){
+			console.log(login, new URL(login.rewrite, _request.url));
+			return Response.redirect(new URL(login.rewrite, _request.url));
+		}
 	}
 	response.headers.set('cross-origin-opener-policy', 'same-origin');
 	response.headers.set('cross-origin-embedder-policy', 'require-corp');
 	response.headers.set('cross-origin-resource-policy', 'cross-origin');
 	response.headers.set('x-middleware-next', '1');
-	response.headers.set('teacher', String(login.teacher));
 	return response;
 }
