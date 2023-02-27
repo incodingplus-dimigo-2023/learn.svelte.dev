@@ -19,6 +19,6 @@
 	}]
 </script>
 
-<Component name={arr[0].name} korean={arr[0].korean} math={arr[0].math} english={arr[0].english} />
-<Component name={arr[1].name} korean={arr[1].korean} math={arr[1].math} english={arr[1].english} />
-<Component name={arr[2].name} korean={arr[2].korean} math={arr[2].math} english={arr[2].english} />
+<Component {...arr[0]} />
+<Component {...arr[1]} />
+<Component {...arr[2]} />
