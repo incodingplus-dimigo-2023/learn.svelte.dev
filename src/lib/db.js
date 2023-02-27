@@ -1,5 +1,6 @@
 import pg from 'pg';
 import { getHash } from '$lib/hash';
+const secret = import.meta.env.VITE_HASH_SECRET ?? process.env.VITE_HASH_SECRET;
 
 const pool = new pg.Pool({
     user:import.meta.env.VITE_DB_USER ?? process.env.VITE_DB_USER,
@@ -43,7 +44,7 @@ export const checkUser = async (user, pass, date) => {
             ss.personal_code = '${pass.slice(0, 6)}\-${pass[6]}'`);
             if(res.rowCount !== 0) {
                 message.status = true;
-                message.reason = await getHash(res.rows[0].id, date);
+                message.reason = await getHash(res.rows[0].id, date, secret);
             } else message.reason = '해당 유저는 퇴원했거나, 존재하지 않는 유저입니다.';
             return message;
     } catch(err){
