@@ -18,7 +18,6 @@
 		/** @type {{isTeacher:boolean}}*/
 		const json = await res.json();
 		$isTeacher = json.isTeacher;
-		$isTeacher = true;
 	}
 	ask();
 </script>
