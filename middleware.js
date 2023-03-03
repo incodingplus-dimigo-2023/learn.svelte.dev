@@ -138,7 +138,7 @@ export default async function middleware(_request) {
 			console.log(login, new URL(login.rewrite, _request.url));
 			return Response.redirect(new URL(login.rewrite, _request.url));
 		}
-	} else if(url.pathname.startsWith('/login')){
+	} else if(url.pathname.startsWith('/logout')){
 		const cookies = new MiddleCookie(_request, response);
 		console.log('쿠키 지우기');
 		clearAllCookies(cookies)
