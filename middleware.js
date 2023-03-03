@@ -122,6 +122,7 @@ const check = async (request, cookies) => {
  */
 export default async function middleware(_request) {
 	const response = new Response();
+	console.log(_request.url, _request.url.startsWith('/tutorial'));
 	if(_request.url.startsWith('/tutorial')){
 		const cookies = new MiddleCookie(_request, response);
 		const login = await check(_request, cookies);
