@@ -59,7 +59,15 @@ class MiddleCookie{
 	 * @param {import('cookie').CookieSerializeOptions=} options
 	 */
 	delete(key, options){
-		this.headers.append('set-cookie', `${key}=; Max-Age=0`);
+		/** @type {string[]} */
+		const token = [];
+		if(options.httpOnly) token.push(`; HttpOnly`);
+		if(options.secure) token.push(`; Secure`);
+		if(options.domain) token.push(`; Domain=${encodeURI(options.domain)}`);
+		if(options.maxAge) token.push(`; Max-Age=${options.maxAge}`);
+		if(options.path) token.push(`; Path=${encodeURI(options.path)}`);
+		if(options.sameSite) token.push(`; SameSite=${options.sameSite === 'strict' || options.sameSite === true ? 'Strict' : 'Lax'}`);
+		this.headers.append('set-cookie', `${key}=deleted; Expires=Thu, 01 Jan 1970 00:00:00 GMT${token.join('')}`);
 	}
 }
 
