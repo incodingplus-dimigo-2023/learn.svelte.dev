@@ -2,15 +2,15 @@
 	let questions = [
 		{
 			id: 1,
-			text: `Where did you go to school?`
+			text: `당신의 초등학교는 어디입니까?`
 		},
 		{
 			id: 2,
-			text: `What is your mother's name?`
+			text: `당신의 어머니의 이름은 무엇입니까?`
 		},
 		{
 			id: 3,
-			text: `What is another personal fact that an attacker could easily find with Google?`
+			text: `당신이 처음 키운 애완동물의 이름은 무엇입니까?`
 		}
 	];
 
@@ -18,19 +18,19 @@
 
 	let answer = '';
 
-	function handleSubmit() {
+	const handleSubmit = () => {
 		alert(
-			`answered question ${selected.id} (${selected.text}) with "${answer}"`
+			`질문 ${selected.id} (${selected.text}) : "${answer}"`
 		);
 	}
 </script>
 
-<h2>Insecurity questions</h2>
+<h2>보안 질문</h2>
 
 <form on:submit|preventDefault={handleSubmit}>
 	<select
 		bind:value={selected}
-		on:change={() => (answer = '')}
+		on:change={() => answer = ''}
 	>
 		{#each questions as question}
 			<option value={question}>
@@ -42,12 +42,12 @@
 	<input bind:value={answer} />
 
 	<button disabled={!answer} type="submit">
-		Submit
+		제출
 	</button>
 </form>
 
 <p>
-	selected question {selected
+	선택된 질문 : {selected
 		? selected.id
 		: '[waiting...]'}
 </p>

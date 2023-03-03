@@ -1,9 +1,16 @@
 <script>
 	import { marked } from 'marked';
-	let value = `Some words are *italic*, some are **bold**`;
+	let value = `이탤릭체 : *italic*
+볼드체 : **bold**
+| 이름 |나이|
+|:----:|:--:|
+|김한결| 13 |
+|문성준| 99 |`;
 </script>
 
-{@html marked(value)}
+{@html marked(value, {
+	breaks:true
+})}
 
 <textarea bind:value />
 

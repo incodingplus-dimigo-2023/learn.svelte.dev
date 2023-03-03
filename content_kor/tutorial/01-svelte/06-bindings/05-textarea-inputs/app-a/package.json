@@ -1,8 +1,11 @@
 {
 	"name": "~TODO~",
 	"version": "0.0.1",
+	"scripts": {
+		"dev": "./node_modules/vite/bin/vite.js dev"
+	},
 	"dependencies": {
-		"marked": "^4.0.16"
+		"marked": "^4.2.12"
 	},
 	"type": "module"
 }
