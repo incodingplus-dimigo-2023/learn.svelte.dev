@@ -130,6 +130,10 @@ export default async function middleware(_request) {
 			console.log(login, new URL(login.rewrite, _request.url));
 			return Response.redirect(new URL(login.rewrite, _request.url));
 		}
+	} else if(url.pathname.startsWith('/login')){
+		const cookies = new MiddleCookie(_request, response);
+		console.log('쿠키 지우기');
+		clearAllCookies(cookies)
 	}
 	response.headers.set('cross-origin-opener-policy', 'same-origin');
 	response.headers.set('cross-origin-embedder-policy', 'require-corp');
