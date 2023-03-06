@@ -176,6 +176,7 @@
 					type:'fetch-response',
 					data:{
 						date,
+						type:'error',
 						data:String(err)
 					}
 				}, '*')

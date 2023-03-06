@@ -62,11 +62,16 @@ window.addEventListener('message', async (e) => {
 		);
 	} else if(e.data.type === 'fetch-response'){
 		if(map.has(e.data.data.date)){
-			const res = map.get(e.data.data.date);
-			const blob = new Blob([e.data.data.data], {
-				type:e.data.data.type
-			});
-			res(blob);
+			const obj = map.get(e.data.data.date);
+			map.delete(e.data.data.date);
+			if(e.data.data.type === 'error'){
+				obj.rej(e.data.data.data);
+			} else {
+				const blob = new Blob([e.data.data.data], {
+					type:e.data.data.type
+				});
+				obj.res(blob);
+			}
 		}
 	}
 });
@@ -114,7 +119,7 @@ window.addEventListener('focusin', (e) => {
 	}
 });
 
-/** @type {Map<string,(any)=>any>} */
+/** @type {Map<string,{res:(any)=>any,rej:(any)=>any}>} */
 let map = new Map();
 
 const mut = new MutationObserver((mut) => {
@@ -130,12 +135,14 @@ const mut = new MutationObserver((mut) => {
 							date
 						}
 					}, '*');
-					new Promise(res => map.set(date, res))
+					new Promise((res, rej) => map.set(date, {res, rej}))
 						.then(async t => {
 							let reader = new FileReader();
 							reader.readAsDataURL(t);
 							await new Promise(res => reader.addEventListener('load', res, {once:true}));
 							v.src = reader.result.toString();
+						}).catch(err => {
+							console.error(err);
 						})
 				}, {once:true})
 			}
