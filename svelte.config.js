@@ -13,7 +13,7 @@ const config = {
 				holdMode: true
 			}
 		}
-	}
+	},
 };
 
 export default config;

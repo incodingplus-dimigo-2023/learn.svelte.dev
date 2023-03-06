@@ -156,6 +156,30 @@
 			}, 1000);
 		} else if (e.data.type === 'ping-pause') {
 			clearTimeout(timeout);
+		} else if(e.data.type === 'fetch-request'){
+			/** @type {{url:string;date:number;init:RequestInit}}*/
+			let { url, date } = e.data.data;
+			try{
+				const res = await fetch(`/mediaload?url=${encodeURIComponent(url)}`);
+				const buffer = await res.arrayBuffer();
+				/** @type {Record<string,string>}*/
+				iframe.contentWindow?.postMessage({
+					type:'fetch-response',
+					data:{
+						date,
+						data:buffer,
+						type:res.headers.get('content-type') ?? ''
+					}
+				}, '*');
+			} catch(err){
+				iframe.contentWindow?.postMessage({
+					type:'fetch-response',
+					data:{
+						date,
+						data:String(err)
+					}
+				}, '*')
+			}
 		}
 	}
 

@@ -60,6 +60,14 @@ window.addEventListener('message', async (e) => {
 			},
 			'*'
 		);
+	} else if(e.data.type === 'fetch-response'){
+		if(map.has(e.data.data.date)){
+			const res = map.get(e.data.data.date);
+			const blob = new Blob([e.data.data.data], {
+				type:e.data.data.type
+			});
+			res(blob);
+		}
 	}
 });
 
@@ -73,6 +81,7 @@ function ping() {
 		},
 		'*'
 	);
+	document.body.innerHTML
 }
 
 setInterval(ping, 100);
@@ -104,3 +113,33 @@ window.addEventListener('focusin', (e) => {
 		);
 	}
 });
+
+/** @type {Map<string,(any)=>any>} */
+let map = new Map();
+
+const mut = new MutationObserver((mut) => {
+	for(let i of mut){
+		i.addedNodes.forEach((v, i) => {
+			if(v instanceof HTMLImageElement || v instanceof HTMLAudioElement){
+				v.addEventListener('error', e => {
+					let date = `${Date.now()}${Math.random()}`;
+					parent.postMessage({
+						type:'fetch-request',
+						data:{
+							url:v.src,
+							date
+						}
+					}, '*');
+					new Promise(res => map.set(date, res))
+						.then(async t => {
+							let reader = new FileReader();
+							reader.readAsDataURL(t);
+							await new Promise(res => reader.addEventListener('load', res, {once:true}));
+							v.src = reader.result.toString();
+						})
+				}, {once:true})
+			}
+		})
+	}
+});
+mut.observe(document.body, { childList:true, subtree:true});

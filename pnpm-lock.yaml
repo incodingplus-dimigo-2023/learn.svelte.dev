@@ -12,6 +12,7 @@ specifiers:
   '@types/prismjs': ^1.26.0
   '@types/ws': ^8.5.4
   '@vercel/edge': ^0.3.1
+  '@vitejs/plugin-basic-ssl': ^1.0.1
   '@webcontainer/api': 1.0.2
   adm-zip: ^0.5.10
   base64-js: ^1.5.1
@@ -63,6 +64,7 @@ devDependencies:
   '@types/pg': 8.6.6
   '@types/prismjs': 1.26.0
   '@types/ws': 8.5.4
+  '@vitejs/plugin-basic-ssl': 1.0.1_vite@4.1.4
   diff: 5.1.0
   dotenv: 16.0.3
   esbuild: 0.17.11
@@ -962,6 +964,15 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    dev: true
+
+  /@vitejs/plugin-basic-ssl/1.0.1_vite@4.1.4:
+    resolution: {integrity: sha512-pcub+YbFtFhaGRTo1832FQHQSHvMrlb43974e2eS8EKleR3p1cDdkJFPci1UhwkEf1J9Bz+wKBSzqpKp7nNj2A==}
+    engines: {node: '>=14.6.0'}
+    peerDependencies:
+      vite: ^3.0.0 || ^4.0.0
+    dependencies:
+      vite: 4.1.4_sass@1.58.3
     dev: true
 
   /@webcontainer/api/1.0.2:

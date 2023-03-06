@@ -10,7 +10,7 @@ let vm;
 function console_stream(label) {
 	return new WritableStream({
 		write(chunk) {
-			console.log(`[${label}] ${chunk}`);
+			// console.log(`[${label}] ${chunk}`);
 		}
 	});
 }
@@ -276,9 +276,10 @@ function convert_stubs_to_tree(stubs, depth = 1) {
 function to_file(stub) {
 	// special case
 	if (stub.name === '/src/app.html') {
+		console.log(location.origin)
 		const contents = stub.contents.replace(
 			'</head>',
-			'<script type="module" src="/src/__client.js"></script></head>'
+			`<script>var pl = '${location.origin}'</script><script type="module" src="/src/__client.js"></script></head>`
 		);
 
 		return {

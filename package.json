@@ -2,7 +2,7 @@
 	"name": "learn.svelte.dev",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "vite dev --https",
 		"build": "node scripts/create-common-bundle && vite build",
 		"preview": "vite preview",
 		"test": "playwright test",
@@ -22,6 +22,7 @@
 		"@types/pg": "^8.6.6",
 		"@types/prismjs": "^1.26.0",
 		"@types/ws": "^8.5.4",
+		"@vitejs/plugin-basic-ssl": "^1.0.1",
 		"diff": "^5.1.0",
 		"dotenv": "^16.0.3",
 		"esbuild": "^0.17.11",
