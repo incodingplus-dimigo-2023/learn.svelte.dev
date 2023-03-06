@@ -1,53 +1,38 @@
 <script>
 	let scoops = 1;
-	let flavours = ['Mint choc chip'];
-
+	let picks = ['엄마는 외계인'];
 	let menu = [
-		'Cookies and cream',
-		'Mint choc chip',
-		'Raspberry ripple'
+		'엄마는 외계인',
+		'슈팅스타', 
+		'쿠키 앤 크림'
 	];
-
-	function join(flavours) {
-		if (flavours.length === 1) return flavours[0];
-		return `${flavours.slice(0, -1).join(', ')} and ${flavours[flavours.length - 1]}`;
-	}
+	let sizes = ['싱글', '더블', '트리플'];
 </script>
 
-<h2>Size</h2>
+<h2>사이즈</h2>
+{#each sizes as size, ind}
+	<label>
+		<input type=radio bind:group={scoops} name="scoops" value={ind + 1}>
+		{size} ({ind + 1}가지 맛)
+	</label>
+{/each}
 
-<label>
-	<input type=radio bind:group={scoops} value={1}>
-	One scoop
-</label>
+<h2>아이스크림</h2>
 
-<label>
-	<input type=radio bind:group={scoops} value={2}>
-	Two scoops
-</label>
-
-<label>
-	<input type=radio bind:group={scoops} value={3}>
-	Three scoops
-</label>
-
-<h2>Flavours</h2>
-
-<select multiple bind:value={flavours}>
-	{#each menu as flavour}
-		<option value={flavour}>
-			{flavour}
-		</option>
+<select bind:value={picks} multiple>
+	{#each menu as ice}
+		<option value={ice}>{ice}</option>
 	{/each}
 </select>
 
-{#if flavours.length === 0}
-	<p>Please select at least one flavour</p>
-{:else if flavours.length > scoops}
-	<p>Can't order more flavours than scoops!</p>
+{#if picks.length === 0}
+	<p>한 가지 맛 이상 골라주세요.</p>
+{:else if picks.length > scoops}
+	<p>사이즈 요구 사항보다 많은 맛 종류를 고를 수는 없습니다.</p>
+{:else if picks.length < scoops}
+	<p>사이즈 요구 사항보다 적은 맛 종류를 고를 수는 없습니다.</p>
 {:else}
 	<p>
-		You ordered {scoops} {scoops === 1 ? 'scoop' : 'scoops'}
-		of {join(flavours)}
+		{sizes[scoops - 1]} 사이즈에 {picks.join(', ')}을 주문하셨습니다.
 	</p>
 {/if}

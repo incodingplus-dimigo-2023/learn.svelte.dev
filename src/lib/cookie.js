@@ -1,8 +1,8 @@
 /**
  * @param {import("@sveltejs/kit").Cookies|import('$lib/types').iMiddleCookie} cookies
  */
-export const clearAllCookies = (cookies) => {
-    cookies.delete('hash', { path:'/' });
+export const clearAllCookies = (cookies, secure = true) => {
+    cookies.delete('hash', { path:'/', secure, httpOnly:true });
 };
 
 /**

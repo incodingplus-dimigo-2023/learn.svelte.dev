@@ -59,7 +59,15 @@ class MiddleCookie{
 	 * @param {import('cookie').CookieSerializeOptions=} options
 	 */
 	delete(key, options){
-		this.headers.append('set-cookie', `${key}=; Max-Age=0`);
+		/** @type {string[]} */
+		const token = [];
+		if(options.httpOnly) token.push(`; HttpOnly`);
+		if(options.secure) token.push(`; Secure`);
+		if(options.domain) token.push(`; Domain=${encodeURI(options.domain)}`);
+		if(options.maxAge) token.push(`; Max-Age=${options.maxAge}`);
+		if(options.path) token.push(`; Path=${encodeURI(options.path)}`);
+		if(options.sameSite) token.push(`; SameSite=${options.sameSite === 'strict' || options.sameSite === true ? 'Strict' : 'Lax'}`);
+		this.headers.append('set-cookie', `${key}=deleted; Expires=Thu, 01 Jan 1970 00:00:00 GMT${token.join('')}`);
 	}
 }
 
@@ -122,13 +130,18 @@ const check = async (request, cookies) => {
  */
 export default async function middleware(_request) {
 	const response = new Response();
-	if(_request.url.startsWith('/tutorial')){
+	const url = new URL(_request.url, _request.url);
+	if(url.pathname.startsWith('/tutorial')){
 		const cookies = new MiddleCookie(_request, response);
 		const login = await check(_request, cookies);
 		if(!login.check){
 			console.log(login, new URL(login.rewrite, _request.url));
 			return Response.redirect(new URL(login.rewrite, _request.url));
 		}
+	} else if(url.pathname.startsWith('/logout')){
+		const cookies = new MiddleCookie(_request, response);
+		console.log('쿠키 지우기');
+		clearAllCookies(cookies)
 	}
 	response.headers.set('cross-origin-opener-policy', 'same-origin');
 	response.headers.set('cross-origin-embedder-policy', 'require-corp');
