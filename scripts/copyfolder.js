@@ -1,8 +1,7 @@
-import glob from 'glob';
 import path from 'path';
+import glob from 'glob';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
-import { promisify } from 'util';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dest = process.argv[2];
 
@@ -11,10 +10,16 @@ if(!fs.existsSync(dest)){
 }
 const rel = path.relative(path.resolve('./'), path.resolve(__dirname, '../content_kor/tutorial'));
 const root = `./${rel.replaceAll(path.sep, path.posix.sep)}`;
-const proGlob = promisify(glob);
-const appA = await proGlob(`${root}/**/home/*/app-a/`);
-const common = await proGlob(`${root}/**/common/`);
-const meta = await proGlob(`${root}/**/meta.json`);
+
+let appA, common, meta;
+try{
+    appA = await glob(`${root}/**/home/*/app-a/`);
+    common = await glob(`${root}/**/common/`);
+    meta = await glob(`${root}/**/meta.json`);
+} catch(err){
+    throw err
+}
+
 
 fs.rmSync(path.resolve(dest, 'content'), {
     force:true,
@@ -35,6 +40,7 @@ for(let i of appA){
         recursive:true,
     });
 }
+
 
 for(let i of [...common, ...meta]){
     const curDest = path.resolve(dest, 'content/tutorial', i.replace(root, '.'));
