@@ -33,7 +33,7 @@ export default {
 		},
 
 		sveltekit(),
-		basicSsl()
+		// basicSsl()
 	],
 
 	server: {

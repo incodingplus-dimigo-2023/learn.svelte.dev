@@ -12,6 +12,7 @@
 	import PreloadingIndicator from '@sveltejs/site-kit/components/PreloadingIndicator.svelte';
 	import { isTeacher } from '$lib/utils';
 	import { browser } from '$app/environment';
+	import { dev } from '$app/environment';
 	const ask = async () => {
 		if(!browser) return;
 		const res = await fetch('/login/api');
@@ -21,7 +22,6 @@
 	}
 	ask();
 </script>
-
 <Icons />
 
 {#if $navigating && $navigating.to}

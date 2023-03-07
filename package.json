@@ -2,7 +2,8 @@
 	"name": "learn.svelte.dev",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "vite dev --https",
+		"dev": "vite dev",
+		"dev:https": "vite dev --https",
 		"build": "node scripts/create-common-bundle && vite build",
 		"preview": "vite preview",
 		"test": "playwright test",
