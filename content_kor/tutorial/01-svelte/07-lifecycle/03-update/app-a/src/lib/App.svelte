@@ -19,18 +19,22 @@
 	const eliza = new Eliza();
 
 	let comments = [
-		{ author: 'eliza', text: eliza.getInitial() }
+		{ author: 'eliza', text: eliza.getInitial(), placeholder:false }
 	];
 
+	let disabled = false;
+
 	function handleKeydown(event) {
-		if (event.key === 'Enter') {
+		if (event.key === 'Enter' && !disabled) {
 			const text = event.target.value;
 			if (!text) return;
-
-			comments = comments.concat({
+			disabled = true;
+			
+			comments = [...comments, {
 				author: 'user',
-				text
-			});
+				text,
+				placeholder:false
+			}];
 
 			event.target.value = '';
 
@@ -44,14 +48,14 @@
 				});
 
 				setTimeout(() => {
-					comments = comments
-						.filter(
+					disabled = false;
+					comments = [...comments.filter(
 							(comment) => !comment.placeholder
-						)
-						.concat({
+						), {
 							author: 'eliza',
-							text: reply
-						});
+							text: reply,
+							placeholder:false
+						}];
 				}, 500 + Math.random() * 500);
 			}, 200 + Math.random() * 200);
 		}
@@ -69,7 +73,7 @@
 		{/each}
 	</div>
 
-	<input on:keydown={handleKeydown} />
+	<input { disabled } on:keydown={handleKeydown} />
 </div>
 
 <style>

@@ -4,16 +4,14 @@
 	let photos = [];
 
 	onMount(async () => {
-		console.log('??????');
 		const res = await fetch(
 			`https://jsonplaceholder.typicode.com/photos?_limit=20`
 		);
 		photos = await res.json();
-		console.log(photos);
 	});
 </script>
 
-<h1>Photo album</h1>
+<h1>사진 앨범</h1>
 
 <div class="photos">
 	{#each photos as photo}
