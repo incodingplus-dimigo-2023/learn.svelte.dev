@@ -1,6 +1,7 @@
+/// <reference no-default-lib="true"/>
 /// <reference types="@sveltejs/kit" />
+/// <reference path="./service-worker.d.ts" />
 import { build, files, version } from '$service-worker';
- 
 // Create a unique cache name for this deployment
 const CACHE = `cache-${version}`;
  
@@ -15,7 +16,6 @@ self.addEventListener('install', (event) => {
     const cache = await caches.open(CACHE);
     await cache.addAll(ASSETS);
   }
- 
   event.waitUntil(addFilesToCache());
   self.skipWaiting();
 });
@@ -34,7 +34,6 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   // ignore POST requests etc
   if (event.request.method !== 'GET') return;
- 
   async function respond() {
     const url = new URL(event.request.url);
     const cache = await caches.open(CACHE);
