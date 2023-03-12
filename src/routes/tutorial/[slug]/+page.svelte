@@ -5,8 +5,8 @@
 	import { afterNavigate } from '$app/navigation';
 	import ContextMenu from './filetree/ContextMenu.svelte';
 	import Filetree from './filetree/Filetree.svelte';
-	import SplitPane from '$lib/components/SplitPane.svelte';
 	import { isTeacher } from '$lib/utils';
+	import { SplitPane } from '@rich_harris/svelte-split-pane';
 	import Icon from '@sveltejs/site-kit/components/Icon.svelte';
 	import { writable } from 'svelte/store';
 	import Editor from './Editor.svelte';
@@ -16,7 +16,6 @@
 	import { state, selected, completed, stubs } from './state.js';
 	import JSZip from 'jszip'
 
-	/** @type {import('./$types').PageData} */
 	export let data;
 
 	/** @type {HTMLSelectElement}*/
@@ -101,7 +100,7 @@
 				pos={$mobile ? (selected_view === 1 ? '100%' : '0%') : '50%'}
 			>
 				<section slot="a">
-					<SplitPane type="horizontal" min="80px" max="300px" pos="200px">
+					<SplitPane type="horizontal" min="120px" max="300px" pos="200px">
 						<section class="navigator" slot="a">
 							<Filetree readonly={mobile} />
 							{#if data.isHome && $isTeacher}	

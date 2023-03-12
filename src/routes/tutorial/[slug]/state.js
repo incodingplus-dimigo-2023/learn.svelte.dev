@@ -2,7 +2,7 @@ import { derived, writable } from 'svelte/store';
 
 /**
  * @typedef {{
- *  status: 'initial' | 'select' | 'set' | 'update' | 'switch';
+ *  status: 'initial' | 'select' | 'set' | 'update' | 'switch' | 'expand';
  *  stubs: import("$lib/types").Stub[];
  *  last_updated?: import("$lib/types").FileStub;
  *  selected: string | null;
@@ -13,6 +13,7 @@ import { derived, writable } from 'svelte/store';
  *    editing_constraints: import("$lib/types").EditingConstraints;
  *    scope: import('$lib/types').Scope;
  *  };
+ *  expanded: Record<string, boolean>;
  * }} State
  */
 
@@ -31,9 +32,10 @@ const { subscribe, set, update } = writable({
 			create: [],
 			remove: []
 		},
-		scope: { depth: 0, name: '', prefix: '' }
-	}
-})
+		scope: { name: '', prefix: '' }
+	},
+	expanded: {}
+});
 
 export const state = {
 	subscribe,
@@ -70,6 +72,17 @@ export const state = {
 			create: exercise.editing_constraints.create,
 			remove: exercise.editing_constraints.remove
 		};
+
+		/** @type {Record<string, boolean>} */
+		const expanded = {
+			'': true
+		};
+
+		for (const stub of Object.values(exercise.a)) {
+			if (stub.type === 'directory') {
+				expanded[stub.name] = true;
+			}
+		}
 
 		// TODO should exercise.a/b be an array in the first place?
 		for (const stub of Object.values(exercise.b)) {
@@ -110,7 +123,8 @@ export const state = {
 				scope: exercise.scope
 			},
 			last_updated: undefined,
-			selected: exercise.focus
+			selected: exercise.focus,
+			expanded
 		});
 	},
 
@@ -129,6 +143,20 @@ export const state = {
 			status: 'set',
 			home: !state.home,
 			last_updated: undefined
+		}))
+	},
+	/**
+	 * @param {string} name
+	 * @param {boolean} [expanded]
+	 */
+	toggle_expanded: (name, expanded) => {
+		update((state) => ({
+			...state,
+			status: 'expand',
+			expanded: {
+				...state.expanded,
+				[name]: expanded ?? !state.expanded[name]
+			}
 		}));
 	},
 
