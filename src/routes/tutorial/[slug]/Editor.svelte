@@ -1,239 +1,214 @@
 <script>
-	import { dev } from '$app/environment';
-	import { onMount } from 'svelte';
-	import { stubs, selected, state } from './state.js';
+	import { browser, dev } from '$app/environment';
+	import { onMount, tick } from 'svelte';
+	import { basicSetup } from 'codemirror';
+	import { EditorView, keymap } from '@codemirror/view';
+	import { EditorState } from '@codemirror/state';
+	import { indentWithTab } from '@codemirror/commands';
+	import { indentUnit } from '@codemirror/language';
+	import { setDiagnostics } from '@codemirror/lint';
+	import { javascript } from '@codemirror/lang-javascript';
+	import { html } from '@codemirror/lang-html';
+	import { svelte } from '@replit/codemirror-lang-svelte';
+	import { tags } from '@lezer/highlight';
+	import { HighlightStyle } from '@codemirror/language';
+	import { syntaxHighlighting } from '@codemirror/language';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import { files, selected_file, selected_name, update_file, warnings } from './state.js';
+	import './codemirror.css';
 
-	/**
-	 * file extension -> monaco language
-	 * @type {Record<string, string>}
-	 * */
-	const types = {
-		js: 'javascript',
-		ts: 'typescript',
-		svelte: 'html' // TODO
-	};
+	// TODO add more styles (selection ranges, etc)
+	const highlights = HighlightStyle.define([
+		{ tag: tags.tagName, color: '#c05726' },
+		{ tag: tags.keyword, color: 'var(--sk-code-keyword)' },
+		{ tag: tags.comment, color: 'var(--sk-code-comment)' },
+		{ tag: tags.string, color: 'var(--sk-code-string)' }
+	]);
 
-	/**
-	 * URL -> model
-	 * @type {Map<string, import('monaco-editor').editor.ITextModel>}
-	 * */
-	const models = new Map();
-
-	export let read_only = false;
+	const theme = syntaxHighlighting(highlights);
 
 	/** @type {HTMLDivElement} */
 	let container;
 
-	/** @type {ReturnType<typeof init> | undefined}*/
-	let instance;
-
-	let w = 0;
-	let h = 0;
-
 	let preserve_editor_focus = false;
+	let skip_reset = true;
+
 	/** @type {any} */
 	let remove_focus_timeout;
 
-	onMount(() => {
-		let destroyed = false;
+	/** @type {Map<string, import('@codemirror/state').EditorState>} */
+	let editor_states = new Map();
 
+	/** @type {import('@codemirror/view').EditorView} */
+	let editor_view;
+	const extensions = [
+		basicSetup,
+		EditorState.tabSize.of(2),
+		keymap.of([indentWithTab]),
+		indentUnit.of('\t'),
+		theme
+	];
+
+	$: if (editor_view) {
+		select_state($selected_name);
+
+		if ($selected_name) {
+			const current_warnings = $warnings[$selected_name];
+
+			if (current_warnings) {
+				const diagnostics = current_warnings.map((warning) => {
+					/** @type {import('@codemirror/lint').Diagnostic} */
+					const diagnostic = {
+						from: warning.start.character,
+						to: warning.end.character,
+						severity: 'warning',
+						message: warning.message
+					};
+
+					return diagnostic;
+				});
+
+				const transaction = setDiagnostics(editor_view.state, diagnostics);
+
+				editor_view.dispatch(transaction);
+			}
+		}
+	}
+
+	$: reset($files);
+
+	/** @param {import('$lib/types').Stub[]} $files */
+	function reset($files) {
+		if (skip_reset) return;
+
+		for (const file of $files) {
+			if (file.type !== 'file') continue;
+
+			let state = editor_states.get(file.name);
+
+			if (state) {
+				const existing = state.doc.toString();
+
+				if (file.contents !== existing) {
+					const transaction = state.update({
+						changes: {
+							from: 0,
+							to: existing.length,
+							insert: file.contents
+						}
+					});
+
+					editor_states.set(file.name, transaction.state);
+					state = transaction.state;
+
+					if ($selected_name === file.name) {
+						editor_view.setState(state);
+					}
+				}
+			} else {
+				let lang;
+
+				if (file.name.endsWith('.js') || file.name.endsWith('.json')) {
+					lang = javascript();
+				} else if (file.name.endsWith('.html')) {
+					lang = html();
+				} else if (file.name.endsWith('.svelte')) {
+					lang = svelte();
+				}
+
+				state = EditorState.create({
+					doc: file.contents,
+					extensions: lang ? [...extensions, lang] : extensions
+				});
+
+				editor_states.set(file.name, state);
+			}
+		}
+	}
+
+	/** @param {string | null} $selected_name */
+	function select_state($selected_name) {
+		if (skip_reset) return;
+
+		const state =
+			($selected_name && editor_states.get($selected_name)) ||
+			EditorState.create({
+				doc: '',
+				extensions: [EditorState.readOnly.of(true)]
+			});
+
+		editor_view.setState(state);
+	}
+
+	onMount(() => {
 		if (dev && !/chrome/i.test(navigator.userAgent)) {
 			container.innerHTML =
 				'<p style="text-align: center; width: 20em; max-width: calc(100% - 4rem)">The code editor requires Chrome during development, as it uses module workers</p>';
 			return;
 		}
 
+		// TODO is this still necessary?
 		let dark_mode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-		import('$lib/client/monaco/monaco.js').then(({ monaco }) => {
-			if (destroyed) return;
-			instance = init(monaco, dark_mode);
-
-			document.fonts.ready.then(() => {
-				monaco.editor.remeasureFonts();
-			});
-		});
 
 		/** @param {MediaQueryListEvent} event */
 		const on_mode_change = (event) => {
 			const dark = event.matches;
 			if (dark !== dark_mode) {
 				dark_mode = dark;
-				instance?.set_theme(dark ? 'svelte-dark' : 'svelte');
 			}
 		};
 		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', on_mode_change);
 
+		editor_view = new EditorView({
+			parent: container,
+			async dispatch(transaction) {
+				editor_view.update([transaction]);
+
+				if (transaction.docChanged && $selected_file) {
+					skip_reset = true;
+
+					// TODO do we even need to update `$files`? maintaining separate editor states is probably sufficient
+					update_file({
+						...$selected_file,
+						contents: editor_view.state.doc.toString()
+					});
+
+					// keep `editor_states` updated so that undo/redo history is preserved for files independently
+					editor_states.set($selected_file.name, editor_view.state);
+
+					await tick();
+					skip_reset = false;
+				}
+			}
+		});
+
 		return () => {
-			destroyed = true;
 			window
 				.matchMedia('(prefers-color-scheme: dark)')
 				.removeEventListener('change', on_mode_change);
-			if (instance) {
-				instance.update_files([]); // removes all files
-				instance.editor.dispose();
-			}
+
+			editor_view.destroy();
 		};
 	});
 
-	/**
-	 * @param {import('monaco-editor')} monaco
-	 * @param {boolean} dark_mode
-	 */
-	function init(monaco, dark_mode) {
-		monaco.editor.defineTheme('svelte', {
-			base: 'vs',
-			inherit: false,
-			rules: [
-				// TODO more rules
-				{ token: '', foreground: '5f5c53' },
-				{ token: 'keyword', foreground: '0b69a8' },
-				{ token: 'string', foreground: '856e3d' },
-				{ token: 'delimiter', foreground: '5f5c53' },
-				{ token: 'variable', foreground: 'c05726' },
-				{ token: 'constant', foreground: 'c05726' },
-				{ token: 'tag', foreground: 'c05726' },
-				{ token: 'number', foreground: '72a25d' },
-				{ token: 'boolean', foreground: '3080b5' }
-			],
-			colors: {
-				'editor.background': '#f4f8fb',
-				'token.keyword': '#ff0000'
-			}
-		});
+	beforeNavigate(() => {
+		skip_reset = true;
+	});
 
-		monaco.editor.defineTheme('svelte-dark', {
-			base: 'vs-dark',
-			inherit: false,
-			rules: [
-				// TODO more rules
-				{ token: '', foreground: 'e6e6e6' },
-				{ token: 'keyword', foreground: '3384ba' },
-				{ token: 'string', foreground: '856e3d' },
-				{ token: 'delimiter', foreground: '5f5c53' },
-				{ token: 'variable', foreground: 'd47346' },
-				{ token: 'constant', foreground: 'd47346' },
-				{ token: 'tag', foreground: 'd47346' },
-				{ token: 'number', foreground: '91bd7f' },
-				{ token: 'boolean', foreground: '499cd3' }
-			],
-			colors: {
-				'editor.background': '#1a1a1a',
-				'token.keyword': '#ff0000'
-			}
-		});
+	afterNavigate(() => {
+		skip_reset = false;
 
-		monaco.editor.setTheme(dark_mode ? 'svelte-dark' : 'svelte');
+		editor_states.clear();
+		reset($files);
 
-		const editor = monaco.editor.create(container, {
-			fontFamily: 'D2Coding',
-			fontSize: 13,
-			padding: {
-				top: 16,
-				bottom: 16
-			},
-			minimap: {
-				enabled: false
-			}
-		});
-		
-		let notify = true;
-
-		/**
-		 *
-		 * @param {import('$lib/types').Stub[]} stubs
-		 */
-		function update_files(stubs) {
-			notify = false;
-			for (const stub of stubs) {
-				if (stub.type === 'directory') {
-					continue;
-				}
-
-				const model = models.get(stub.name);
-
-				if (model) {
-					const value = model.getValue();
-
-					if (stub.contents !== value) {
-						model.pushEditOperations(
-							[],
-							[
-								{
-									range: model.getFullModelRange(),
-									text: stub.contents
-								}
-							],
-							() => null
-						);
-					}
-				} else {
-					create_file(stub);
-				}
-			}
-
-			for (const [name, model] of models) {
-				if (!stubs.some((stub) => stub.name === name)) {
-					model.dispose();
-					models.delete(name);
-				}
-			}
-			notify = true;
+		if (editor_view) {
+			// could be false if onMount returned early
+			select_state($selected_name);
 		}
 
-		/**
-		 * @param {import('$lib/types').FileStub} stub
-		 */
-		function create_file(stub) {
-			// deep-copy stub so we can mutate it and not create a memory leak
-			stub = JSON.parse(JSON.stringify(stub));
-
-			const type = /** @type {string} */ (stub.basename.split('.').pop());
-
-			const model = monaco.editor.createModel(
-				stub.contents,
-				types[type] || type,
-				new monaco.Uri().with({ path: stub.name })
-			);
-
-			model.updateOptions({ tabSize: 2 });
-
-			model.onDidChangeContent(() => {
-				const contents = model.getValue();
-
-				if (notify) {
-					stub.contents = contents;
-					state.update_file(stub);
-				}
-			});
-
-			models.set(stub.name, model);
-		}
-
-		return {
-			editor,
-			set_theme: monaco.editor.setTheme,
-			update_files,
-			create_file
-		};
-	}
-
-	$: if (instance) {
-		instance.update_files($stubs);
-	}
-
-	$: if (instance) {
-		instance.editor.updateOptions({ readOnly: read_only });
-	}
-
-	$: if (instance && $stubs /* to retrigger on stubs change */) {
-		const model = $selected && models.get($selected.name);
-		instance.editor.setModel(model ?? null);
-	}
-
-	$: if (instance && (w || h)) {
-		instance.editor.layout();
-	}
+		// clear warnings
+		warnings.set({});
+	});
 </script>
 
 <svelte:window
@@ -244,72 +219,84 @@
 	}}
 	on:message={(e) => {
 		if (preserve_editor_focus && e.data.type === 'iframe_took_focus') {
-			instance?.editor.focus();
-		} else if(e.data.type === 'focus_on_editor'){
-			instance?.editor.focus();
+			editor_view.focus();
 		}
 	}}
 />
 
-<div bind:clientWidth={w} bind:clientHeight={h}>
-	<div
-		bind:this={container}
-		on:keydown={(e) => {
-			if (e.key === 'Tab') {
-				preserve_editor_focus = false;
+<div
+	class="container"
+	bind:this={container}
+	on:keydown={(e) => {
+		if (e.key === 'Tab') {
+			preserve_editor_focus = false;
 
-				setTimeout(() => {
-					preserve_editor_focus = true;
-				}, 200);
-			}
-		}}
-		on:focusin={() => {
-			clearTimeout(remove_focus_timeout);
-			preserve_editor_focus = true;
-		}}
-		on:focusout={() => {
-			// Heuristic: user did refocus themmselves if iframe_took_focus
-			// doesn't happen in the next few miliseconds. Needed
-			// because else navigations inside the iframe refocus the editor.
-			remove_focus_timeout = setTimeout(() => {
-				preserve_editor_focus = false;
+			setTimeout(() => {
+				preserve_editor_focus = true;
 			}, 200);
-		}}
-	/>
+		}
+	}}
+	on:focusin={() => {
+		clearTimeout(remove_focus_timeout);
+		preserve_editor_focus = true;
+	}}
+	on:focusout={() => {
+		// Heuristic: user did refocus themmselves if iframe_took_focus
+		// doesn't happen in the next few miliseconds. Needed
+		// because else navigations inside the iframe refocus the editor.
+		remove_focus_timeout = setTimeout(() => {
+			preserve_editor_focus = false;
+		}, 200);
+	}}
+>
+	{#if !browser && $selected_file}
+		<div class="fake">
+			<div class="fake-gutter">
+				{#each $selected_file.contents.split('\n') as _, i}
+					<div class="fake-line">{i + 1}</div>
+				{/each}
+			</div>
+			<div class="fake-content">
+				{#each $selected_file.contents.split('\n') as line}
+					<pre>{line || ' '}</pre>
+				{/each}
+			</div>
+		</div>
+	{/if}
 </div>
 
 <style>
-	div {
-		display: flex;
-		align-items: center;
-		justify-content: center;
+	.container {
 		width: 100%;
 		height: 100%;
-		tab-size: 2;
 	}
 
-	/* TODO figure out how to make the indent guides
-	   play nicely with fonts other than Menlo */
-	div :global(.core-guide-indent.vertical),
-	div :global(.core-guide-indent-active.vertical) {
-		display: none;
+	.fake {
+		display: grid;
+		grid-template-columns: 4rem 1fr;
+		grid-gap: 1rem;
+		padding: 1rem 0;
+		font-size: 1.3rem;
+		line-height: 2rem;
 	}
 
-	/* TODO figure out how to remove the weird 1px line
-	   in the scroll gutter */
-	div :global(.decorationsOverviewRuler) {
-		display: none !important;
+	.fake * {
+		font-family: var(--font-mono) !important;
+		color: #ccc;
 	}
 
-	div :global(.monaco-editor .view-overlays .current-line) {
-		border: none;
+	.fake-gutter {
+		text-align: right;
+		padding-right: 3px;
 	}
 
-	/* reposition overlay message that appears when trying to edit in readonly mode */
-	div :global(.monaco-editor-overlaymessage) {
-		margin-top: 6rem;
+	.fake-content {
+		padding: 0 1rem;
 	}
-	div :global(.monaco-editor-overlaymessage .anchor.below) {
-		display: none;
+
+	@media (prefers-color-scheme: dark) {
+		.fake * {
+			color: #666;
+		}
 	}
 </style>

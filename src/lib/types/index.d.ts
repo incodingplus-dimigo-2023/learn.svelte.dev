@@ -16,18 +16,10 @@ export interface DirectoryStub {
 
 export type Stub = FileStub | DirectoryStub;
 
-export interface AdapterInternal {
-	base: string;
+export interface Adapter {
 	/** Returns `false` if the reset was in such a way that a reload of the iframe isn't needed */
 	reset(files: Array<Stub>): Promise<boolean>;
-	update(file: Array<FileStub>): Promise<boolean>;
-	destroy(): Promise<void>;
-}
-
-export interface Adapter extends AdapterInternal {
-	reset(files: Array<Stub>): Promise<boolean | 'cancelled'>;
-	update(file: Array<FileStub>): Promise<boolean | 'cancelled'>;
-	init: Promise<void>;
+	update(file: FileStub): Promise<boolean>;
 }
 
 export interface Scope {
@@ -56,11 +48,12 @@ export interface Exercise {
 	dir: string;
 	home?:string[];
 	editing_constraints: {
-		create: string[];
-		remove: string[];
+		create: Set<string>;
+		remove: Set<string>;
 	};
 	a: Record<string, Stub>;
 	b: Record<string, Stub>;
+	has_solution: boolean;
 }
 
 export interface ExerciseStub {
@@ -81,8 +74,8 @@ export interface PartStub {
 }
 
 export interface EditingConstraints {
-	create: string[];
-	remove: string[];
+	create: Set<string>;
+	remove: Set<string>;
 }
 
 
