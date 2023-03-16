@@ -1,16 +1,15 @@
 <script>
 	import Output from './Output.svelte';
-	import { browser } from '$app/environment';
 	import { afterNavigate, beforeNavigate } from '$app/navigation';
 	import ContextMenu from './filetree/ContextMenu.svelte';
 	import Filetree from './filetree/Filetree.svelte';
-	import { isTeacher } from '$lib/utils';
 	import { SplitPane } from '@rich_harris/svelte-split-pane';
 	import Icon from '@sveltejs/site-kit/components/Icon.svelte';
 	import Editor from './Editor.svelte';
 	import ImageViewer from './ImageViewer.svelte';
 	import ScreenToggle from './ScreenToggle.svelte';
 	import Sidebar from './Sidebar.svelte';
+	import Homework from './Homework.svelte';
 	import {
 		files,
 		reset_files,
@@ -18,56 +17,40 @@
 		selected_name,
 		selected_file,
 		solution,
-		update_file,
 		view_files
 	} from './state.js';
 	import { reset } from './adapter.js';
-
-
+	import { isTeacher } from '$lib/utils';
 	export let data;
-
-	/** @type {HTMLSelectElement}*/
-	let sel;
-	let selected_view = 0;
-	let disabled = false;
 	let path = data.exercise.path;
 	let show_editor = false;
 	let show_filetree = false;
 	let paused = false;
 	let w = 1000;
-
 	/** @type {import('$lib/types').Stub[]} */
 	let previous_files = [];
-
 	$: mobile = w < 800; // for the things we can't do with media queries
 	$: completed = is_completed($files, data.exercise.b);
 	$: files.set(Object.values(data.exercise.a));
 	$: solution.set(data.exercise.b);
 	$: selected_name.set(data.exercise.focus);
-
 	beforeNavigate(() => {
 		previous_files = $files;
 	});
-
 	afterNavigate(async () => {
 		w = window.innerWidth;
-
 		const will_delete = previous_files.some((file) => !(file.name in data.exercise.a));
-
 		if (data.exercise.path !== path || will_delete) paused = true;
 		await reset($files);
-
 		path = data.exercise.path;
 		paused = false;
 	});
-
 	/**
 	 * @param {import('$lib/types').Stub[]} files
 	 * @param {Record<string, import('$lib/types').Stub> | null} solution
 	 */
 	function is_completed(files, solution) {
 		if (!solution) return true;
-
 		for (const file of files) {
 			if (file.type === 'file') {
 				const expected = solution[file.name];
@@ -75,16 +58,12 @@
 				if (normalise(file.contents) !== normalise(expected.contents)) return false;
 			}
 		}
-
 		const names = new Set(files.map((stub) => stub.name));
-
 		for (const name in solution) {
 			if (!names.has(name)) return false;
 		}
-
 		return true;
 	}
-
 	/** @param {string} code */
 	function normalise(code) {
 		// TODO think about more sophisticated normalisation (e.g. truncate multiple newlines)
@@ -92,22 +71,19 @@
 	}
 </script>
 <svelte:head>
-	<title>{data.exercise.chapter.title} / {data.exercise.title}</title>
-
-	<meta name="twitter:title" content="{data.exercise.title}" />
+	<title>{data.exercise.chapter.title} / {data.exercise.title} • Svelte Tutorial</title>
+	<meta name="twitter:title" content="{data.exercise.title} • Svelte Tutorial" />
 	<meta name="twitter:card" content="summary" />
 	<meta name="twitter:site" content="@sveltejs" />
 	<meta name="twitter:creator" content="@sveltejs" />
 	<meta name="twitter:image" content="https://svelte.dev/images/twitter-thumbnail.jpg" />
 	<meta property="twitter:domain" content="learn.svelte.dev" />
 	<meta property="twitter:url" content="https://learn.svelte.dev" />
-
-	<meta property="og:title" content="{data.exercise.title}" />
+	<meta property="og:title" content="{data.exercise.title} • Svelte Tutorial" />
 	<meta property="og:url" content="https://learn.svelte.dev" />
 	<meta property="og:type" content="website" />
 	<meta property="og:image" content="https://svelte.dev/images/twitter-thumbnail.jpg" />
 </svelte:head>
-
 <svelte:window
 	bind:innerWidth={w}
 	on:popstate={(e) => {
@@ -115,15 +91,12 @@
 		show_editor = q.get('view') === 'editor';
 	}}
 />
-
 <ContextMenu />
-
 <div class="container" class:mobile>
 	<div class="top" class:offset={show_editor}>
 		<SplitPane id="main" type="horizontal" min="360px" max="50%" pos="33%">
 			<section slot="a" class="content">
 				<Sidebar
-					isHome={data.isHome}
 					index={data.index}
 					exercise={data.exercise}
 					on:select={(e) => {
@@ -131,7 +104,6 @@
 					}}
 				/>
 			</section>
-
 			<section slot="b">
 				<SplitPane type="vertical" min="100px" max="50%" pos="50%">
 					<section slot="a">
@@ -153,78 +125,39 @@
 								{:else}
 									<Filetree exercise={data.exercise} />
 								{/if}
-								{#if $isTeacher && data.isHome}
-									<select bind:this={sel} {disabled} on:input={async () => {
-										let gitUser = sel.value;
-										if(!browser)return;
-										if(!gitUser || !(/^[가-힣]+$/.test(gitUser))) return;
-										disabled = true;
-										try{
-											const arr = $files.filter(v => v.type === 'file' && v.text).map(v => v.name);
-											const res = await fetch('/git', {
-												method:'POST',
-												body:JSON.stringify({
-													branch:gitUser,
-													dir:data.exercise.dir.replace('/home/', '/'),
-													stubs:arr
-												})
-											});
-											if(res.status === 500) {
-												gitUser = 'default';
-												disabled = false;
-												return;
-											}
-											
-											/** @type {import('$lib/types').FileStub[]}*/
-											let json = await res.json();
-											for(let i of json){
-												console.log(i);
-												update_file(i);
-											}
-											disabled = false;
-										} catch(err){
-											alert(err);
-											disabled = false;
-										}
-									}}>
-										<option value="default">현재 코드</option>
-										{#each data.users as user}
-											<option value={user}>{user}</option>
-										{/each}
-									</select>
+								{#if data.isHome}
+									<Homework dir={data.exercise.dir} users={data.users} />
 								{/if}
 								{#if !$isTeacher && data.isHome}
-									<button
-										class="solve"
-										class:completed
-										on:click={() => {
-											view_files(Object.values(data.exercise.b));
-										}}
-									>
-										정답 확인 <Icon name="arrow-right" />
-									</button>
+								<button
+									class="solve"
+									class:completed
+									on:click={() => {
+										view_files(Object.values(data.exercise.b));
+									}}
+								>
+									정답 확인 <Icon name="arrow-right" />
+								</button>
 								{:else}
-									<button
-										class="solve"
-										class:completed
-										disabled={!data.exercise.has_solution}
-										on:click={() => {
-											reset_files(Object.values(completed ? data.exercise.a : data.exercise.b));
-										}}
-									>
-										{#if completed && data.exercise.has_solution}
-											리셋
-										{:else}
-											정답 확인 <Icon name="arrow-right" />
-										{/if}
-									</button>
+								<button
+									class="solve"
+									class:completed
+									disabled={!data.exercise.has_solution}
+									on:click={() => {
+										reset_files(Object.values(completed ? data.exercise.a : data.exercise.b));
+									}}
+								>
+									{#if completed && data.exercise.has_solution}
+										리셋
+									{:else}
+										정답 확인 <Icon name="arrow-right" />
+									{/if}
+								</button>
 								{/if}
 							</section>
-
 							<section class="editor-container" slot="b">
 								<Editor />
 								<ImageViewer selected={$selected_file} />
-
 								{#if mobile && show_filetree}
 									<div class="mobile-filetree">
 										<Filetree
@@ -237,7 +170,6 @@
 							</section>
 						</SplitPane>
 					</section>
-
 					<section slot="b" class="preview">
 						<Output exercise={data.exercise} {paused} />
 					</section>
@@ -245,12 +177,10 @@
 			</section>
 		</SplitPane>
 	</div>
-
 	<div class="screen-toggle">
 		<ScreenToggle
 			on:change={(e) => {
 				show_editor = e.detail.pressed;
-
 				const view = show_editor ? 'editor' : 'tutorial';
 				history.pushState({}, '', `?view=${view}`);
 			}}
@@ -258,7 +188,6 @@
 		/>
 	</div>
 </div>
-
 <style>
 	.container {
 		display: flex;
@@ -268,7 +197,6 @@
 		width: 100vw;
 		overflow: hidden;
 	}
-
 	.top {
 		width: 200vw;
 		margin-left: -100vw;
@@ -279,30 +207,12 @@
 		   the positioning of tooltips is wrong (doesn't take into account transforms) */
 		transform: translate(50%, 0);
 	}
-
 	.top.offset {
 		transform: none;
 	}
-
 	.screen-toggle {
 		height: 4.6rem;
 	}
-	select{
-		border: 1px solid #C4C4C4;
-		box-sizing: border-box;
-		padding: 10px;
-		font-weight: 400;
-		font-size: 14px;
-		line-height: 16px;
-		transition: 0.2s;
-	}
-
-	select:focus{
-		border: 1px solid var(--sk-theme-1);
-		box-sizing: border-box;
-	}
-
-
 	.content {
 		display: flex;
 		flex-direction: column;
@@ -313,14 +223,12 @@
 		background: var(--sk-back-2);
 		--menu-width: 5.4rem;
 	}
-
 	.navigator {
 		position: relative;
 		background: var(--sk-back-2);
 		display: flex;
 		flex-direction: column;
 	}
-
 	.navigator .solve {
 		position: relative;
 		background: var(--sk-theme-2);
@@ -331,45 +239,33 @@
 		color: white;
 		opacity: 1;
 	}
-
 	.navigator .solve:disabled {
 		opacity: 0.5;
 	}
-
 	.navigator .solve:not(:disabled) {
 		background: var(--sk-theme-1);
 	}
-
 	.navigator .solve.completed {
 		background: var(--sk-theme-2);
 	}
-
-	.navigator button.download{
-		background: var(--sk-theme-3);
-	}
-
 	.preview {
 		display: flex;
 		flex-direction: column;
 	}
-
 	.editor-container {
 		position: relative;
 		background-color: var(--sk-back-3);
 	}
-
 	.mobile .navigator {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		padding: 1rem;
 	}
-
 	.mobile .navigator .file {
 		flex: 1;
 		text-align: left;
 	}
-
 	.mobile .navigator .solve {
 		width: 9rem;
 		height: auto;
@@ -377,7 +273,6 @@
 		border-radius: 4rem;
 		border: none;
 	}
-
 	.mobile-filetree {
 		position: absolute;
 		top: 0;
@@ -385,29 +280,24 @@
 		height: 100%;
 		overflow-y: auto;
 	}
-
 	/* on mobile, override the <SplitPane> controls */
 	@media (max-width: 799px) {
 		:global([data-pane='main']) {
 			--pos: 50% !important;
 		}
-
 		:global([data-pane='editor']) {
 			--pos: 5.4rem !important;
 		}
-
 		:global([data-pane]) :global(.divider) {
 			cursor: default;
 		}
 	}
-
 	@media (min-width: 800px) {
 		.top {
 			width: 100vw;
 			margin: 0;
 			transform: none;
 		}
-
 		.screen-toggle {
 			display: none;
 		}

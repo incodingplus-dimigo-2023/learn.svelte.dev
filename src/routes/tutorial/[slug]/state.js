@@ -53,15 +53,6 @@ export function update_file(file) {
 	adapter.update(file);
 }
 
-// toggle_home:() => {
-// 	update((state) => ({
-// 		...state,
-// 		status: 'set',
-// 		home: !state.home,
-// 		last_updated: undefined
-// 	}))
-// },
-
 /** @param {import('$lib/types').Stub[]} new_files */
 export function reset_files(new_files) {
 	// if the selected file no longer exists, clear it
@@ -74,6 +65,11 @@ export function reset_files(new_files) {
 	adapter.reset(new_files);
 }
 
+/** @param {string | null} name */
+export function select_file(name) {
+	selected_name.set(name);
+}
+
 /** @param {import('$lib/types').Stub[]} new_files */
 export function view_files(new_files) {
 	// if the selected file no longer exists, clear it
@@ -82,9 +78,4 @@ export function view_files(new_files) {
 		return file?.name ?? null;
 	});
 	adapter.reset(new_files);
-}
-
-/** @param {string | null} name */
-export function select_file(name) {
-	selected_name.set(name);
 }
