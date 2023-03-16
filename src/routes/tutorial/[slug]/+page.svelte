@@ -97,6 +97,7 @@
 		<SplitPane id="main" type="horizontal" min="360px" max="50%" pos="33%">
 			<section slot="a" class="content">
 				<Sidebar
+					isHome={data.isHome}
 					index={data.index}
 					exercise={data.exercise}
 					on:select={(e) => {
