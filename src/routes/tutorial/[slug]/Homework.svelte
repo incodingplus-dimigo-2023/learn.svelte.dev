@@ -1,5 +1,5 @@
 <script>
-	import { browser } from '$app/environment';
+	import { browser, dev } from '$app/environment';
 	import { tick } from 'svelte';
 	import { isTeacher } from '$lib/utils';
     import {
@@ -14,11 +14,9 @@
     /** @type {string}*/
     let gitUser;
 	let disabled = false;
-</script>
-{#if $isTeacher}    
-    <select {disabled} bind:value={gitUser} on:input={async () => {
+
+    const onInput = async () => {
         await tick();
-        alert(gitUser);
         if(!browser)return;
         if(!gitUser || !(/^[가-힣]+$/.test(gitUser))) return;
         disabled = true;
@@ -49,7 +47,12 @@
             alert(err);
             disabled = false;
         }
-    }}>
+    }
+
+    $: if(gitUser) onInput();
+</script>
+{#if $isTeacher || dev}    
+    <select {disabled} bind:value={gitUser}>
         <option value="default">현재 코드</option>
         {#each users as user}
             <option value={user}>{user}</option>

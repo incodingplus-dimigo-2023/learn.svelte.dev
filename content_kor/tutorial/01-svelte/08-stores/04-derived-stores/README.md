@@ -1,11 +1,9 @@
 ---
-title: Derived stores
+title: Derived 스토어
 ---
 
-You can create a store whose value is based on the value of one or more _other_ stores with `derived`. Building on our previous example, we can create a store that derives the time the page has been open:
+`derived`를 사용하면 하나 이상의 다른 스토어의 값에 기반한 스토어를 만들 수 있습니다. 이전 예제에 이어서 페이지가 열린 시간을 파생시키는 스토어를 만들 수 있습니다.
 
 ```js
 export const elapsed = derived(time, ($time) => Math.round(($time - start) / 1000));
 ```
-
-> It's possible to derive a store from multiple inputs, and to explicitly `set` a value instead of returning it (which is useful for deriving values asynchronously). Consult the [API reference](https://svelte.dev/docs#run-time-svelte-store-derived) for more information.

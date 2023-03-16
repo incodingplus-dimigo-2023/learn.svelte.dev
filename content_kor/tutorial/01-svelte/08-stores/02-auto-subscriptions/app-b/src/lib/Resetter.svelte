@@ -6,4 +6,4 @@
 	}
 </script>
 
-<button on:click={reset}> reset </button>
+<button on:click={reset}> 초기화 </button>
