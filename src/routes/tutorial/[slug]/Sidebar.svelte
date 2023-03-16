@@ -135,7 +135,7 @@
 	}
 
 	.text :global(pre) :global(.highlight.add) {
-		--color: rgba(0, 255, 0, 0.1);
+		--color: rgba(0, 255, 0, 0.18);
 	}
 
 	.text :global(pre) :global(.highlight.remove) {
