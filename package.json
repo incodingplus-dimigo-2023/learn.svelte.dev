@@ -15,19 +15,19 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.31.2",
-		"@sveltejs/adapter-vercel": "2.3.1",
-		"@sveltejs/kit": "^1.11.0",
+		"@sveltejs/adapter-vercel": "2.4.0",
+		"@sveltejs/kit": "^1.12.0",
 		"@sveltejs/site-kit": "^3.2.2",
 		"@types/diff": "^5.0.2",
 		"@types/marked": "^4.0.8",
 		"@types/pg": "^8.6.6",
 		"@types/prismjs": "^1.26.0",
-		"@types/serviceworker": "^0.0.65",
+		"@types/serviceworker": "^0.0.67",
 		"@types/ws": "^8.5.4",
 		"@vitejs/plugin-basic-ssl": "^1.0.1",
 		"diff": "^5.1.0",
 		"dotenv": "^16.0.3",
-		"esbuild": "^0.17.11",
+		"esbuild": "^0.17.12",
 		"glob": "^9.3.0",
 		"octokit": "^2.0.14",
 		"prettier": "^2.8.4",
@@ -35,10 +35,10 @@
 		"sass": "^1.59.3",
 		"svelte": "^3.57.0",
 		"svelte-check": "^3.1.4",
-		"svelte-preprocess": "^5.0.2",
+		"svelte-preprocess": "^5.0.3",
 		"tiny-glob": "^0.2.9",
-		"typescript": "~4.9.5",
-		"vite": "^4.1.4"
+		"typescript": "~5.0.2",
+		"vite": "^4.2.0"
 	},
 	"type": "module",
 	"dependencies": {
@@ -58,7 +58,7 @@
 		"@lezer/lr": "^1.3.3",
 		"@replit/codemirror-lang-svelte": "^6.0.0",
 		"@rich_harris/svelte-split-pane": "^1.0.2",
-		"@webcontainer/api": "^1.0.2",
+		"@webcontainer/api": "^1.1.0",
 		"adm-zip": "^0.5.10",
 		"ansi-to-html": "^0.7.2",
 		"base64-js": "^1.5.1",
@@ -69,7 +69,8 @@
 		"port-authority": "^2.0.1",
 		"prism-svelte": "^0.5.0",
 		"prismjs": "^1.29.0",
-		"ws": "^8.13.0"
+		"ws": "^8.13.0",
+		"yootils": "^0.3.1"
 	},
 	"browser": {
 		"node:fs": false,
