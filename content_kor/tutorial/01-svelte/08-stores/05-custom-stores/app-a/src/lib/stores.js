@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 
-function createCount() {
+const createCount = () => {
+	// 나머지 함수를 완성해주세요.
 	const { subscribe, set, update } = writable(0);
 
 	return {

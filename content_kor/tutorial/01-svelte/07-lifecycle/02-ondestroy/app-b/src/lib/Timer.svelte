@@ -7,11 +7,8 @@
 	onInterval(callback, interval);
 </script>
 
-<p>
-	This component executes a callback every
-	{interval} millisecond{interval === 1
-		? ''
-		: 's'}
+<p> 
+	이 컴포넌트는 대략 {interval / 1000}초에 한 번씩 함수를 실행합니다.
 </p>
 
 <style>

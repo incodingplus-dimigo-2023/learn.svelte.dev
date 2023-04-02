@@ -12,6 +12,7 @@
 	import PreloadingIndicator from '@sveltejs/site-kit/components/PreloadingIndicator.svelte';
 	import { isTeacher } from '$lib/utils';
 	import { browser } from '$app/environment';
+	import { dev } from '$app/environment';
 	const ask = async () => {
 		if(!browser) return;
 		const res = await fetch('/login/api');
@@ -21,7 +22,6 @@
 	}
 	ask();
 </script>
-
 <Icons />
 
 {#if $navigating && $navigating.to}
@@ -63,7 +63,7 @@
 	:global(body) {
 		margin: 0;
 		width: 100%;
-		min-height: 100vh;
+		min-height: 100dvh;
 	}
 
 	/* TODO when we remove the launch banner, we can remove this override */
@@ -73,7 +73,7 @@
 
 	main {
 		width: 100%;
-		height: calc(100vh - var(--nav-h));
+		height: calc(100dvh - var(--nav-h));
 		position: relative;
 		top: var(--nav-h);
 	}

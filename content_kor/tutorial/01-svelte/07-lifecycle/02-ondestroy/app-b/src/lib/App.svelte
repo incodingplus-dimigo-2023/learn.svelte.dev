@@ -1,21 +1,20 @@
 <script>
 	import Timer from './Timer.svelte';
 
-	let open = true;
+	let open = false;
 	let seconds = 0;
-
 	const toggle = () => (open = !open);
-	const handleTick = () => (seconds += 1);
+	const handleTick = () => {
+		seconds += 1
+	};
 </script>
 
 <div>
 	<button on:click={toggle}
-		>{open ? 'Close' : 'Open'} Timer</button
+		>타이머 {open ? '닫기' : '열기'}</button
 	>
 	<p>
-		The Timer component has been open for
-		{seconds}
-		{seconds === 1 ? 'second' : 'seconds'}
+		타이머가 {seconds}초 동안 작동 중입니다.
 	</p>
 	{#if open}
 		<Timer callback={handleTick} />

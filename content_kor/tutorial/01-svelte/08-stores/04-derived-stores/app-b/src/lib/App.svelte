@@ -2,7 +2,7 @@
 	import { time, elapsed } from './stores.js';
 
 	const formatter = new Intl.DateTimeFormat(
-		'en',
+		'ko-KR',
 		{
 			hour12: true,
 			hour: 'numeric',
@@ -12,10 +12,8 @@
 	);
 </script>
 
-<h1>The time is {formatter.format($time)}</h1>
+<h1>현재 시각은 {formatter.format($time)} 입니다.</h1>
 
 <p>
-	This page has been open for
-	{$elapsed}
-	{$elapsed === 1 ? 'second' : 'seconds'}
+	이 페이지는 {$elapsed}초 동안 열려있었습니다.
 </p>

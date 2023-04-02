@@ -135,11 +135,36 @@
 	}
 
 	.text :global(pre) :global(.highlight.add) {
-		--color: rgba(0, 255, 0, 0.1);
+		--color: rgba(0, 255, 0, 0.18);
 	}
 
 	.text :global(pre) :global(.highlight.remove) {
 		--color: rgba(255, 0, 0, 0.1);
+	}
+
+	/** this probably belongs in site-kit */
+	.text :global(p) :global(a) :global(code) {
+		color: var(--sk-theme-1);
+		background: rgba(255, 62, 0, 0.1);
+	}
+
+	.text :global([data-file]) {
+		cursor: pointer;
+		background-image: url($lib/icons/file-edit.svg);
+		background-repeat: no-repeat;
+		background-position: 0.5rem 50%;
+		background-size: 1rem 1rem;
+		padding-left: 2rem;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.text :global([data-file]) {
+			background-image: url($lib/icons/file-edit-inline-dark.svg);
+		}
+	}
+
+	.text :global(.desktop) {
+		display: none;
 	}
 
 	footer {
@@ -190,5 +215,15 @@
 		margin: 1em 0 0 0;
 		border-radius: var(--sk-border-radius);
 		line-height: 1;
+	}
+
+	@media (min-width: 800px) {
+		.text :global(.mobile) {
+			display: none;
+		}
+
+		.text :global(.desktop) {
+			display: inline;
+		}
 	}
 </style>

@@ -101,6 +101,7 @@ export function get_exercise(slug) {
 			}
 
 			const b = walk(`${dir}/app-b`);
+			const has_solution = Object.keys(b).length > 0;
 
 			const part_meta = json(`${con}/tutorial/${part_dir}/meta.json`);
 			const chapter_meta = json(`${con}/tutorial/${part_dir}/${chapter_dir}/meta.json`);
@@ -154,7 +155,6 @@ export function get_exercise(slug) {
 
 				const dirs = next_exercise.split('/');
 				if (dirs[0] !== part_dir) {
-					console.log({ dirs, part_dir, next_exercise });
 					title = json(`${con}/tutorial/${dirs[0]}/meta.json`).title;
 				} else if (dirs[1] !== chapter_dir) {
 					title = json(`${con}/tutorial/${dirs[0]}/${dirs[1]}/meta.json`).title;
@@ -169,6 +169,36 @@ export function get_exercise(slug) {
 					slug: next_exercise.split('/')[2].slice(3),
 					title
 				};
+			}
+
+			const editing_constraints = {
+				create: new Set(exercise_meta.editing_constraints?.create ?? []),
+				remove: new Set(exercise_meta.editing_constraints?.remove ?? [])
+			};
+
+			const solution = { ...a };
+
+			for (const stub of Object.values(b)) {
+				if (stub.type === 'file' && stub.contents.startsWith('__delete')) {
+					// remove file
+					editing_constraints.remove.add(stub.name);
+					delete solution[stub.name];
+				} else if (stub.name.endsWith('/__delete')) {
+					// remove directory
+					const parent = stub.name.slice(0, stub.name.lastIndexOf('/'));
+					editing_constraints.remove.add(parent);
+					delete solution[parent];
+					for (const k in solution) {
+						if (k.startsWith(parent + '/')) {
+							delete solution[k];
+						}
+					}
+				} else {
+					if (!solution[stub.name]) {
+						editing_constraints.create.add(stub.name);
+					}
+					solution[stub.name] = stub;
+				}
 			}
 
 			return {
@@ -189,10 +219,7 @@ export function get_exercise(slug) {
 				prev,
 				next,
 				dir,
-				editing_constraints: {
-					create: exercise_meta.editing_constraints?.create ?? [],
-					remove: exercise_meta.editing_constraints?.remove ?? []
-				},
+				editing_constraints,
 				html: transform(markdown, {
 					codespan: (text) =>
 						filenames.size > 1 && filenames.has(text)
@@ -200,7 +227,8 @@ export function get_exercise(slug) {
 							: `<code>${text}</code>`
 				}),
 				a,
-				b
+				b: solution,
+				has_solution
 			};
 		}
 

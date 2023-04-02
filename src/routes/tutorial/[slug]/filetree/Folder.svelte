@@ -3,9 +3,9 @@
 	import * as context from './context.js';
 	import { get_depth } from '$lib/utils';
 	import Item from './Item.svelte';
-	import { stubs, solution, scope } from '../state.js';
-
-	export let expanded = true;
+	import folder_closed from '$lib/icons/folder.svg';
+	import folder_open from '$lib/icons/folder-open.svg';
+	import { files, solution } from '../state.js';
 
 	/** @type {import('$lib/types').DirectoryStub} */
 	export let directory;
@@ -17,23 +17,25 @@
 	export let depth;
 
 	/** @type {Array<import('$lib/types').Stub>} */
-	export let files;
+	export let contents;
 
 	/** @type {'idle' | 'add_file' | 'add_directory' | 'renaming'} */
-	let state = 'idle';
+	let mode = 'idle';
 
-	const { rename, add, remove, readonly } = context.get();
+	const { collapsed, rename, add, remove } = context.get();
 
-	$: children = files
+	$: segments = get_depth(prefix);
+
+	$: children = contents
 		.filter((file) => file.name.startsWith(prefix))
 		.sort((a, b) => (a.name < b.name ? -1 : 1));
 
 	$: child_directories = children.filter(
-		(child) => get_depth(child.name) === depth + 1 && child.type === 'directory'
+		(child) => get_depth(child.name) === segments && child.type === 'directory'
 	);
 
 	$: child_files = /** @type {import('$lib/types').FileStub[]} */ (
-		children.filter((child) => get_depth(child.name) === depth + 1 && child.type === 'file')
+		children.filter((child) => get_depth(child.name) === segments && child.type === 'file')
 	);
 
 	const can_create = { file: false, directory: false };
@@ -42,35 +44,33 @@
 		can_create.file = false;
 		can_create.directory = false;
 
-		if (!$readonly) {
-			const child_prefixes = [];
+		const child_prefixes = [];
 
-			for (const stub of $stubs) {
-				if (
-					stub.type === 'directory' &&
-					stub.name.startsWith(prefix) &&
-					get_depth(stub.name) === depth + 1
-				) {
-					child_prefixes.push(stub.name + '/');
-				}
+		for (const file of $files) {
+			if (
+				file.type === 'directory' &&
+				file.name.startsWith(prefix) &&
+				get_depth(file.name) === depth + 1
+			) {
+				child_prefixes.push(file.name + '/');
 			}
+		}
 
-			for (const stub of Object.values($solution)) {
-				if (!stub.name.startsWith(prefix)) continue;
+		for (const file of Object.values($solution)) {
+			if (!file.name.startsWith(prefix)) continue;
 
-				// if already exists in $stubs, bail
-				if ($stubs.find((s) => s.name === stub.name)) continue;
+			// if already exists in $files, bail
+			if ($files.find((f) => f.name === file.name)) continue;
 
-				// if intermediate directory exists, bail
-				if (child_prefixes.some((prefix) => stub.name.startsWith(prefix))) continue;
+			// if intermediate directory exists, bail
+			if (child_prefixes.some((prefix) => file.name.startsWith(prefix))) continue;
 
-				can_create[stub.type] = true;
-			}
+			can_create[file.type] = true;
 		}
 	}
 
 	// fake root directory has no name
-	$: can_remove = !$readonly && directory.name ? !$solution[directory.name] : false;
+	$: can_remove = directory.name ? !$solution[directory.name] : false;
 
 	/** @type {import('./ContextMenu.svelte').MenuItem[]} */
 	$: actions = [
@@ -78,21 +78,21 @@
 			icon: 'file-new',
 			label: 'New file',
 			fn: () => {
-				state = 'add_file';
+				mode = 'add_file';
 			}
 		},
 		can_create.directory && {
 			icon: 'folder-new',
 			label: 'New folder',
 			fn: () => {
-				state = 'add_directory';
+				mode = 'add_directory';
 			}
 		},
 		can_remove && {
 			icon: 'rename',
 			label: 'Rename',
 			fn: () => {
-				state = 'renaming';
+				mode = 'renaming';
 			}
 		},
 		can_remove && {
@@ -105,102 +105,64 @@
 	].filter(Boolean);
 </script>
 
-<div class="directory row" class:expanded style="--depth: {depth - $scope.depth};">
-	<Item
-		can_rename={can_remove}
-		renaming={state === 'renaming'}
-		basename={directory.basename}
-		{actions}
-		on:click={() => {
-			expanded = !expanded;
-		}}
-		on:edit={() => {
-			state = 'renaming';
-		}}
-		on:rename={(e) => {
-			rename(directory, e.detail.basename);
-		}}
-		on:cancel={() => {
-			state = 'idle';
-		}}
-	/>
-</div>
+<Item
+	{depth}
+	basename={directory.basename}
+	icon={$collapsed[directory.name] ? folder_closed : folder_open}
+	can_rename={can_remove}
+	renaming={mode === 'renaming'}
+	{actions}
+	on:click={() => {
+		$collapsed[directory.name] = !$collapsed[directory.name];
+	}}
+	on:edit={() => {
+		mode = 'renaming';
+	}}
+	on:rename={(e) => {
+		rename(directory, e.detail.basename);
+	}}
+	on:cancel={() => {
+		mode = 'idle';
+	}}
+	on:keydown={(e) => {
+		if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+			$collapsed[directory.name] = e.key === 'ArrowLeft';
+		}
+	}}
+/>
 
-{#if expanded}
-	<ul style="--depth: {depth - $scope.depth}">
-		{#if state === 'add_directory'}
-			<li>
-				<div class="directory row" style="--depth: {depth - $scope.depth + 1}">
-					<Item
-						renaming
-						on:rename={(e) => {
-							add(prefix + e.detail.basename, 'directory');
-						}}
-						on:cancel={() => {
-							state = 'idle';
-						}}
-					/>
-				</div>
-			</li>
-		{/if}
+{#if !$collapsed[directory.name]}
+	{#if mode === 'add_directory'}
+		<Item
+			depth={depth + 1}
+			renaming
+			on:rename={(e) => {
+				add(prefix + e.detail.basename, 'directory');
+			}}
+			on:cancel={() => {
+				mode = 'idle';
+			}}
+		/>
+	{/if}
 
-		{#each child_directories as directory}
-			<li>
-				<svelte:self {directory} prefix={directory.name + '/'} depth={depth + 1} files={children} />
-			</li>
-		{/each}
+	{#each child_directories as directory}
+		<svelte:self {directory} prefix={directory.name + '/'} depth={depth + 1} contents={children} />
+	{/each}
 
-		{#if state === 'add_file'}
-			<li>
-				<div class="row">
-					<Item
-						renaming
-						on:rename={(e) => {
-							add(prefix + e.detail.basename, 'file');
-						}}
-						on:cancel={() => {
-							state = 'idle';
-						}}
-					/>
-				</div>
-			</li>
-		{/if}
+	{#if mode === 'add_file'}
+		<Item
+			depth={depth + 1}
+			renaming
+			on:rename={(e) => {
+				add(prefix + e.detail.basename, 'file');
+			}}
+			on:cancel={() => {
+				mode = 'idle';
+			}}
+		/>
+	{/if}
 
-		{#each child_files as file}
-			<li><File {file} /></li>
-		{/each}
-	</ul>
+	{#each child_files as file, i}
+		<File {file} depth={depth + 1} />
+	{/each}
 {/if}
-
-<style>
-	.directory::before {
-		content: '';
-		position: absolute;
-		left: calc(var(--inset) - 1.5rem);
-		top: 0rem;
-		width: 1.2rem;
-		height: 100%;
-		background: url(../../../../lib/icons/folder.svg) 0 45% no-repeat;
-		background-size: 100% auto;
-	}
-
-	.directory.expanded::before {
-		background-image: url(../../../../lib/icons/folder-open.svg);
-	}
-
-	ul {
-		padding: 0 0 0 0.3em;
-		margin: 0 0 0 0.5em;
-		padding: 0;
-		margin: 0;
-		list-style: none;
-		/* border-left: 1px solid #eee; */
-		line-height: 1.3;
-		max-width: 100%;
-		/* overflow: hidden; */
-	}
-
-	li {
-		padding: 0;
-	}
-</style>

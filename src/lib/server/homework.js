@@ -1,4 +1,4 @@
-import { get_index, walk, con, extract_frontmatter, json } from './content';
+import { walk, con, extract_frontmatter, json } from './content';
 import { transform } from './markdown.js';
 import glob from 'tiny-glob/sync.js';
 import fs from 'fs';
@@ -10,29 +10,26 @@ import fs from 'fs';
  */
 
 export function get_homework(slug, home) {
-	const index = get_index();
 	const exercises = glob(`[0-9][0-9]-*/[0-9][0-9]-*/[0-9][0-9]-${slug}/home/${home}`, {
 		cwd: `${con}/tutorial`
 	});
-	
 	/** @type {string[]} */
-	const chain = [];
 	for(let i of exercises){
 		const [part_dir, chapter_dir, exercise_dir] = i.split('/');
 		const dir = `${con}/tutorial/${i}`;
-		chain.push(`${dir}/app-a`);
 		const a = {
 			...walk(`${con}/tutorial/common`, {
 				exclude: ['node_modules', 'static/tutorial', 'static/svelte-logo-mask.svg']
 			}),
-			...walk(`${con}/tutorial/${part_dir}/common`)
+			...walk(`${con}/tutorial/${part_dir}/common`),
+			...walk(`${dir}/app-a`)
 		};
 
-		for (const dir of chain) {
-			Object.assign(a, walk(dir));
-		}
-
 		const b = walk(`${dir}/app-b`);
+		const solution = { ...a };
+		for (const stub of Object.values(b)) {
+			solution[stub.name] = stub;
+		}
 		const part_meta = json(`${con}/tutorial/${part_dir}/meta.json`);
 		const chapter_meta = json(`${con}/tutorial/${part_dir}/${chapter_dir}/meta.json`);
 		const scope = chapter_meta.scope ?? part_meta.scope;
@@ -72,9 +69,10 @@ export function get_homework(slug, home) {
 				title:exerTitle
 			},
 			dir,
+			has_solution:true,
 			editing_constraints: {
-				create: [],
-				remove: []
+				create: new Set(),
+				remove: new Set()
 			},
 			html: transform(markdown, {
 				codespan: (text) =>
@@ -83,7 +81,7 @@ export function get_homework(slug, home) {
 						: `<code>${text}</code>`
 			}),
 			a,
-			b
+			b:solution
 		};
 	}
 }

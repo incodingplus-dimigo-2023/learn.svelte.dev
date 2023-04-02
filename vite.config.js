@@ -1,5 +1,6 @@
 import path from 'path';
 import { sveltekit } from '@sveltejs/kit/vite';
+import basicSsl from '@vitejs/plugin-basic-ssl'
 
 /** @type {import('vite').UserConfig} */
 export default {
@@ -28,10 +29,11 @@ export default {
 					res.setHeader('cross-origin-resource-policy', 'cross-origin');
 					next();
 				});
-			}
+			},
 		},
 
-		sveltekit()
+		sveltekit(),
+		// basicSsl()
 	],
 
 	server: {

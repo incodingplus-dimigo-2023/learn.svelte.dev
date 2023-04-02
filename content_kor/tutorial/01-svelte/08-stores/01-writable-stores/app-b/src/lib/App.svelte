@@ -11,7 +11,7 @@
 	});
 </script>
 
-<h1>The count is {count_value}</h1>
+<h1>{count_value}번 눌렀습니다.</h1>
 
 <Incrementer />
 <Decrementer />

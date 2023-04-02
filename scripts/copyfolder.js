@@ -9,7 +9,7 @@ if(!fs.existsSync(dest)){
     throw Error('존재하지 않는 경로');
 }
 const rel = path.relative(path.resolve('./'), path.resolve(__dirname, '../content_kor/tutorial'));
-const root = `./${rel.replaceAll(path.sep, path.posix.sep)}`;
+const root = `${rel.replaceAll(path.sep, path.posix.sep)}`;
 
 let appA, common, meta;
 try{
@@ -19,7 +19,7 @@ try{
 } catch(err){
     throw err
 }
-
+console.log(root)
 
 fs.rmSync(path.resolve(dest, 'content'), {
     force:true,

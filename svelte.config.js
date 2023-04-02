@@ -5,7 +5,10 @@ import preprocess from 'svelte-preprocess';
 const config = {
 	preprocess:preprocess(),
 	kit: {
-		adapter: adapter({runtime:'nodejs18.x'})
+		adapter: adapter({runtime:'nodejs18.x'}),
+		// serviceWorker:{
+		// 	register:false
+		// }
 	},
 	vitePlugin: {
 		experimental: {
@@ -13,7 +16,7 @@ const config = {
 				holdMode: true
 			}
 		}
-	}
+	},
 };
 
 export default config;

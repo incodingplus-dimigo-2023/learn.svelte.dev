@@ -2,7 +2,7 @@
 	import { count } from './stores.js';
 
 	function increment() {
-		// TODO increment the count
+		// 여기에 카운트 증가 코드 작성
 	}
 </script>
 

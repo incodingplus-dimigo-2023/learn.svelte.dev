@@ -11,7 +11,7 @@
 	});
 </script>
 
-<h1>Photo album</h1>
+<h1>사진 앨범</h1>
 
 <div class="photos">
 	{#each photos as photo}

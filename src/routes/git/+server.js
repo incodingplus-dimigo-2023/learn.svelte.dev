@@ -16,7 +16,6 @@ export const POST = async ({request}) => {
         const ttt = [];
         const txtArr = [];
         for(let i of datas.stubs){
-            console.log(`https://raw.githubusercontent.com/incodingplus-dimigo-2023/learn.svelte.student/${datas.branch}/${datas.dir.replace('content_kor', 'content')}/app-b${i}`)
             try{
                 // 1안
                 // const data = await octokit.rest.repos.getContent({

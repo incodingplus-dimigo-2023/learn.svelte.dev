@@ -1,10 +1,12 @@
 ---
-title: Auto-subscriptions
+title: 자동 구독
 ---
 
-The app in the previous example works, but there's a subtle bug — the store is subscribed to, but never unsubscribed. If the component was instantiated and destroyed many times, this would result in a _memory leak_.
+이전 예제는 작은 버그가 있습니다. (하지만 굉장히 중요한 버그입니다.) 스토어가 구독이 되고 나서 구독 취소가 되지 않는다는 것입니다. `subscribe` 메서드는 그 뒤에 컴포넌트가 삭제돼도 계속 실행될 것이며, 이렇게 된다면 메모리 누수가 발생할 것입니다.
 
-Start by declaring `unsubscribe` in `App.svelte`:
+따라서 `subscribe` 메서드는 `unsubscribe` 를 하는 함수를 반환합니다. 아래는 이전의 `App.svelte`의 수정본입니다.
+
+
 
 ```js
 const unsubscribe = count.subscribe((value) => {
@@ -12,9 +14,15 @@ const unsubscribe = count.subscribe((value) => {
 });
 ```
 
-> Calling a `subscribe` method returns an `unsubscribe` function.
 
-You now declared `unsubscribe`, but it still needs to be called, for example through the `onDestroy` [lifecycle hook](/tutorial/ondestroy):
+
+> 명심하세요. `subscribe` 메서드를 호출하면 `unsubscribe` 함수가 반환됩니다.
+
+
+
+이제 `unsubscribe`을 선언했지만 이 함수는 언제 호출 해야할까요? 보통은 컴포넌트가 삭제되는, 예를 들어 [onDestroy 함수](/tutorial/ondestroy)를 통해 호출해야 합니다:
+
+
 
 ```svelte
 <script>
@@ -36,7 +44,11 @@ You now declared `unsubscribe`, but it still needs to be called, for example thr
 <h1>The count is {count_value}</h1>
 ```
 
-It starts to get a bit boilerplatey though, especially if your component subscribes to multiple stores. Instead, Svelte has a trick up its sleeve — you can reference a store value by prefixing the store name with `$`:
+
+
+그런데 조금 반복되는 코드가 있어보입니다. 특히 컴포넌트가 여러 스토어들을 구독할 때는 더 심하게 반복됩니다. 때문에 Svelte에서는 이러한 코드를 간단하게 써주는 방법이 있습니다. 바로 Store에 `$`를 붙이는 것입니다.
+
+
 
 ```svelte
 <script>
@@ -49,8 +61,14 @@ It starts to get a bit boilerplatey though, especially if your component subscri
 <h1>The count is {$count}</h1>
 ```
 
-> Auto-subscription only works with store variables that are declared (or imported) at the top-level scope of a component.
 
-You're not limited to using `$count` inside the markup, either — you can use it anywhere in the `<script>` as well, such as in event handlers or reactive declarations.
 
-> Any name beginning with `$` is assumed to refer to a store value. It's effectively a reserved character — Svelte will prevent you from declaring your own variables with a `$` prefix.
+> 자동 구독은 컴포넌트의 컴포넌트 생성 당시에 가져온 스토어만 사용할 수 있는 기능입니다.
+
+
+
+`$count`는 어디에서나 마치 변수처럼 사용할 수 있습니다. `set` 또는 `update` 대신 할당하면 되며, `subscribe` 대신 값으로 쓰면 됩니다.
+
+
+
+> 대신 Svelte에서는 `$`로 시작하는 모든 이름은 스토어 값으로 간주됩니다. 실질적으로 예약된 문자이기 때문에 변수 앞에 `$`를 쓰면 안됩니다.

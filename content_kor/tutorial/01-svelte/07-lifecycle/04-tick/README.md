@@ -1,21 +1,26 @@
 ---
-title: tick
+title: tick 함수
 ---
 
-The `tick` function is unlike other lifecycle functions in that you can call it any time, not just when the component first initialises. It returns a promise that resolves as soon as any pending state changes have been applied to the DOM (or immediately, if there are no pending state changes).
+`tick` 함수는 다른 생명주기 함수들과 달리 어느 곳에서나 쓸 수 있다는 장점이 있습니다. `tick`은 `Promise`를 반환하고, DOM이 바뀔 때 `fulfilled` 됩니다.
 
-When you update component state in Svelte, it doesn't update the DOM immediately. Instead, it waits until the next _microtask_ to see if there are any other changes that need to be applied, including in other components. Doing so avoids unnecessary work and allows the browser to batch things more effectively.
+`tick` 함수는 보통 컴포넌트의 업데이트를 할 때 많이 사용됩니다. 컴포넌트의 상태를 업데이트 할 때 DOM도 바로 업데이트 되는 것이 아닙니다. DOM은 컴포넌트 업데이트 뒤에 아주 조금의 시간 뒤에 업데이트 됩니다. 때문에 가끔은 `<input>` 태그나 `<textarea>` 태그에서 `bind:value`의 값이 계속 최신값이 나오지 않는 경우가 있습니다. 
 
-You can see that behaviour in this example. Select a range of text and hit the tab key. Because the `<textarea>` value changes, the current selection is cleared and the cursor jumps, annoyingly, to the end. We can fix this by importing `tick`...
+따라서 위와 같은 경우 `tick` 함수를 사용하면 됩니다.
+
+
 
 ```js
 import { tick } from 'svelte';
 ```
 
-...and running it immediately before we set `this.selectionStart` and `this.selectionEnd` at the end of `handleKeydown`:
+
+
+그리고 `tick` 뒤에 `event.target.selectionStart`와 `event.target.selectionEnd`를 바꿔준다면 완벽하겠습니다.
+
 
 ```js
 await tick();
-this.selectionStart = selectionStart;
-this.selectionEnd = selectionEnd;
+event.target.selectionStart = selectionStart;
+event.target.selectionEnd = selectionEnd;
 ```

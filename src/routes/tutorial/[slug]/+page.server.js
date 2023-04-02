@@ -3,7 +3,7 @@ import { get_homework } from '$lib/server/homework';
 import { error } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
-export function load({ params, request }) {
+export function load({ params }) {
 	/**@type {import('$lib/types').Exercise | undefined} */
 	let exercise;
 	let slugs = params.slug.split('~');

@@ -3,8 +3,8 @@
 </script>
 
 <h1>{$greeting}</h1>
-<input bind:value={$name} />
+<input type="text" bind:value={$name} />
 
 <button on:click={() => ($name += '!')}>
-	Add exclamation mark!
+	느낌표 붙이기
 </button>
