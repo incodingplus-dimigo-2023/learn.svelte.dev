@@ -7,6 +7,7 @@ Svelte를 쓰는 가장 큰 이유 중 하나는 바로 **반응성**입니다. 
 간단하게 예를 들어보겠습니다. 먼저 기존 자바스크립트로 버튼을 클릭할 때마다 1씩 증가하는 코드를 작성해보겠습니다.
 
 ```html
+/// file: App.svelte
 <button>0</button>
 <script>
 	let button = document.querySelector('button');
@@ -21,6 +22,7 @@ Svelte를 쓰는 가장 큰 이유 중 하나는 바로 **반응성**입니다. 
 위의 코드를 보면 `count = count + 1`로 변수를 `1` 증가시키는 코드가 있지만, `button.innerHTML = count`로 증가된 변수를 DOM에 업데이트하는 코드도 있습니다. 이렇게 변수와 DOM이 따로 동작한다면 코드의 길이가 길어지고, 코드 관리가 힘들어집니다. 그럼 Svelte에서는 어떻게 하는 지 보겠습니다.
 
 ```svelte
+/// file: App.svelte
 <button +++on:click={increment}+++>
 ```
 

@@ -13,6 +13,7 @@ Svelte에서는 모든 실행 단위가 **컴포넌트**로 구성됩니다. 때
 그럼 예시로 `<script>`에 `name`이라는 변수를 만들어보겠습니다.
 
 ```svelte
+/// file: App.svelte
 +++<script>
 	let name = 'world';
 </script>+++
@@ -23,11 +24,13 @@ Svelte에서는 모든 실행 단위가 **컴포넌트**로 구성됩니다. 때
 그리고 `{}`를 사용한다면 아래에서 `<script>`에서 선언했던 변수를 사용할 수 있습니다.
 
 ```svelte
+/// file: App.svelte
 <h1>Hello +++{name}+++!!!</h1>
 ```
 
 `{}` 안에서는 Javascript 코드를 쓸 수 있습니다. 이건 마치 [Template Literal](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Template_literals)와 비슷합니다.
 
 ```svelte
+/// file: App.svelte
 <h1>Hello {name+++.toUpperCase()+++}!!!</h1>
 ```

@@ -5,6 +5,7 @@ title: style 태그 (Styling)
 HTML에서 하던 것과 같이 `<style>` 태그를 사용하면 CSS를 태그에 적용할 수 있습니다. 아래는 `<p>` 태그에 스타일을 적용하는 예제입니다.
 
 ```svelte
+/// file: App.svelte
 <p>다람쥐 헌 쳇바퀴에 타고파</p>
 
 <style>

@@ -21,7 +21,6 @@
 
 	// reset `path` to `exercise.path` each time, but allow it to be controlled by the iframe
 	let path = exercise.path;
-
 	$: if ($base) set_iframe_src($base + (path = exercise.path));
 
 	onMount(() => {

@@ -9,6 +9,7 @@ title: HTML 태그 넣기
 그러한 경우 Svelte에서는 `{@html ...}`을 사용합니다.
 
 ```svelte
+/// file: App.svelte
 <p>{+++@html+++ string}</p>
 ```
 

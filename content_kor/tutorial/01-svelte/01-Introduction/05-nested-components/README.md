@@ -7,6 +7,7 @@ title: 컴포넌트 중첩 (Nested Component)
 `<script>` 태그에서 `Nested.svelte` 파일을 `import` 해보겠습니다.
 
 ```svelte
+/// file: App.svelte
 +++<script>
 	import Nested from './Nested.svelte';
 </script>+++
@@ -15,6 +16,7 @@ title: 컴포넌트 중첩 (Nested Component)
 이러한 코드의 형태는 중요한 형태이니 꼭 외워주시기 바랍니다. 그 다음에는 `import` 한 컴포넌트를 *중첩* 해보겠습니다.
 
 ```svelte
+/// file: App.svelte
 <p>다람쥐 헌 쳇바퀴에 타고파</p>
 +++<Nested />+++
 ```

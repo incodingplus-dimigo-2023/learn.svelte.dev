@@ -4,5 +4,6 @@ body > div:nth-child(1) > nav{
 
 #main{
     top:0 !important;
+    padding-top:0;
     height: 100vh;
 }
