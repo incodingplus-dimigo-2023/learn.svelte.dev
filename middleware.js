@@ -1,5 +1,8 @@
 import { getAllCookies, clearAllCookies, setAllCookies } from './src/lib/cookie.js';
 import { getHash } from './src/lib/hash.js';
+export const config = {
+	matcher: ['/((?!assets\/).*)'],
+};
 
 const secret = process.env.VITE_HASH_SECRET;
 const TEACHER = process.env.VITE_PASSWORD;

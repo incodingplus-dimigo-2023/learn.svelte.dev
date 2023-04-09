@@ -1,26 +1,28 @@
 <script>
-	import Output from './Output.svelte';
 	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import { SplitPane } from '@rich_harris/svelte-split-pane';
+	import { Icon } from '@sveltejs/site-kit/components';
+	import { reset } from './adapter.js';
+	import Editor from './Editor.svelte';
 	import ContextMenu from './filetree/ContextMenu.svelte';
 	import Filetree from './filetree/Filetree.svelte';
-	import { SplitPane } from '@rich_harris/svelte-split-pane';
-	import Icon from '@sveltejs/site-kit/components/Icon.svelte';
-	import Editor from './Editor.svelte';
 	import ImageViewer from './ImageViewer.svelte';
+	import Output from './Output.svelte';
 	import ScreenToggle from './ScreenToggle.svelte';
 	import Sidebar from './Sidebar.svelte';
 	import Homework from './Homework.svelte';
 	import {
+		create_directories,
+		creating,
 		files,
 		reset_files,
-		select_file,
-		selected_name,
 		selected_file,
 		solution,
-		view_files
+		view_files,
+		selected_name,
 	} from './state.js';
-	import { reset } from './adapter.js';
 	import { isTeacher } from '$lib/utils';
+
 	export let data;
 	let path = data.exercise.path;
 	let show_editor = false;
@@ -30,10 +32,11 @@
 	/** @type {import('$lib/types').Stub[]} */
 	let previous_files = [];
 	$: mobile = w < 800; // for the things we can't do with media queries
-	$: completed = is_completed($files, data.exercise.b);
 	$: files.set(Object.values(data.exercise.a));
 	$: solution.set(data.exercise.b);
 	$: selected_name.set(data.exercise.focus);
+	$: completed = is_completed($files, data.exercise.b);
+
 	beforeNavigate(() => {
 		previous_files = $files;
 	});
@@ -69,6 +72,47 @@
 		// TODO think about more sophisticated normalisation (e.g. truncate multiple newlines)
 		return code.replace(/\s+/g, ' ').trim();
 	}
+
+	/** @param {string | null} name */
+	function select_file(name) {
+		const file = name && $files.find((file) => file.name === name);
+
+		if (!file && name) {
+			// trigger file creation input. first, create any intermediate directories
+			const new_directories = create_directories(name, $files);
+
+			if (new_directories.length > 0) {
+				reset_files([...$files, ...new_directories]);
+			}
+
+			// find the parent directory
+			const parent = name.split('/').slice(0, -1).join('/');
+
+			creating.set({
+				parent,
+				type: 'file'
+			});
+
+			show_filetree = true;
+		} else {
+			show_filetree = false;
+			selected_name.set(name);
+		}
+
+		show_editor = true;
+	}
+
+	/** @param {string} name */
+	function navigate_to_file(name) {
+		if (name === $selected_name) return;
+
+		select_file(name);
+
+		if (mobile) {
+			const q = new URLSearchParams({ file: $selected_name || '' });
+			history.pushState({}, '', `?${q}`);
+		}
+	}
 </script>
 <svelte:head>
 	<title>{data.exercise.chapter.title} / {data.exercise.title} • Svelte Tutorial</title>
@@ -88,7 +132,14 @@
 	bind:innerWidth={w}
 	on:popstate={(e) => {
 		const q = new URLSearchParams(location.search);
-		show_editor = q.get('view') === 'editor';
+		const file = q.get('file');
+
+		if (file) {
+			show_editor = true;
+			select_file(file || null); // empty string === null
+		} else {
+			show_editor = false;
+		}
 	}}
 />
 <ContextMenu />
@@ -101,12 +152,12 @@
 					index={data.index}
 					exercise={data.exercise}
 					on:select={(e) => {
-						select_file(e.detail.file);
+						navigate_to_file(e.detail.file);
 					}}
 				/>
 			</section>
 			<section slot="b">
-				<SplitPane type="vertical" min="100px" max="50%" pos="50%">
+				<SplitPane type="vertical" min="100px" max="-4.1rem" pos="50%">
 					<section slot="a">
 						<SplitPane
 							id="editor"
@@ -124,7 +175,12 @@
 										) ?? 'Files'}
 									</button>
 								{:else}
-									<Filetree exercise={data.exercise} />
+									<Filetree
+										exercise={data.exercise}
+										on:select={(e) => {
+											select_file(e.detail.name);
+										}}
+									/>
 								{/if}
 								{#if data.isHome}
 									<Homework dir={data.exercise.dir} users={data.users} />
@@ -164,7 +220,9 @@
 										<Filetree
 											mobile
 											exercise={data.exercise}
-											on:select={() => (show_filetree = false)}
+											on:select={(e) => {
+												navigate_to_file(e.detail.name);
+											}}
 										/>
 									</div>
 								{/if}
@@ -182,8 +240,14 @@
 		<ScreenToggle
 			on:change={(e) => {
 				show_editor = e.detail.pressed;
-				const view = show_editor ? 'editor' : 'tutorial';
-				history.pushState({}, '', `?view=${view}`);
+
+				const url = new URL(location.origin + location.pathname);
+
+				if (show_editor) {
+					url.searchParams.set('file', $selected_name ?? '');
+				}
+
+				history.pushState({}, '', url);
 			}}
 			pressed={show_editor}
 		/>
@@ -193,7 +257,7 @@
 	.container {
 		display: flex;
 		flex-direction: column;
-		height: 100%;
+		height: calc(100dvh - var(--sk-nav-height));
 		/** necessary for innerWidth to be correct, so we can determine `mobile` */
 		width: 100vw;
 		overflow: hidden;
@@ -262,9 +326,17 @@
 		flex-direction: row;
 		align-items: center;
 		padding: 1rem;
+		gap: 1rem;
 	}
 	.mobile .navigator .file {
 		flex: 1;
+		text-align: left;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+
+		/* put ellipsis at start */
+		direction: rtl;
 		text-align: left;
 	}
 	.mobile .navigator .solve {

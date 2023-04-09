@@ -6,6 +6,7 @@
 	import { EditorState } from '@codemirror/state';
 	import { indentWithTab } from '@codemirror/commands';
 	import { indentUnit } from '@codemirror/language';
+	import { acceptCompletion } from '@codemirror/autocomplete';
 	import { setDiagnostics } from '@codemirror/lint';
 	import { javascript } from '@codemirror/lang-javascript';
 	import { html } from '@codemirror/lang-html';
@@ -16,16 +17,6 @@
 	import { afterNavigate, beforeNavigate } from '$app/navigation';
 	import { files, selected_file, selected_name, update_file, warnings } from './state.js';
 	import './codemirror.css';
-
-	// TODO add more styles (selection ranges, etc)
-	const highlights = HighlightStyle.define([
-		{ tag: tags.tagName, color: '#c05726' },
-		{ tag: tags.keyword, color: 'var(--sk-code-keyword)' },
-		{ tag: tags.comment, color: 'var(--sk-code-comment)' },
-		{ tag: tags.string, color: 'var(--sk-code-string)' }
-	]);
-
-	const theme = syntaxHighlighting(highlights);
 
 	/** @type {HTMLDivElement} */
 	let container;
@@ -44,13 +35,24 @@
 	const extensions = [
 		basicSetup,
 		EditorState.tabSize.of(2),
-		keymap.of([indentWithTab]),
+		keymap.of([{ key: 'Tab', run: acceptCompletion }, indentWithTab]),
 		indentUnit.of('\t'),
-		theme
+		syntaxHighlighting(
+			HighlightStyle.define([
+				// TODO add more styles
+				{ tag: tags.tagName, color: '#c05726' },
+				{ tag: tags.keyword, color: 'var(--sk-code-keyword)' },
+				{ tag: tags.comment, color: 'var(--sk-code-comment)' },
+				{ tag: tags.string, color: 'var(--sk-code-string)' }
+			])
+		)
 	];
 
+	$: reset($files);
+
+	$: select_state($selected_name);
+
 	$: if (editor_view) {
-		select_state($selected_name);
 
 		if ($selected_name) {
 			const current_warnings = $warnings[$selected_name];
@@ -75,11 +77,25 @@
 		}
 	}
 
-	$: reset($files);
+	let installed_vim = false;
 
 	/** @param {import('$lib/types').Stub[]} $files */
-	function reset($files) {
+	async function reset($files) {
 		if (skip_reset) return;
+
+		let should_install_vim = localStorage.getItem('vim') === 'true';
+
+		const q = new URLSearchParams(location.search);
+		if (q.has('vim')) {
+			should_install_vim = q.get('vim') === 'true';
+			localStorage.setItem('vim', should_install_vim.toString());
+		}
+
+		if (!installed_vim && should_install_vim) {
+			installed_vim = true;
+			const { vim } = await import('@replit/codemirror-vim');
+			extensions.push(vim());
+		}
 
 		for (const file of $files) {
 			if (file.type !== 'file') continue;
@@ -173,11 +189,11 @@
 		skip_reset = true;
 	});
 
-	afterNavigate(() => {
+	afterNavigate(async () => {
 		skip_reset = false;
 
 		editor_states.clear();
-		reset($files);
+		await reset($files);
 
 		if (editor_view) {
 			// could be false if onMount returned early
@@ -205,15 +221,6 @@
 <div
 	class="container"
 	bind:this={container}
-	on:keydown={(e) => {
-		if (e.key === 'Tab') {
-			preserve_editor_focus = false;
-
-			setTimeout(() => {
-				preserve_editor_focus = true;
-			}, 200);
-		}
-	}}
 	on:focusin={() => {
 		clearTimeout(remove_focus_timeout);
 		preserve_editor_focus = true;

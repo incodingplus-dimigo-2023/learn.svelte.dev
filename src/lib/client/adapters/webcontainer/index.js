@@ -119,8 +119,17 @@ export async function create(base, error, progress, logs) {
 				/** @type {import('$lib/types').Stub[]} */
 				const to_write = [];
 
+				const force_delete = [];
+
 				for (const stub of stubs) {
-					if (stub.type === 'file') {
+					if (stub.name.endsWith('/__delete')) {
+						force_delete.push(stub.name.slice(0, -9));
+					} else if (stub.type === 'file') {
+						if (stub.contents.startsWith('__delete')) {
+							force_delete.push(stub.name);
+							continue;
+						}
+
 						const current = /** @type {import('$lib/types').FileStub} */ (
 							current_stubs.get(stub.name)
 						);
@@ -138,9 +147,13 @@ export async function create(base, error, progress, logs) {
 
 				// Don't delete the node_modules folder when switching from one exercise to another
 				// where, as this crashes the dev server.
-				['/node_modules', '/node_modules/.bin'].forEach((name) => current_stubs.delete(name));
+				const to_delete = [
+					...Array.from(current_stubs.keys()).filter(
+						(s) => !s.startsWith('/node_modules')
+					),
+					...force_delete
+				];
 
-				const to_delete = Array.from(current_stubs.keys());
 				current_stubs = stubs_to_map(stubs);
 
 				// For some reason, server-ready is fired again when the vite dev server is restarted.
@@ -260,12 +273,8 @@ function convert_stubs_to_tree(stubs, depth = 1) {
 
 /** @param {import('$lib/types').FileStub} file */
 function to_file(file) {
-	// special case
-	if (file.name === '/src/app.html') {
-		const contents = file.contents.replace(
-			'</head>',
-			`<script>var pl = '${location.origin}'</script><script type="module" src="/src/__client.js"></script></head>`
-		);
+	if (file.name === '/src/app.html' || file.name === '/src/error.html') {
+		const contents = file.contents + '<script type="module" src="/src/__client.js"></script>';
 
 		return {
 			file: { contents }

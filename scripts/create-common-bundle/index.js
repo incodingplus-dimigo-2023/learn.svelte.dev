@@ -6,10 +6,11 @@ import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 
 const cwd = 'content_kor/tutorial/common';
-
-if (!fs.existsSync(`${cwd}/node_modules`)) {
-	execSync('npm ci', { cwd });
+if (!!process.env.VERCEL) {
+	execSync('git clean -d -f content/tutorial');
 }
+
+execSync('npm ci', { cwd });
 
 const zip = new AdmZip();
 
@@ -33,18 +34,14 @@ for (const file of glob('**', { cwd, filesOnly: true, dot: true }).map((file) =>
 		continue;
 	}
 
-	// esbuild is a special case
-	if (file.startsWith('node_modules/esbuild-wasm/')) {
-		zip.addFile(
-			file.replace('node_modules/esbuild-wasm', 'node_modules/esbuild'),
-			fs.readFileSync(`${cwd}/${file}`)
-		);
-		continue;
-	} else if (file.startsWith('node_modules/esbuild') || file.startsWith('node_modules/@esbuild')) {
+	if (file.startsWith('node_modules/esbuild/') || file.startsWith('node_modules/@esbuild/')) {
 		continue;
 	}
 
-	zip.addFile(file, fs.readFileSync(`${cwd}/${file}`));
+	zip.addFile(
+		file.replace('node_modules/esbuild-wasm/', 'node_modules/esbuild/'),
+		fs.readFileSync(`${cwd}/${file}`)
+	);
 }
 
 if (ignored_files.size > 0) {

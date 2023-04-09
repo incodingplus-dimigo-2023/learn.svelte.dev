@@ -1,15 +1,9 @@
 <script>
+	import { Icon, Nav, NavItem, Shell } from '@sveltejs/site-kit/components';
 	import '@sveltejs/site-kit/styles/index.css';
 	import '../incoding.css';
 	import '../nonav.css';
 	import '../app.css';
-	import { page, navigating } from '$app/stores';
-	import Icon from '@sveltejs/site-kit/components/Icon.svelte';
-	import Icons from '@sveltejs/site-kit/components/Icons.svelte';
-	import Nav from '@sveltejs/site-kit/components/Nav.svelte';
-	import NavItem from '@sveltejs/site-kit/components/NavItem.svelte';
-	import SkipLink from '@sveltejs/site-kit/components/SkipLink.svelte';
-	import PreloadingIndicator from '@sveltejs/site-kit/components/PreloadingIndicator.svelte';
 	import { isTeacher } from '$lib/utils';
 	import { browser } from '$app/environment';
 	import { dev } from '$app/environment';
@@ -22,60 +16,42 @@
 	}
 	ask();
 </script>
-<Icons />
 
-{#if $navigating && $navigating.to}
-	<PreloadingIndicator />
-{/if}
+<Shell>
+	<Nav slot="top-nav" logo="/svelte-logo.svg">
+		<svelte:fragment slot="nav-center">
+			<strong class="large">Work in progress. Here be dragons!</strong>
+			<!-- <NavItem href="/tutorial">Tutorial</NavItem>
+			<NavItem href="/docs">Docs</NavItem>
+			<NavItem href="/examples">Examples</NavItem>
+			<NavItem href="/repl">REPL</NavItem>
+			<NavItem href="/blog">Blog</NavItem>
+			<NavItem href="/faq">FAQ</NavItem> -->
+		</svelte:fragment>
 
-<SkipLink href="#main" />
+		<svelte:fragment slot="nav-right">
+			<NavItem external="https://kit.svelte.dev">SvelteKit</NavItem>
 
-<Nav {page} logo="/svelte-logo.svg">
-	<svelte:fragment slot="nav-center">
-		<!-- <strong class="large">Work in progress. Here be dragons!</strong> -->
-		<!-- <NavItem href="/tutorial">Tutorial</NavItem>
-		<NavItem href="/docs">Docs</NavItem>
-		<NavItem href="/examples">Examples</NavItem>
-		<NavItem href="/repl">REPL</NavItem>
-		<NavItem href="/blog">Blog</NavItem>
-		<NavItem href="/faq">FAQ</NavItem> -->
-	</svelte:fragment>
+			<NavItem external="https://svelte.dev/chat" title="Discord Chat">
+				<span slot="small">Discord</span>
+				<Icon name="message-square" />
+			</NavItem>
 
-	<svelte:fragment slot="nav-right">
-		<!-- <NavItem external="https://kit.svelte.dev">SvelteKit</NavItem> -->
+			<NavItem external="https://github.com/sveltejs/svelte" title="GitHub Repo">
+				<span slot="small">GitHub</span>
+				<Icon name="github" />
+			</NavItem>
+		</svelte:fragment>
+	</Nav>
 
-		<NavItem href="" external="https://svelte.dev/chat" title="Discord Chat">
-			<span class="small">Discord</span>
-			<span class="large"><Icon name="message-square" /></span>
-		</NavItem>
-
-		<!-- <NavItem href="" external="https://github.com/sveltejs/svelte" title="GitHub Repo">
-			<span class="small">GitHub</span>
-			<span class="large"><Icon name="github" /></span>
-		</NavItem> -->
-	</svelte:fragment>
-</Nav>
-<main id="main">
 	<slot />
-</main>
+</Shell>
 
-<style lang="scss">
+<style>
 	:global(body) {
 		margin: 0;
 		width: 100%;
 		min-height: 100dvh;
-	}
-
-	/* TODO when we remove the launch banner, we can remove this override */
-	:global(body > div > nav) {
-		top: 0 !important;
-	}
-
-	main {
-		width: 100%;
-		height: calc(100dvh - var(--nav-h));
-		position: relative;
-		top: var(--nav-h);
 	}
 
 	.large {
@@ -83,10 +59,6 @@
 	}
 
 	@media (min-width: 800px) {
-		.small {
-			display: none;
-		}
-
 		.large {
 			display: inline;
 		}
