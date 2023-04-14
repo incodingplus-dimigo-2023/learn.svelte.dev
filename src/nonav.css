@@ -6,4 +6,5 @@ body > div:nth-child(1) > nav{
     top:0 !important;
     padding-top:0;
     height: 100vh;
+    --sk-nav-height:0px;
 }

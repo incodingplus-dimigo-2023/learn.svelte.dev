@@ -18,7 +18,7 @@
 </script>
 
 <Shell>
-	<Nav slot="top-nav">
+	<!-- <Nav slot="top-nav">
 		<svelte:fragment slot="home">
 			<strong>learn</strong>.svelte.dev
 		</svelte:fragment>
@@ -36,7 +36,7 @@
 				<Icon name="github" />
 			</NavItem>
 		</svelte:fragment>
-	</Nav>
+	</Nav> -->
 
 	<slot />
 </Shell>
