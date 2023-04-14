@@ -46,8 +46,9 @@
 
 		if (paused) return;
 
-		if (e.data.type === 'ping') {
+		if (e.data.type === 'path') {
 			path = e.data.path;
+		} else if (e.data.type === 'ping') {
 			loading = false;
 
 			clearTimeout(timeout);
@@ -167,6 +168,7 @@
 		transition: transform 0.3s;
 		overflow: auto;
 		backdrop-filter: blur(3px);
+		overflow-y: auto;
 	}
 
 	.terminal::after {

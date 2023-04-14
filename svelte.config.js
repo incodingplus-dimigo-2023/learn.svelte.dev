@@ -1,3 +1,4 @@
+import * as child_process from 'node:child_process';
 import adapter from '@sveltejs/adapter-vercel';
 import preprocess from 'svelte-preprocess';
 
