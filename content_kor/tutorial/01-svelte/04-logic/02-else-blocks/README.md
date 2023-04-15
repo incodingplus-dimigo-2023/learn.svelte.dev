@@ -7,6 +7,7 @@ title: else 블럭
 중간에 쓰이는 것이므로 이 블럭만 `{:else}` 이렇게 시작합니다.
 
 ```svelte
+/// file: App.svelte
 {#if user.loggedIn}
 	<button on:click={toggle}>
 		로그 아웃

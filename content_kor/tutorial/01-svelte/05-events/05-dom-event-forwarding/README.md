@@ -9,6 +9,7 @@ title: DOM 이벤트 포워딩
 
 
 ```svelte
+/// file: CustomButton.svelte
 <button on:click>
 	클릭해 주세요~
 </button>

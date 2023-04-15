@@ -5,6 +5,7 @@ title: 이벤트 Modifiers
 이벤트 **Modifiers**는 이벤트의 동작에 조금 변형을 주는 속성들을 의미합니다. 예를 들어 `once`는 이벤트가 한 번만 작동하도록 변형하는 것입니다. 
 
 ```svelte
+/// file: App.svelte
 <script>
 	const handleClick = () => {
 		alert('한 번만 동작합니다.');

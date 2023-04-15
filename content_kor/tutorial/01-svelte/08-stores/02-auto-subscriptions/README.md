@@ -9,6 +9,7 @@ title: 자동 구독
 
 
 ```js
+/// file: App.svelte
 const unsubscribe = count.subscribe((value) => {
 	count_value = value;
 });
@@ -25,6 +26,7 @@ const unsubscribe = count.subscribe((value) => {
 
 
 ```svelte
+/// file: App.svelte
 <script>
 	import { onDestroy } from 'svelte';
 	import { count } from './stores.js';
@@ -51,6 +53,7 @@ const unsubscribe = count.subscribe((value) => {
 
 
 ```svelte
+/// file: App.svelte
 <script>
 	import { count } from './stores.js';
 	import Incrementer from './Incrementer.svelte';

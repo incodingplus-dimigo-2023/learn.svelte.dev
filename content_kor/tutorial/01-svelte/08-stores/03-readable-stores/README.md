@@ -9,6 +9,7 @@ title: Readable 스토어
 
 
 ```js
+/// file: store.js
 export const time = readable(new Date(), set =>  {
 	const interval = setInterval(() => {
 		set(new Date());

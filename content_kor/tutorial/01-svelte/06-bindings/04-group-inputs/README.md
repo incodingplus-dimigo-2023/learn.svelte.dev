@@ -7,6 +7,7 @@ title: Input 태그 (라디오 버튼)
 
 
 ```svelte
+/// file: App.svelte
 <input type=radio bind:group={scoops} name="scoops" value={1}>
 ```
 
@@ -17,6 +18,7 @@ title: Input 태그 (라디오 버튼)
 
 
 ```svelte
+/// file: App.svelte
 <script>
 	let menu = [
 		'엄마는 외계인',

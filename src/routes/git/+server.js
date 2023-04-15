@@ -51,7 +51,6 @@ export const POST = async ({request}) => {
                 //         contents:txt
                 //     });
                 // }
-
                 ttt.push(fetch(`https://raw.githubusercontent.com/incodingplus-dimigo-2023/learn.svelte.student/${datas.branch}/${datas.dir.replace('content_kor', 'content')}/app-b${i}`));
                 txtArr.push(i);
                 await new Promise(res => nextTick(res));

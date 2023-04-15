@@ -11,6 +11,7 @@ title: tick 함수
 
 
 ```js
+/// file: App.svelte
 import { tick } from 'svelte';
 ```
 
@@ -20,6 +21,7 @@ import { tick } from 'svelte';
 
 
 ```js
+/// file: App.svelte
 await tick();
 event.target.selectionStart = selectionStart;
 event.target.selectionEnd = selectionEnd;

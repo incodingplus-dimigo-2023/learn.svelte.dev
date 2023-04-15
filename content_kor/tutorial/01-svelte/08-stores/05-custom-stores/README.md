@@ -9,6 +9,7 @@ title: 커스텀 스토어
 
 
 ```js
+/// file: store.js
 const createCount = () => {
 	const { subscribe, set, update } = writable(0);
 

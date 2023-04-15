@@ -7,6 +7,7 @@ Svelte에서 이벤트를 할당하려면 `on:`으로 시작되는 이벤트 속
 
 
 ```svelte
+/// file: App.svelte
 <div on:mousemove={handleMousemove}>
 	마우스 위치 : ({m.x}, {m.y})
 </div>
@@ -19,6 +20,7 @@ Svelte에서 이벤트를 할당하려면 `on:`으로 시작되는 이벤트 속
 
 
 ```svelte
+/// file: App.svelte
 <div on:mousemove={e => s = {x : e.clientX, y:e.clientY}}>
 	마우스 위치 : ({s.x}, {s.y})
 </div>

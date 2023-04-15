@@ -11,7 +11,7 @@ title: key가 있는 each 블럭
 
 
 ```js
-// Thing.svelte
+/// file: Thing.svelte
 ---const emoji = emojis[name]---
 +++$:emoji = emojis[name]+++
 ```
@@ -23,6 +23,7 @@ title: key가 있는 each 블럭
 
 
 ```svelte
+/// file: Thing.svelte
 ---<span>The emoji for {name} is {emoji}</span>---
 +++<span>The emoji for {name} is {emojis[name]}</span>+++
 ```
@@ -34,6 +35,7 @@ title: key가 있는 each 블럭
 
 
 ```svelte
+/// file: App.svelte
 {#each things as thing (thing.id)}
 	<Thing name={thing.name}/>
 {/each}

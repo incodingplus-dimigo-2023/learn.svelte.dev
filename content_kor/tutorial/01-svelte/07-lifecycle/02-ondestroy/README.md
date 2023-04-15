@@ -7,6 +7,7 @@ title: onDestroy 함수
 
 
 ```svelte
+/// file: Timer.svelte
 <script>
 	import { onDestroy } from 'svelte';
 
@@ -24,6 +25,7 @@ title: onDestroy 함수
 
 
 ```js
+/// file: utils.js
 import { onDestroy } from 'svelte';
 
 export function onInterval(callback, milliseconds) {
@@ -42,6 +44,7 @@ export function onInterval(callback, milliseconds) {
 
 
 ```svelte
+/// file: Timer.svelte
 <script>
 	import { onInterval } from './utils.js';
 

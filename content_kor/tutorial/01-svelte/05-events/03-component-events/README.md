@@ -6,8 +6,8 @@ title: 컴포넌트 이벤트
 
 
 
-**Inner.svelte**
 ```svelte
+/// file: Inner.svelte
 <script>
 	import { createEventDispatcher } from 'svelte';
 

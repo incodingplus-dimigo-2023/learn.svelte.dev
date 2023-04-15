@@ -7,6 +7,7 @@ title: Select 태그 (multiple)
 비슷한 예제는 [아이스크림 맛 고르기](/tutorial/group-inputs) 입니다. `<input type="checkbox">`와 비슷하게 `<select multiple>` 에 배열을 할당합니다.
 
 ```svelte
+/// file: App.svelte
 <h2>아이스크림</h2>
 
 <select bind:value={picks} multiple>

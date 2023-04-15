@@ -29,6 +29,7 @@ Svelte를 쓰는 가장 큰 이유 중 하나는 바로 **반응성**입니다. 
 먼저 `on:click`은 Svelte에서만 쓰는 이벤트를 의미합니다. Svelte에서의 이벤트인 `on:`을 쓰지 않는다면 반응성이 적용되지 않습니다. 다음으로 `increment`는 함수를 의미합니다.
 
 ```js
+/// file: App.svelte
 const increment = () => {
 	+++count += 1;+++
 }
@@ -37,6 +38,7 @@ const increment = () => {
 함수에서는 `count`라는 변수를 `1` 증가시키도록 되어 있습니다.
 
 ```svelte
+/// file: App.svelte
 <button ...>+++{count}+++</button>
 ```
 

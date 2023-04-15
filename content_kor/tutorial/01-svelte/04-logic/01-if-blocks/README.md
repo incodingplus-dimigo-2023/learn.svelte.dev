@@ -7,6 +7,7 @@ HTML에는 `if`나 `for` 같은 논리 구조를 표현할 방법이 없습니�
 아래는 `if` 블럭을 사용해서 어떠한 블럭을 보였다가, 안보였다가를 만드는 방법입니다.
 
 ```svelte
+/// file: App.svelte
 +++{#if user.loggedIn}+++
 	<button on:click={toggle}>
 		로그 아웃

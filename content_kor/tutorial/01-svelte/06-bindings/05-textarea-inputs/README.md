@@ -7,6 +7,7 @@ title: Textarea 태그
 
 
 ```svelte
+/// file: App.svelte
 <textarea bind:value={value}></textarea>
 ```
 
@@ -17,5 +18,6 @@ title: Textarea 태그
 
 
 ```svelte
+/// file: App.svelte
 <textarea bind:value></textarea>
 ```

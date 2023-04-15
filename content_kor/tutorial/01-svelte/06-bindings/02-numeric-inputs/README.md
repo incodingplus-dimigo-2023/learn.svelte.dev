@@ -9,6 +9,7 @@ DOM에서는 모든 속성의 값은 `string` 타입입니다. 하지만 이러�
 
 
 ```svelte
+/// file: App.svelte
 <input type=number bind:value={a} min=0 max=10>
 <input type=range bind:value={a} min=0 max=10>
 ```

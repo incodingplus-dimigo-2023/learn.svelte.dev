@@ -7,7 +7,7 @@ title: 속성 선언
 하지만 실제로 프로젝트를 작성할 때는 컴포넌트 간에 서로 데이터를 주고 받을 수 있어야 합니다. 이러한 것 때문에 **속성**(**props**)을 사용해야합니다. Svelte에서 `export`라는 키워드를 사용해서 속성을 선언할 수 있습니다.
 
 ```svelte
-<!-- Nested.svelte -->
+/// file: Nested.svelte
 <script>
 	+++export+++ let answer;
 </script>

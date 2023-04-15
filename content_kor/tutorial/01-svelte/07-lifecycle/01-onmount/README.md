@@ -23,6 +23,7 @@ title: onMount 함수
 
 
 ```svelte
+/// file: App.svelte
 <script>
 	import { onMount } from 'svelte';
 

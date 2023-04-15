@@ -5,6 +5,7 @@ title: each 블럭
 만약 DOM에 반복문을 쓰고 싶다면 `each` 블럭을 사용하면 됩니다.
 
 ```svelte
+/// file: App.svelte
 <ul>
 	{#each osts as ost}
 		<li>
@@ -20,6 +21,7 @@ title: each 블럭
 여기서 순서를 얻을 수도 있습니다.
 
 ```svelte
+/// file: App.svelte
 <ul>
 	{#each osts as ost,i}
 		<li>
@@ -33,6 +35,7 @@ title: each 블럭
 만약 조금 더 보기 편하게 한다면 구조 분해 할당(`each osts as { id, name }`)으로 할당 가능합니다.
 
 ```svelte
+/// file: App.svelte
 <ul>
 	{#each osts as { id, name }, i}
 		<li>

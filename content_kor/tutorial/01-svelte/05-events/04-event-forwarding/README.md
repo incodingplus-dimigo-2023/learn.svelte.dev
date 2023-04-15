@@ -11,6 +11,7 @@ title: 이벤트 포워딩
 
 
 ```svelte
+/// file: Outer.svelte
 <script>
 	import Inner from './Inner.svelte';
 	import { createEventDispatcher } from 'svelte';
@@ -33,6 +34,7 @@ title: 이벤트 포워딩
 
 
 ```svelte
+/// file: Outer.svelte
 <script>
 	import Inner from './Inner.svelte';
 </script>

@@ -7,6 +7,7 @@ Svelte에서 속성을 할당하면 속성의 값은 할당한 변수에 따라�
 
 
 ```svelte
+/// file: App.svelte
 <script>
     let href = '/about'
 </script>
@@ -22,6 +23,7 @@ Svelte에서 속성을 할당하면 속성의 값은 할당한 변수에 따라�
 
 
 ```svelte
+/// file: App.svelte
 <input on:input={event => name = event.target.value} value={name} />
 ```
 
@@ -32,6 +34,7 @@ Svelte에서 속성을 할당하면 속성의 값은 할당한 변수에 따라�
 
 
 ```svelte
+/// file: App.svelte
 ---<input on:input={event => name = event.target.value} value={name} />---
 +++<input bind:value={name}>+++
 ```

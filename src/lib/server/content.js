@@ -37,7 +37,7 @@ function is_valid(dir) {
  * @param {string} dir
  */
 function exists_readme(part, chapter, dir) {
-	return fs.existsSync(`content/tutorial/${part}/${chapter}/${dir}/README.md`);
+	return fs.existsSync(`${con}/tutorial/${part}/${chapter}/${dir}/README.md`);
 }
 
 /**

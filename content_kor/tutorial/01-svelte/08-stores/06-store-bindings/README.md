@@ -7,6 +7,7 @@ title: 스토어 바인딩
 
 
 ```svelte
+/// file: App.svelte
 {$count}번 눌렀습니다.
 <button on:click={() => $count += 1}>증가</button>
 ```
@@ -18,6 +19,7 @@ title: 스토어 바인딩
 
 
 ```svelte
+/// file: App.svelte
 <input type="text" bind:value={$name}>
 ```
 
@@ -28,6 +30,7 @@ title: 스토어 바인딩
 
 
 ```svelte
+/// file: App.svelte
 <button on:click={() => $name += '!'}>
 	느낌표 붙이기
 </button>

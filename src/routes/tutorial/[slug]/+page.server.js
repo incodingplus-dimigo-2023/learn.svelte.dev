@@ -10,6 +10,7 @@ export function load({ params }) {
 	let isHome = false;
 	if(slugs[1]){
 		isHome = true;
+		
 		exercise = get_homework(slugs[0], slugs[1]);
 	} else {
 		exercise = get_exercise(slugs[0]);

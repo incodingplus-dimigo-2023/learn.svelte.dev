@@ -7,5 +7,6 @@ title: Input 태그 (체크박스)
 
 
 ```svelte
+/// file: App.svelte
 <input type=checkbox bind:checked={yes}>
 ```

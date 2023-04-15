@@ -11,6 +11,7 @@ title: beforeUpdate 와 afterUpdate 함수
 
 
 ```js
+/// file: App.svelte
 let div;
 let autoscroll;
 

@@ -7,6 +7,7 @@ title: Select 태그 bindings
 
 
 ```svelte
+/// file: App.svelte
 <select bind:value={selected} on:change="{() => answer = ''}">
 ```
 

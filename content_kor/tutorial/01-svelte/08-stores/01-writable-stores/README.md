@@ -13,6 +13,7 @@ Svelte에서는 이런 계층에 상관없이 상태 값을 전달하기 위해 
 
 
 ```js
+/// file: Incrementer.svelte
 const increment = () => {
 	count.update((n) => n + 1);
 }
@@ -27,6 +28,7 @@ const increment = () => {
 
 
 ```js
+/// file: Resetter.svelte
 const reset = () => {
 	count.set(0);
 }
