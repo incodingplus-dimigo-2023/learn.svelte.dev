@@ -1,5 +1,5 @@
 import path from 'path';
-import glob from 'glob';
+import { glob } from 'glob';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
