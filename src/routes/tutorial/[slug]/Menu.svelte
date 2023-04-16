@@ -25,7 +25,7 @@
 	$: expanded_chapter = current.chapter.slug;
 
 	$: escaped = search.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-	$: regex = new RegExp(`\\b${search.length >= 2 ? escaped : ''}`, 'i');
+	$: regex = new RegExp(search.length >= 2 ? escaped : '', 'i');
 
 	$: filtered = index
 		.map((part) => {

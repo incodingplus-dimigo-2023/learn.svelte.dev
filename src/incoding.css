@@ -27,7 +27,7 @@
     background-color: #888
 }
 
-:root {
+:root > body {
 	--sk-theme-3: hsl(15, 100%, 63%);
 	--sk-theme-1: hsl(204, 100%, 50%);
 	--sk-theme-3-variant: hsl(15, 100%, 63%);
@@ -35,7 +35,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-	:root {
+	:root > body {
 		--sk-theme-3: hsl(15, 100%, 63%);
 		--sk-theme-1: hsl(204, 100%, 55%);
 		--sk-theme-3-variant: hsl(15, 100%, 50%);
