@@ -1,11 +1,7 @@
-import { Octokit } from 'octokit';
 import path from 'path';
 import { nextTick } from 'process';
 /** @type {import('./$types').RequestHandler} */
 export const POST = async ({request}) => {
-    const octokit = new Octokit({
-		auth:import.meta.env.VITE_GITHUB ?? process.env.VITE_GITHUB
-	});
     /** @type {import('$lib/types').FileStub[]} */
     const result = [];
     try{
